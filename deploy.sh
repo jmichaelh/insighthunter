@@ -23,6 +23,10 @@ set -e
 echo "Deploying insighthunter-auth..."
 npx wrangler deploy --config apps/insighthunter-auth/wrangler.toml
 
+# Deploy insighthunter-main
+echo "Deploying insighthunter-main..."
+npx wranglrt deploy --config apps/insighthunter-main/wrangler.toml
+
 # Deploy insighthunter-bookkeeping
 echo "Deploying insighthunter-bookkeeping..."
 npx wrangler deploy --config apps/insighthunter-bookkeeping/wrangler.toml
@@ -30,10 +34,6 @@ npx wrangler deploy --config apps/insighthunter-bookkeeping/wrangler.toml
 # Deploy insighthunter-lite
 echo "Deploying insighthunter-lite..."
 npx wrangler deploy --config apps/insighthunter-lite/wrangler.toml
-
-# Deploy insighthunter-main
-echo "Deploying insighthunter-main..."
-npx wrangler deploy --config apps/insighthunter-main/wrangler.toml
 
 # Deploy insighthunter-pbx
 echo "Deploying insighthunter-pbx..."
