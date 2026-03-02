@@ -1,7 +1,7 @@
 name = "insighthunter-main"
 compatibility_date = "2026-03-01"
 compatibility_flags = ["nodejs_als"]
-main = "src/server/index.ts"
+main = "./dist/server/index.ts"
 
 [vars]
 ENVIRONMENT = "production"
