@@ -31,7 +31,7 @@ database_name = "insighthunter-auth"
 database_id = "36b4a6b7-3509-4cd2-9cdc-7a35990affd5"
 
 [[kv_namespaces]]
-binding = LOGIN_SESSION_CACHE
+binding = "LOGIN_SESSION_CACHE"
 id = "2688622da1524864a1a7eb422b0a381c"
 preview_id = "2688622da1524864a1a7eb422b0a381c"
 
