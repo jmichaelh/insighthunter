@@ -11,7 +11,7 @@ export const POST: APIRoute = async ({ cookies, locals }) => {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Set-Cookie': 'auth_token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0',
+      'Set-Cookie': 'auth_token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0; Domain=*.insighthunter.app',
     },
   });
 };

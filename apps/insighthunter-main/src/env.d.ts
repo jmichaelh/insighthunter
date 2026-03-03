@@ -1,22 +1,14 @@
-/// <reference path="../.astro/types.d.ts" />
-/// <reference types="astro/client" />
-/// <reference types="@cloudflare/workers-types" />
-
-type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
-
+// packages/auth-middleware/src/env.d.ts
 declare namespace App {
-  interface Locals extends Runtime {
-    user?: {
-      id: string;
-      email: string;
-      plan: 'lite' | 'standard' | 'pro';
+  interface Locals {
+    userId:           string | null;
+    userEmail:        string | null;
+    subscriptionTier: string | null;
+    runtime: {
+      env: {
+        JWT_SECRET: string;
+        [key: string]: unknown;
+      };
     };
   }
-}
-
-interface Env {
-  DB: D1Database;
-  KV: KVNamespace;
-  AUTH: Fetcher;
-  ENVIRONMENT: string;
 }

@@ -13,11 +13,15 @@ export const onRequest = defineMiddleware(async ({ locals, request, url, redirec
   locals.userEmail        = auth.userEmail;
   locals.subscriptionTier = auth.subscriptionTier;
 
+  // Bookkeeping requires at minimum 'starter' tier
   if (isProtectedRoute(url.pathname)) {
     if (!auth.userId) {
       return redirect(
         `https://insighthunter.app/auth/login?redirect=${encodeURIComponent(url.href)}`
       );
+    }
+    if (auth.subscriptionTier === 'free') {
+      return redirect('https://insighthunter.app/pricing?upgrade=bookkeeping');
     }
   }
 

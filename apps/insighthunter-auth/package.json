@@ -15,7 +15,8 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "hono": "^4.12.3",
-    "stripe": "^14.25.0"
+    "stripe": "^14.25.0",
+    "@insighthunter/auth-middleware": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231218.0",

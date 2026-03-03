@@ -57,10 +57,7 @@ export const verifyPassword = (pw: string, hash: string) => bcrypt.compare(pw, h
 
 // ── JWT ──────────────────────────────────────────────────────────────────────
 export async function signAuthJWT(
-  userId: string,
-  email: string,
-  secret: string
-): Promise<string> {
+userId: string, email: string, secret: string, JWT_SECRET: string): Promise<string> {
   return new jose.SignJWT({ sub: userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()

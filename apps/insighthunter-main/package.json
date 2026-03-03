@@ -13,7 +13,8 @@
     "@astrojs/svelte": "^7.2.5",
     "astro": "^5.18.0",
     "miniflare": "^4.20260305.0",
-    "svelte": "^5.0.0"
+    "svelte": "^5.0.0",
+    "@insighthunter/auth-middleware": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

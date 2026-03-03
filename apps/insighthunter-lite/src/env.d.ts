@@ -1,24 +1,14 @@
-// apps/insighthunter-lite/src/env.d.ts
-/// <reference types="astro/client" />
-/// <reference types="@cloudflare/workers-types" />
-
-interface Env {
-  DB: D1Database;
-  STORAGE: R2Bucket;
-  SESSIONS: KVNamespace;
-  AI: Ai;
-  ANALYTICS: AnalyticsEngineDataset;
-  ASSETS: Fetcher;
-  ENVIRONMENT: string;
-  AUTH_SERVICE_URL: string;
-  MAX_CSV_ROWS: string;
-}
-
-type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
-
+// packages/auth-middleware/src/env.d.ts
 declare namespace App {
-  interface Locals extends Runtime {
-    userId: string | null;
-    sessionToken: string | null;
+  interface Locals {
+    userId:           string | null;
+    userEmail:        string | null;
+    subscriptionTier: string | null;
+    runtime: {
+      env: {
+        JWT_SECRET: string;
+        [key: string]: unknown;
+      };
+    };
   }
 }

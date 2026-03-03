@@ -40,7 +40,13 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
       await new Promise(r => setTimeout(r, 200)); // timing equalization
       return err('Invalid email or password.', 401);
     }
-
+    const jwt = await signAuthJWT(
+      user.id, 
+      user.email,
+      user.subscription_tier,
+      env.JWT_SECRET
+    );
+    
     const valid = await verifyPassword(password, user.password_hash);
     if (!valid) {
       auditLog(env, 'login_failed', user.id, ip, request.headers.get('user-agent') ?? '');
@@ -69,7 +75,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Set-Cookie': `auth_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${60 * 60 * 24 * 7}`,
+        'Set-Cookie': 'auth_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${60 * 60 * 24 * 7}; Domain=*.insighthunter.app',
       },
     });
 

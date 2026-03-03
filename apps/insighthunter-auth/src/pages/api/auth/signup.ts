@@ -9,6 +9,17 @@ import {
 export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
   const env = locals.runtime.env;
 
+  const jwt = await signAuthJWT(
+    user.id, 
+    user.email,
+    usersubscription_tier,
+    env.JWT_SECRET
+  );
+  
+    locals.userEmail, env.JWT_SECRET);
+  if (jwt)
+     
+  )
   try {
     const { email, password, fullName, turnstileToken } = await request.json() as {
       email: string; password: string; fullName: string; turnstileToken: string;
@@ -75,9 +86,9 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
       status: 201,
       headers: {
         'Content-Type': 'application/json',
-        'Set-Cookie': `auth_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${60 * 60 * 24 * 7}`,
+        'Set-Cookie': `auth_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${60 * 60 * 24 * 7}; Domain=.insighthunter.app`,
       },
-    });
+    });     
 
   } catch (e) {
     console.error('Signup error:', e);

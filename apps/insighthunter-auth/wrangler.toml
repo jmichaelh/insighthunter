@@ -28,17 +28,17 @@ zone_name = "insighthunter.app"
 [[d1_databases]]
 binding = "DB"
 database_name = "insighthunter-auth"
-database_id = "YOUR_AUTH_D1_ID"
+database_id = "36b4a6b7-3509-4cd2-9cdc-7a35990affd5"
 
 [[kv_namespaces]]
-binding = "LOGIN_SESSION_CACHE"
-id = "YOUR_SESSION_KV_ID"
-preview_id = "YOUR_SESSION_KV_PREVIEW_ID"
+binding = LOGIN_SESSION_CACHE
+id = "2688622da1524864a1a7eb422b0a381c"
+preview_id = "2688622da1524864a1a7eb422b0a381c"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
-id = "YOUR_RATELIMIT_KV_ID"
-preview_id = "YOUR_RATELIMIT_KV_PREVIEW_ID"
+id = "f75a15f1df8c42cdb2e623d8cb324a23"
+preview_id = "f75a15f1df8c42cdb2e623d8cb324a23"
 
 [[analytics_engine_datasets]]
 binding = "ANALYTICS"
@@ -48,7 +48,7 @@ dataset = "insighthunter_auth_events"
 ENVIRONMENT = "development"
 APP_DOMAIN = "insighthunter.app"
 APP_NAME = "InsightHunter"
-TURNSTILE_SITE_KEY = "YOUR_TURNSTILE_SITE_KEY"
+TURNSTILE_SITE_KEY = "0x4AAAAAACh0ortSylrGgGmZ"
 
 # Secrets — set via CLI, never in this file:
 # wrangler secret put JWT_SECRET

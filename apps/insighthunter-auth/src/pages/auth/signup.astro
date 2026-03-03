@@ -1,6 +1,6 @@
 ---
 // apps/insighthunter-auth/src/pages/auth/signup.astro
-import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import AuthLayout from '../../layouts/AuthLayout.astro';
 import SignupForm from '../../components/islands/auth/SignupForm.svelte';
 
 if (Astro.locals.userId) {
@@ -9,6 +9,6 @@ if (Astro.locals.userId) {
 
 const siteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 ---
-<MarketingLayout title="Create Account -- InsightHunter" noContainer>
+<AuthLayout title="Create Account — InsightHunter">
   <SignupForm client:load turnstileSiteKey={siteKey} />
-</MarketingLayout>
+</AuthLayout>

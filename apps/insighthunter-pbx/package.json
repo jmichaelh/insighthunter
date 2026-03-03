@@ -17,7 +17,8 @@
     },
     "dependencies": {
         "hono": "^4.6.0",
-        "twilio": "^5.3.0"
+        "twilio": "^5.3.0",
+        "@insighthunter/auth-middleware": "workspace:*"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20241127.0",
