@@ -1,0 +1,104 @@
+name = "insighthunter-main"
+main = "src/index.ts"
+compatibility_date = "2025-03-07"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Observability ────────────────────────────────────────────
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# ─── Static Frontend (SPA) ────────────────────────────────────
+[assets]
+directory = "./public"
+not_found_handling = "single-page-application"
+binding = "ASSETS"
+
+# ─── Environment Variables ────────────────────────────────────
+[vars]
+ENVIRONMENT = "production"
+APP_URL = "https://insight.hunterturner.com"
+PRO_PLAN_PRICE_CENTS = "19900"
+REPORT_ONE_OFF_PRICE_CENTS = "10000"
+
+# ─── D1 — Users, Orgs, Invoices, Financials ──────────────────
+[[d1_databases]]
+binding = "DB"
+database_name = "insighthunter-db"
+database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
+
+# ─── KV — Sessions ────────────────────────────────────────────
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "60e34ba310ca40c79edec05470c7a271"
+preview_id = "60e34ba310ca40c79edec05470c7a271"
+
+# ─── KV — Config & Feature Flags ─────────────────────────────
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "e412ddb53db24e10bb59735e62732bf0"
+preview_id = "e412ddb53db24e10bb59735e62732bf0"
+
+# ─── R2 — PDF Reports ─────────────────────────────────────────
+[[r2_buckets]]
+binding = "REPORTS"
+bucket_name = "insighthunter-reports"
+
+# ─── R2 — CSV Uploads ─────────────────────────────────────────
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "insighthunter-uploads"
+
+# ─── Queues — Producers ───────────────────────────────────────
+[[queues.producers]]
+binding = "REPORT_QUEUE"
+queue = "insighthunter-report-queue"
+
+[[queues.producers]]
+binding = "AI_JOB_QUEUE"
+queue = "insighthunter-ai-job-queue"
+
+# ─── Queues — Consumers ───────────────────────────────────────
+[[queues.consumers]]
+queue = "insighthunter-report-queue"
+dead_letter_queue = "insighthunter-report-dlq"
+retry_delay = 60
+
+[[queues.consumers]]
+queue = "insighthunter-ai-job-queue"
+dead_letter_queue = "insighthunter-ai-job-dlq"
+retry_delay = 120
+
+# ─── Workers AI ───────────────────────────────────────────────
+[ai]
+binding = "AI"
+
+# ─── Vectorize — Semantic Financial Search ───────────────────
+[[vectorize]]
+binding = "VECTORS"
+index_name = "insighthunter-embeddings"
+
+# ─── Analytics Engine ─────────────────────────────────────────
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "insighthunter_events"
+
+# ─── Durable Objects — CFO Agent ─────────────────────────────
+[[durable_objects.bindings]]
+name = "CFO_AGENT"
+class_name = "CfoAgent"
+
+# ─── DO Migrations ────────────────────────────────────────────
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["CfoAgent"]
+
+# ─── Cron Triggers ────────────────────────────────────────────
+[triggers]
+crons = ["0 8 * * *"]
+
+# ─── Secrets (set via CLI — never commit these) ───────────────
+# npx wrangler secret put JWT_SECRET
+# npx wrangler secret put STRIPE_SECRET_KEY
+# npx wrangler secret put STRIPE_WEBHOOK_SECRET
+# npx wrangler secret put OPENAI_API_KEY

@@ -243,3 +243,5 @@ export default {
     }
   },
 } satisfies ExportedHandler<Env>;
+
+export { CfoAgent } from './CfoAgent';

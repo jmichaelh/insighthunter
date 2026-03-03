@@ -197,6 +197,9 @@ importers:
       '@insighthunter/auth-middleware':
         specifier: workspace:*
         version: link:../../packages/auth-middleware
+      agents:
+        specifier: workspace:*
+        version: link:../../packages/agents
       astro:
         specifier: ^5.18.0
         version: 5.18.0(@types/node@25.3.3)(rollup@4.59.0)(typescript@5.9.3)
@@ -243,6 +246,12 @@ importers:
   apps/insighthunter-scout: {}
 
   apps/insighthunter-standard: {}
+
+  packages/agents:
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
   packages/auth-middleware:
     dependencies:

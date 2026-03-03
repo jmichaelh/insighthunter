@@ -14,7 +14,8 @@
     "astro": "^5.18.0",
     "miniflare": "^4.20260305.0",
     "svelte": "^5.0.0",
-    "@insighthunter/auth-middleware": "workspace:*"
+    "@insighthunter/auth-middleware": "workspace:*",
+    "agents": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
