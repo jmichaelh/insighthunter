@@ -28,10 +28,10 @@ wrangler kv namespace create LOGIN_SESSION_CACHE
 wrangler kv namespace create RATE_LIMIT
 
 # Set secrets
-wrangler secret put JWT_SECRET               # min 32 chars, same as insighthunter-lite
-wrangler secret put VERIFY_EMAIL_JWT_SECRET  # different 32+ char secret
-wrangler secret put MAGIC_LINK_JWT_SECRET    # different 32+ char secret
-wrangler secret put RESEND_API_KEY           # from resend.com
-wrangler secret put TURNSTILE_SECRET_KEY     # from Cloudflare dashboard > Turnstile
+#wrangler secret put JWT_SECRET               # min 32 chars, same as insighthunter-lite
+#wrangler secret put VERIFY_EMAIL_JWT_SECRET  # different 32+ char secret
+#wrangler secret put MAGIC_LINK_JWT_SECRET    # different 32+ char secret
+#wrangler secret put RESEND_API_KEY           # from resend.com
+#wrangler secret put TURNSTILE_SECRET_KEY     # from Cloudflare dashboard > Turnstile
 
 npm run dev
