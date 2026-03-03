@@ -4,7 +4,7 @@ import MarketingLayout from '../../layouts/MarketingLayout.astro';
 import LoginForm from '../../components/islands/auth/LoginForm.svelte';
 
 // Redirect if already logged in
-if (Astro.locals.userId) {
+if (Astro.locals.uuserId) {
   return Astro.redirect('https://lite.insighthunter.app');
 }
 
