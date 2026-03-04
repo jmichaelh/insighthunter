@@ -56,3 +56,7 @@ TURNSTILE_SITE_KEY = "0x4AAAAAACh0ortSylrGgGmZ"
 # wrangler secret put MAGIC_LINK_JWT_SECRET
 # wrangler secret put RESEND_API_KEY
 # wrangler secret put TURNSTILE_SECRET_KEY
+
+[[services]]
+binding = "AGENTS_WORKER"
+service = "insighthunter-agents"

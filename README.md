@@ -7,8 +7,7 @@ InsightHunter is a Cloudflare‑native, multi‑app financial operations platfor
 - Shared packages
 - Cloudflare Workers
 - Infrastructure scripts
-- CI/CD pipelines
-- CDN automation
+6[- CDN automation
 
 This documentation suite provides everything needed to understand, develop, deploy, and contribute to InsightHunter.
 

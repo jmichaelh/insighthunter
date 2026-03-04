@@ -1,4 +1,3 @@
-# apps/insighthunter-main/wrangler.toml
 name = "insighthunter-main"
 main = "./src/index.ts"
 compatibility_date = "2025-04-01"
@@ -9,10 +8,16 @@ workers_dev = false
 # Custom domain — no wildcard suffix on custom_domain routes
 routes = [
   { pattern = "insighthunter.app", custom_domain = true }
-  
-[services]
+]
+
+[[services]]
 binding = "AUTH_WORKER"
 service = "insighthunter-auth"
+
+[[services]]
+binding = "AGENTS_WORKER"
+service = "insighthunter-agents"
+
 
 # ─── Static Assets ───────────────────────────────────────────────────────────
 [assets]

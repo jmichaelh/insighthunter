@@ -1,18 +1,22 @@
 {
-  "name": "agents",
-  "version": "1.0.0",
+  "name": "@insighthunter/agents",
+  "version": "0.1.0",
   "private": true,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc"
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
   },
   "dependencies": {
-    "agents":  "latest"
+    "agents": "^0.0.71",
+    "openai": "^4.89.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "wrangler": "latest",
-    "@cloudflare/workers-types": "latest"
+    "@cloudflare/workers-types": "^4.20250224.0",
+    "typescript": "^5.7.3",
+    "wrangler": "^4.0.0"
+  },
+  "peerDependencies": {
+    "@insighthunter/types": "*"
   }
 }
