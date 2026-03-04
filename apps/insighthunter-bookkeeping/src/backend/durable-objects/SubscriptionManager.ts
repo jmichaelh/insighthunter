@@ -4,6 +4,8 @@ import Stripe from 'stripe';
 import type { Subscription, PricingTier, UsageMetrics } from '@/types';
 import { getPlanById } from '../utils/pricing';
 import type { Env } from '../index';
+import { PLAN_LIMITS, PLAN_RANK } from '@insighthunter/types';
+import type { Plan } from '@insighthunter/types';
 
 export class SubscriptionManager extends DurableObject<Env> {
   private stripe: Stripe;
@@ -312,5 +314,36 @@ export class SubscriptionManager extends DurableObject<Env> {
   private async handlePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
     // Handle failed payment - could send notification, update subscription status, etc.
     console.log('Payment failed for invoice:', invoice.id);
+  }
+
+  // NEW: Check if user can perform a plan-gated action
+  async canPerform(userId: string, feature: keyof typeof PLAN_LIMITS['lite']): Promise<{ allowed: boolean; plan: Plan; upgradeUrl?: string }> {
+    const cached = await this.ctx.storage.get<{ plan: Plan; cachedAt: number }>(`plan:${userId}`);
+    const isFresh = cached && (Date.now() - cached.cachedAt) < 300_000; // 5 min cache
+
+    let plan: Plan = cached?.plan ?? 'lite';
+
+    if (!isFresh) {
+      // Refresh from auth worker via service binding
+      const res = await (this.env as any).AUTH_WORKER.fetch(
+        new Request(`https://auth/internal/plan/${userId}`)
+      );
+      if (res.ok) {
+        const data = await res.json<{ plan: Plan }>();
+        plan = data.plan;
+        await this.ctx.storage.put(`plan:${userId}`, { plan, cachedAt: Date.now() });
+      }
+    }
+
+    const limits = PLAN_LIMITS[plan];
+    const allowed = typeof limits[feature] === 'boolean'
+      ? limits[feature] as boolean
+      : (limits[feature] as number) > 0;
+
+    return {
+      allowed,
+      plan,
+      upgradeUrl: allowed ? undefined : 'https://insighthunter.app/pricing',
+    };
   }
 }

@@ -9,7 +9,10 @@ workers_dev = false
 # Custom domain — no wildcard suffix on custom_domain routes
 routes = [
   { pattern = "insighthunter.app", custom_domain = true }
-]
+  
+[services]
+binding = "AUTH_WORKER"
+service = "insighthunter-auth"
 
 # ─── Static Assets ───────────────────────────────────────────────────────────
 [assets]
