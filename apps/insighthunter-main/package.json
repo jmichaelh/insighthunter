@@ -16,7 +16,7 @@
     "miniflare": "^4.20260305.0",
     "svelte": "^5.0.0",
     "@insighthunter/auth-middleware": "workspace:*",
-    "agents": "workspace:*"
+    "@insighthunter/agents": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

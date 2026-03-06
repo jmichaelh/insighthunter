@@ -1,3 +1,4 @@
+npm install @astrojs/cloudflare @astrojs/svelte @astrojs/sitemap --force
 // apps/insighthunter-main/src/types.ts
 
 // ─── App Domain ────────────────────────────────────────────────────────────

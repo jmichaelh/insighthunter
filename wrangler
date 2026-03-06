@@ -1,6 +1,6 @@
 # /wrangler.toml  (repo root — used for CI/CD deploys from root)
 name = "insighthunter-main"
-main = "apps/insighthunter-main/src/index.ts"
+main = "apps/insighthunter-main/src/worker.ts"
 compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
 

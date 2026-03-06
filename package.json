@@ -1,25 +1,18 @@
+
 {
-  "name": "insighthunter-monorepo",
-  "version": "1.0.0",
+  "name": "insighthunter",
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/types",
+    "packages/utils",
+    "packages/agents"
   ],
   "scripts": {
-     "deploy": "npm run build --workspace=apps/insighthunter-main && npx wrangler deploy"
-  },
-
-  "dependencies": {
-    "@astrojs/cloudflare": "^12.6.5",
-    "@astrojs/react": "^4.4.2",
-    "@sentry/astro": "^9.20.0",
-    "@spotlightjs/astro": "^3.2.6",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/uuid": "^10.0.0",
-    "bcryptjs": "^3.0.3",
-    "esbuild": "^0.27.3",
-    "hono": "^4.12.3",
-    "uuid": "^13.0.0"
+    "dev:main":    "cd apps/insighthunter-main && astro dev",
+    "build:main":  "cd apps/insighthunter-main && astro build",
+    "deploy:main": "cd apps/insighthunter-main && wrangler deploy",
+    "dev":         "npm run dev:main",
+    "deploy:all":  "npm run deploy:main && npm run deploy:auth && npm run deploy:agents"
   }
 }
