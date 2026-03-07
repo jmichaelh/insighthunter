@@ -1,0 +1,9 @@
+---
+import AuthLayout from '@/layouts/AuthLayout.astro';
+import LoginForm from '@/components/islands/auth/LoginForm.svelte';
+import '@/scripts/login.ts';
+---
+
+<AuthLayout title="Login">
+  <LoginForm client:load />
+</AuthLayout>

@@ -1,18 +1,11 @@
 {
-    "name": "@insighthunter/auth-middleware",
-    "version": "1.0.0",
-    "private": true,
-    "type": "module",
-    "main": "./src/index.ts",
-    "exports": {
-      ".": "./src/index.ts"
-    },
-    "dependencies": {
-      "jose": "^5.0.0"
-    },
-    "devDependencies": {
-      "@cloudflare/workers-types": "^4.0.0",
-      "typescript": "^5.0.0"
-    }
+  "name": "@insighthunter/auth-middleware",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "@insighthunter/db": "workspace:*",
+    "@insighthunter/lib": "workspace:*"
   }
-  
+}
