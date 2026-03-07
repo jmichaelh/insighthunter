@@ -280,10 +280,7 @@ importers:
   apps/insighthunter-standard: {}
 
   packages/auth-middleware:
-    dependencies:
-      '@insighthunter/db':
-        specifier: workspace:*
-        version: link:../db
+    dependacies:
       '@insighthunter/lib':
         specifier: workspace:*
         version: link:../lib
