@@ -23,13 +23,19 @@ export CLOUDFLARE_API_TOKEN="kAY9u88TaeuI9wByQkismZ2oGjBWqf5mVBhDTYNE"
 #6. insighthunter-lite      (depends on: auth)
 
 # This script deploys all of the InsightHunter applications.
-
 # Exit immediately if a command exits with a non-zero status.
 set -e
+# Deploy packages/types
+echo "Deploying packages/types"
+npx wrangler deploy --config packages/types/wrangler.toml
 
 # Deploy insighthunter-auth
 echo "Deploying insighthunter-auth..."
 npx wrangler deploy --config apps/insighthunter-auth/wrangler.toml
+
+# Deploy insighthhunter-agents
+echo "Deploying insighthunter-agents"
+npx wrangler deploy --config apps/insighthunter-agents/wrangler.toml 
 
 # Deploy insighthunter-main
 echo "Deploying insighthunter-main..."
