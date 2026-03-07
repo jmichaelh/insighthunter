@@ -1,42 +1,24 @@
 {
   "name": "insighthunter-bookkeeping",
-  "version": "2.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && tsc --noEmit",
-    "preview": "astro preview",
-    "worker:dev": "wrangler dev",
-    "worker:deploy": "wrangler deploy",
-    "deploy": "npm run build && npm run worker:deploy",
-    "type-check": "tsc --noEmit"
+    "dev":         "wrangler dev --port 8788",
+    "deploy":      "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:prod": "wrangler deploy --env production",
+    "db:migrate":  "wrangler d1 migrations apply insighthunter-bookkeeping",
+    "db:migrate:remote": "wrangler d1 migrations apply insighthunter-bookkeeping --remote",
+    "type-check":  "tsc --noEmit",
+    "test":        "vitest run",
+    "test:watch":  "vitest"
   },
-  "dependencies": {
-    "@astrojs/react": "^4.4.2",
-    "@badgateway/oauth2-client": "^2.3.0",
-    "astro": "^5.17.3",
-    "chart.js": "^4.4.0",
-    "date-fns": "^3.0.0",
-    "exceljs": "^4.4.0",
-    "hono": "^4.0.0",
-    "openai": "^4.20.0",
-    "papaparse": "^5.4.1",
-    "plaid": "^18.0.0",
-    "react": "^18.2.0",
-    "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^5.0.0",
-    "react-plaid-link": "^4.1.1",
-    "stripe": "^14.0.0",
-    "zod": "^3.22.0",
-    "@insighthunter/auth-middleware": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20231218.0",
-    "@types/papaparse": "^5.3.14",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^5.3.0",
-    "wrangler": "^4.66.0"
+    "@cloudflare/workers-types": "^4.20250224.0",
+    "typescript":                "^5.4.5",
+    "vitest":                    "^1.6.0",
+    "@cloudflare/vitest-pool-workers": "^0.5.0",
+    "wrangler":                  "^3.95.0"
   }
 }
