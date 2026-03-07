@@ -26,9 +26,9 @@ export CLOUDFLARE_API_TOKEN="kAY9u88TaeuI9wByQkismZ2oGjBWqf5mVBhDTYNE"
 # Exit immediately if a command exits with a non-zero status.
 set -e
 # Deploy packages/types
-echo "Deploying packages/types"
-cd packages/types && pnpm install
-cd .. && cd ..
+#echo "Deploying packages/types"
+#cd packages/types && pnpm install
+#cd  .. && cd ..
 
 # Deploy insighthunter-auth
 echo "Deploying insighthunter-auth..."
