@@ -1,0 +1,65 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Insight Hunter",
+  description = "Financial analytics and reporting for growing businesses.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} | Insight Hunter</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#6366f1" />
+    <!-- Open Graph (minimal for auth pages) -->
+    <meta property="og:title" content={title} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body class="h-full bg-slate-950 text-slate-100 antialiased">
+    <div class="min-h-full flex flex-col justify-center items-center px-4 py-12 sm:px-6 lg:px-8">
+
+      <!-- Logo / Brand -->
+      <div class="mb-8 flex flex-col items-center gap-3">
+        <a href="/" aria-label="Go to Insight Hunter home">
+          <img
+            src="/icons/icon-192.png"
+            alt="Insight Hunter logo"
+            width="48"
+            height="48"
+            class="rounded-xl"
+          />
+        </a>
+        <span class="text-xl font-semibold tracking-tight text-white">
+          Insight Hunter
+        </span>
+      </div>
+
+      <!-- Auth Card -->
+      <div class="w-full max-w-md">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl px-8 py-10">
+          <slot />
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <p class="mt-8 text-center text-xs text-slate-500">
+        &copy; {new Date().getFullYear()} Insight Hunter. All rights reserved.
+        &nbsp;&middot;&nbsp;
+        <a href="/privacy" class="underline underline-offset-2 hover:text-slate-300 transition-colors">Privacy</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/terms" class="underline underline-offset-2 hover:text-slate-300 transition-colors">Terms</a>
+      </p>
+
+    </div>
+  </body>
+</html>

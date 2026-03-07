@@ -1,0 +1,59 @@
+---
+import type { User } from "@/types";
+interface Props { title?: string }
+const { title = "Dashboard" } = Astro.props;
+const user = Astro.locals.user as User | undefined;
+---
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} — Insight Hunter</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="/src/styles/global.css" />
+  </head>
+  <body class="h-full bg-surface-950 text-slate-100 antialiased flex">
+
+    <!-- Sidebar -->
+    <nav class="hidden md:flex flex-col w-60 bg-surface-900 border-r border-surface-800 px-4 py-6 gap-1 shrink-0">
+      <div class="flex items-center gap-2 mb-8 px-2">
+        <img src="/icons/icon-192.png" alt="" width="28" height="28" class="rounded-lg" />
+        <span class="font-semibold text-white text-sm">Insight Hunter</span>
+        <span class="ml-auto text-[10px] bg-brand-600 text-white px-1.5 py-0.5 rounded font-bold tracking-wide">LITE</span>
+      </div>
+      <a href="/dashboard"             class="nav-link">📊 Overview</a>
+      <a href="/dashboard/profit-loss" class="nav-link">📈 Profit & Loss</a>
+      <a href="/dashboard/cash-flow"   class="nav-link">💰 Cash Flow</a>
+      <a href="/dashboard/connect"     class="nav-link">🔗 QuickBooks</a>
+      <a href="/settings"              class="nav-link mt-auto">⚙️ Settings</a>
+      <form action="/api/auth/logout" method="POST" class="mt-2">
+        <button type="submit" class="nav-link w-full text-left text-red-400 hover:bg-red-900/20">
+          🚪 Sign Out
+        </button>
+      </form>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <header class="h-14 border-b border-surface-800 bg-surface-900 flex items-center px-6 gap-4 shrink-0">
+        <h1 class="text-sm font-semibold text-white flex-1">{title}</h1>
+        {user && (
+          <span class="text-xs text-slate-400">{user.name} · {user.email}</span>
+        )}
+      </header>
+      <main class="flex-1 overflow-y-auto p-6">
+        <slot />
+      </main>
+    </div>
+
+  </body>
+</html>
+
+<style>
+  .nav-link {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-surface-800 hover:text-white transition-colors;
+  }
+</style>

@@ -1,25 +1,69 @@
-import { defineMiddleware } from 'astro:middleware';
-import { resolveAuth, isProtectedRoute } from '@insighthunter/auth-middleware';
+// ── Auth ─────────────────────────────────────────────────────────────────────
+export interface User {
+  id:        string;
+  email:     string;
+  name:      string;
+  tier:      "lite" | "standard" | "enterprise";
+  createdAt: string;
+}
 
-export const onRequest = defineMiddleware(async ({ locals, request, url, redirect }, next) => {
-  const env = locals.runtime?.env;
+export interface Session {
+  userId:    string;
+  expiresAt: number;
+  token:     string;
+}
 
-  const auth = await resolveAuth(
-    request.headers.get('cookie'),
-    env?.JWT_SECRET ?? ''
-  );
+// ── QuickBooks ────────────────────────────────────────────────────────────────
+export interface QBOConnection {
+  realmId:      string;
+  accessToken:  string;
+  refreshToken: string;
+  expiresAt:    number;
+  companyName:  string;
+}
 
-  locals.userId           = auth.userId;
-  locals.userEmail        = auth.userEmail;
-  locals.subscriptionTier = auth.subscriptionTier;
+export interface QBOTokenResponse {
+  access_token:  string;
+  refresh_token: string;
+  token_type:    string;
+  expires_in:    number;
+  x_refresh_token_expires_in: number;
+}
 
-  if (isProtectedRoute(url.pathname)) {
-    if (!auth.userId) {
-      return redirect(
-        `https://insighthunter.app/auth/login?redirect=${encodeURIComponent(url.href)}`
-      );
-    }
-  }
+// ── Financial ─────────────────────────────────────────────────────────────────
+export interface ProfitLoss {
+  periodStart:   string;
+  periodEnd:     string;
+  totalRevenue:  number;
+  totalExpenses: number;
+  netIncome:     number;
+  rows:          PLRow[];
+}
 
-  return next();
-});
+export interface PLRow {
+  account:  string;
+  amount:   number;
+  type:     "income" | "expense";
+}
+
+export interface CashSummary {
+  balance:   number;
+  inflow:    number;
+  outflow:   number;
+  asOf:      string;
+}
+
+// ── Cloudflare Env ────────────────────────────────────────────────────────────
+export interface Env {
+  APP_ENV:        string;
+  APP_URL:        string;
+  APP_TIER:       string;
+  SESSION_EXPIRY: string;
+  JWT_SECRET:     string;
+  QBO_CLIENT_ID:     string;
+  QBO_CLIENT_SECRET: string;
+  QBO_REDIRECT_URI:  string;
+  QBO_ENVIRONMENT:   string;
+  IH_SESSIONS: KVNamespace;
+  IH_CACHE:    KVNamespace;
+}

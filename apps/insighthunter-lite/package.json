@@ -1,30 +1,26 @@
 {
-  "name": "@insighthunter/lite",
-  "version": "1.0.0",
+  "name": "insighthunter-lite",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "wrangler dev",
-    "deploy": "astro build && wrangler deploy",
-    "db:migrate": "wrangler d1 migrations apply insighthunter-lite",
-    "db:migrate:local": "wrangler d1 migrations apply insighthunter-lite --local"
+    "dev":       "astro dev",
+    "build":     "astro build",
+    "preview":   "astro preview",
+    "deploy":    "npm run build && wrangler deploy",
+    "typecheck": "astro check",
+    "lint":      "eslint src --ext .ts,.astro"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.0.0",
-    "@astrojs/svelte": "^6.0.0",
-    "@insighthunter/types": "workspace:*",
-    "@insighthunter/utils": "workspace:*",
-    "astro": "^5.0.0",
-    "papaparse": "^5.4.1",
-    "svelte": "^5.0.0",
-    "@insighthunter/auth-middleware": "workspace:*"
+    "astro": "^5.0.0"
   },
   "devDependencies": {
+    "@astrojs/check":            "^0.9.0",
     "@cloudflare/workers-types": "^4.0.0",
-    "@types/papaparse": "^5.3.14",
-    "typescript": "^5.0.0",
-    "wrangler": "^3.0.0"
+    "@tailwindcss/vite":         "^4.0.0",
+    "tailwindcss":               "^4.0.0",
+    "typescript":                "^5.7.0",
+    "wrangler":                  "^3.0.0"
   }
 }

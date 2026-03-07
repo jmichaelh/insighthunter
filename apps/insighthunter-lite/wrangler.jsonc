@@ -1,0 +1,30 @@
+{
+  "name": "insighthunter-lite",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./dist/_worker.js",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "IH_SESSIONS",
+      "id": "REPLACE_WITH_KV_ID",
+      "preview_id": "REPLACE_WITH_PREVIEW_KV_ID"
+    },
+    {
+      "binding": "IH_CACHE",
+      "id": "REPLACE_WITH_CACHE_KV_ID",
+      "preview_id": "REPLACE_WITH_PREVIEW_CACHE_KV_ID"
+    }
+  ],
+  "vars": {
+    "APP_ENV":        "development",
+    "APP_URL":        "http://localhost:4321",
+    "APP_TIER":       "lite",
+    "SESSION_EXPIRY": "604800"
+  }
+  // Secrets — add via: wrangler secret put SECRET_NAME
+  // Required: JWT_SECRET, QBO_CLIENT_ID, QBO_CLIENT_SECRET, QBO_REDIRECT_URI
+}
