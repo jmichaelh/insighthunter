@@ -14,6 +14,14 @@ export CLOUDFLARE_API_TOKEN="kAY9u88TaeuI9wByQkismZ2oGjBWqf5mVBhDTYNE"
 ##wrangler secret put JWT_SECRET="5afde2d9ba897193d88ba038ed3edd03870ccae6338077cec5c50e333c9de777"
 #wrangler secret put STRIPE_PUBLISHABLE_KEY
 
+#Order of deployment
+#1. packages/types#          (no deps)
+#2. insighthu#nter-auth      (no service binding deps)
+#3. insighthunter-agents    (depends on: auth)
+#4. insighthunter-main      (depends on: auth, agents)
+#5. insighthunter-bookkeeping (depends on: auth, agents)
+#6. insighthunter-lite      (depends on: auth)
+
 # This script deploys all of the InsightHunter applications.
 
 # Exit immediately if a command exits with a non-zero status.

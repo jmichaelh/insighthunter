@@ -3,115 +3,124 @@ source "$(dirname "$0")/lib/scaffold-utils.sh"
 ROOT="apps/insighthunter-main"
 echo "🔧 $ROOT"
 
-# ── Create directories ───────────────────────────────────────
-mkdir -p $ROOT/src/routes
-mkdir -p $ROOT/src/middleware
-mkdir -p $ROOT/src/services
-mkdir -p $ROOT/src/db/migrations
-mkdir -p $ROOT/src/lib
-mkdir -p $ROOT/src/types
-mkdir -p $ROOT/public/assets/icons
-mkdir -p $ROOT/tests/routes
-mkdir -p $ROOT/tests/services
-mkdir -p $ROOT/tests/fixtures
+mkdir -p $ROOT/public/icons
+mkdir -p $ROOT/src/styles
+mkdir -p $ROOT/src/layouts
+mkdir -p $ROOT/src/pages/{auth,dashboard,admin,account,shop,features,marketing/blog,marketing/legal,api/auth,api/quickbooks}
+mkdir -p $ROOT/src/components/ui
+mkdir -p $ROOT/src/components/islands/{auth,dashboard,shop,shared}
 
-# ── src ──────────────────────────────────────────────────────
-echo ""
-echo "📄 src/"
-safe_file $ROOT/src/index.ts
-
-# routes
-echo ""
-echo "📄 src/routes/"
-safe_file $ROOT/src/routes/dashboard.ts
-safe_file $ROOT/src/routes/reports.ts
-safe_file $ROOT/src/routes/forecasts.ts
-safe_file $ROOT/src/routes/insights.ts
-safe_file $ROOT/src/routes/transactions.ts
-safe_file $ROOT/src/routes/clients.ts
-safe_file $ROOT/src/routes/settings.ts
-
-# middleware
-echo ""
-echo "📄 src/middleware/"
-safe_file $ROOT/src/middleware/auth.ts
-safe_file $ROOT/src/middleware/rateLimit.ts
-safe_file $ROOT/src/middleware/cors.ts
-safe_file $ROOT/src/middleware/featureFlags.ts
-
-# services
-echo ""
-echo "📄 src/services/"
-safe_file $ROOT/src/services/dashboardService.ts
-safe_file $ROOT/src/services/reportService.ts
-safe_file $ROOT/src/services/forecastService.ts
-safe_file $ROOT/src/services/insightService.ts
-safe_file $ROOT/src/services/bookkeepingService.ts
-safe_file $ROOT/src/services/notificationService.ts
-
-# db
-echo ""
-echo "📄 src/db/"
-safe_file $ROOT/src/db/schema.sql
-safe_file $ROOT/src/db/migrations/0001_init.sql
-safe_file $ROOT/src/db/migrations/0002_clients.sql
-safe_file $ROOT/src/db/migrations/0003_reports.sql
-safe_file $ROOT/src/db/migrations/0004_forecasts.sql
-safe_file $ROOT/src/db/queries.ts
-
-# lib
-echo ""
-echo "📄 src/lib/"
-safe_file $ROOT/src/lib/pdf.ts
-safe_file $ROOT/src/lib/cache.ts
-safe_file $ROOT/src/lib/analytics.ts
-safe_file $ROOT/src/lib/logger.ts
-
-# types
-echo ""
-echo "📄 src/types/"
-safe_file $ROOT/src/types/env.ts
-safe_file $ROOT/src/types/financial.ts
-safe_file $ROOT/src/types/index.ts
-
-# ── public ───────────────────────────────────────────────────
-echo ""
-echo "📄 public/"
-safe_file $ROOT/public/index.html
-safe_file $ROOT/public/assets/app.js
-safe_file $ROOT/public/assets/styles.css
-
-# ── tests ────────────────────────────────────────────────────
-echo ""
-echo "📄 tests/"
-safe_file $ROOT/tests/routes/dashboard.test.ts
-safe_file $ROOT/tests/routes/reports.test.ts
-safe_file $ROOT/tests/services/forecastService.test.ts
-safe_file $ROOT/tests/fixtures/mockUser.ts
-safe_file $ROOT/tests/fixtures/mockFinancials.ts
-
-# ── root config ──────────────────────────────────────────────
-echo ""
-echo "📄 root config/"
-safe_file $ROOT/wrangler.jsonc
+# root config
+safe_file $ROOT/astro.config.mjs
+safe_file $ROOT/wrangler.toml
+safe_file $ROOT/svelte.config.js
 safe_file $ROOT/package.json
 safe_file $ROOT/tsconfig.json
-safe_file $ROOT/README.md
 
-# ── Final report ─────────────────────────────────────────────
-echo ""
-echo "════════════════════════════════════════"
-echo "✅  insighthunter-main scaffold complete"
-echo ""
-echo "Legend:"
-echo "  ✓ exists      → already correct, untouched"
-echo "  ✓ placeholder → dot-file already existed, skipped"
-echo "  → moved       → found elsewhere, relocated"
-echo "  + new         → missing, created as .filename"
-echo "════════════════════════════════════════"
-echo ""
-if command -v tree &> /dev/null; then
-  tree "$ROOT" -a
-else
-  find "$ROOT" | sort
-fi
+# public
+safe_file $ROOT/public/.assetsignore
+safe_file $ROOT/public/favicon.ico
+safe_file $ROOT/public/manifest.webmanifest
+safe_file $ROOT/public/robots.txt
+safe_file $ROOT/public/icons/icon-192.png
+safe_file $ROOT/public/icons/icon-512.png
+
+# src root
+safe_file $ROOT/src/env.d.ts
+
+# styles
+safe_file $ROOT/src/styles/styles.css
+safe_file $ROOT/src/styles/marketing.css
+safe_file $ROOT/src/styles/dashboard.css
+
+# layouts
+safe_file $ROOT/src/layouts/Layout.astro
+safe_file $ROOT/src/layouts/DashboardLayout.astro
+safe_file $ROOT/src/layouts/MarketingLayout.astro
+
+# pages — top level
+safe_file $ROOT/src/pages/index.astro
+safe_file $ROOT/src/pages/about.astro
+safe_file $ROOT/src/pages/features.astro
+safe_file $ROOT/src/pages/pricing.astro
+safe_file $ROOT/src/pages/docs.astro
+safe_file $ROOT/src/pages/support.astro
+
+# pages — auth
+safe_file $ROOT/src/pages/auth/login.astro
+safe_file $ROOT/src/pages/auth/signup.astro
+safe_file $ROOT/src/pages/auth/logout.astro
+
+# pages — dashboard
+safe_file $ROOT/src/pages/dashboard/index.astro
+safe_file $ROOT/src/pages/dashboard/bookkeeping.astro
+safe_file $ROOT/src/pages/dashboard/clients.astro
+safe_file $ROOT/src/pages/dashboard/compliance.astro
+safe_file $ROOT/src/pages/dashboard/reconciliation.astro
+safe_file $ROOT/src/pages/dashboard/reports.astro
+safe_file $ROOT/src/pages/dashboard/settings.astro
+
+# pages — admin
+safe_file $ROOT/src/pages/admin/index.astro
+safe_file $ROOT/src/pages/admin/compliance.astro
+
+# pages — account
+safe_file $ROOT/src/pages/account/index.astro
+safe_file $ROOT/src/pages/account/billing.astro
+
+# pages — shop
+safe_file $ROOT/src/pages/shop/index.astro
+safe_file $ROOT/src/pages/shop/checkout.astro
+safe_file $ROOT/src/pages/shop/success.astro
+
+# pages — features
+safe_file $ROOT/src/pages/features/bizforma.astro
+safe_file $ROOT/src/pages/features/bookkeeping.astro
+safe_file $ROOT/src/pages/features/insight-lite.astro
+safe_file $ROOT/src/pages/features/insight-pro.astro
+safe_file $ROOT/src/pages/features/insight-standard.astro
+safe_file $ROOT/src/pages/features/pbx.astro
+safe_file $ROOT/src/pages/features/scout.astro
+safe_file $ROOT/src/pages/features/website-services.astro
+
+# pages — marketing
+safe_file $ROOT/src/pages/marketing/index.astro
+safe_file $ROOT/src/pages/marketing/about.astro
+safe_file $ROOT/src/pages/marketing/contact.astro
+safe_file $ROOT/src/pages/marketing/faq.astro
+safe_file $ROOT/src/pages/marketing/pricing.astro
+safe_file $ROOT/src/pages/marketing/blog/index.astro
+safe_file "$ROOT/src/pages/marketing/blog/[slug].astro"
+safe_file $ROOT/src/pages/marketing/legal/privacy.astro
+safe_file $ROOT/src/pages/marketing/legal/terms.astro
+
+# pages — api
+safe_file $ROOT/src/pages/api/auth/signup.ts
+safe_file $ROOT/src/pages/api/auth/login.ts
+safe_file $ROOT/src/pages/api/auth/logout.ts
+safe_file $ROOT/src/pages/api/revenue.ts
+safe_file $ROOT/src/pages/api/reports.ts
+safe_file $ROOT/src/pages/api/quickbooks/connect.ts
+safe_file $ROOT/src/pages/api/quickbooks/callback.ts
+
+# components — ui (pure Astro)
+safe_file $ROOT/src/components/ui/Nav.astro
+safe_file $ROOT/src/components/ui/Footer.astro
+safe_file $ROOT/src/components/ui/Hero.astro
+safe_file $ROOT/src/components/ui/PricingCard.astro
+safe_file $ROOT/src/components/ui/FeatureCard.astro
+
+# components — islands (Svelte)
+safe_file $ROOT/src/components/islands/auth/SignupForm.svelte
+safe_file $ROOT/src/components/islands/auth/LoginForm.svelte
+safe_file $ROOT/src/components/islands/dashboard/RevenueChart.svelte
+safe_file $ROOT/src/components/islands/dashboard/CashFlowChart.svelte
+safe_file $ROOT/src/components/islands/dashboard/ForecastWidget.svelte
+safe_file $ROOT/src/components/islands/dashboard/TransactionTable.svelte
+safe_file $ROOT/src/components/islands/shop/PlanSelector.svelte
+safe_file $ROOT/src/components/islands/shop/StripeCheckout.svelte
+safe_file $ROOT/src/components/islands/shared/Notification.svelte
+safe_file $ROOT/src/components/islands/shared/LoadingSpinner.svelte
+
+finish
+

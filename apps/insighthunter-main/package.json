@@ -13,17 +13,17 @@
     "lint": "eslint src --ext .ts,.astro,.svelte"
   },
   "dependencies": {
-    "astro": "^5.4.0",
     "@astrojs/cloudflare": "^12.3.0",
     "@astrojs/svelte": "^7.0.5",
+    "astro": "^5.4.0",
+    "hono": "^4.12.5",
     "svelte": "^5.22.5",
-    "hono": "^4.7.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250310.0",
-    "wrangler": "^4.2.0",
     "typescript": "^5.8.2",
-    "vitest": "^3.0.8"
+    "vitest": "^3.0.8",
+    "wrangler": "^4.2.0"
   }
 }
