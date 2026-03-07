@@ -1416,7 +1416,7 @@ echo -e "${BOLD}${GREEN}✔ Insight Hunter Lite scaffolded at ./${PROJECT_DIR}${
 echo ""
 echo -e "  ${BOLD}Next steps:${RESET}"
 echo -e "  1. ${CYAN}cp .env.example .env${RESET}  — fill in your secrets"
-echo -e "  2. ${CYAN}wrangler kv:namespace create IH_SESSIONS${RESET}  — then paste the ID into wrangler.jsonc"
+echo -e "  2. ${CYAN}£_ kv:namespace create IH_SESSIONS${RESET}  — then paste the ID into wrangler.jsonc"
 echo -e "  3. ${CYAN}wrangler kv:namespace create IH_CACHE${RESET}     — same"
 echo -e "  4. ${CYAN}wrangler secret put JWT_SECRET${RESET}"
 echo -e "  5. ${CYAN}wrangler secret put QBO_CLIENT_ID${RESET}"
