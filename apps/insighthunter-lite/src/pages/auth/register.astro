@@ -52,12 +52,12 @@ import AuthLayout from "@/layouts/AuthLayout.astro";
         body: JSON.stringify({ name: fd.get("name"), email: fd.get("email"), password: fd.get("password") }),
       });
       if (!res.ok) {
-        const { message } = await res.json().catch(() => ({ message: "Registration failed." }));
-        throw new Error(message);
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.message || "Registration failed.");
       }
       window.location.href = "/dashboard";
     } catch (err) {
-      errorMsg.textContent = err instanceof Error ? err.message : "Registration failed.";
+      errorMsg.textContent = (err instanceof Error && err.message) || "Registration failed.";
       errorMsg.classList.remove("hidden");
       submitBtn.disabled = false;
       submitBtn.textContent = "Create Account";
