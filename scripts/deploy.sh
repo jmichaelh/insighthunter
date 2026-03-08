@@ -38,7 +38,7 @@ npx wrangler deploy --config apps/insighthunter-auth/wrangler.toml
 echo "Deploying insighthunter-agents"
 npx wrangler deploy --config apps/insighthunter-agents/wrangler.toml 
 
-# Deploy insighthunter-main
+# Deploy insighthuntnr-main
 echo "Deploying insighthunter-main..."
 npx wrangler deploy --config apps/insighthunter-main/wrangler.toml
 
@@ -49,6 +49,10 @@ npx wrangler deploy --config apps/insighthunter-bookkeeping/wrangler.toml
 # Deploy insighthunter-lite
 echo "Deploying insighthunter-lite..."
 npx wrangler deploy --config apps/insighthunter-lite/wrangler.toml
+
+# Deploy bizfomw 
+echo "Deploying Bizforma"
+npx wrangler deploy --config apps/bizfprma/wrangler.toml
 
 # Deploy insighthunter-pbx
 echo "Deploying insighthunter-pbx..."

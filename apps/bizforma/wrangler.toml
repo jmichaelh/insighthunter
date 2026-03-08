@@ -1,5 +1,5 @@
 name = "insighthunter-bizforma"
-main = "src/worker.ts"
+main = "worker/index.ts"
 compatibility_date = "2026-02-26"
 compatibility_flags = ["nodejs_compat"]
 
@@ -9,12 +9,12 @@ enabled = true
 [[d1_databases]]
 binding       = "DB"
 database_name = "bizforma_db"
-database_id   = "<YOUR_D1_DATABASE_ID>"
+database_id   = "4f48922a-76be-4f04-aa0e-6c834c6c99a5"
 
 [[kv_namespaces]]
 binding    = "KV"
-id         = "<YOUR_KV_NAMESPACE_ID>"
-preview_id = "<YOUR_KV_NAMESPACE_ID>"
+id         = "3600803d634a42b8b45e27a5dcf68aa4"
+preview_id = "3600803d634a42b8b45e27a5dcf68aa4"
 
 [[r2_buckets]]
 binding     = "R2"
@@ -126,3 +126,60 @@ preview_id = "<PROD_KV_ID>"
 [[env.production.r2_buckets]]
 binding     = "R2"
 bucket_name = "bizforma-documents-prod"
+
+[[env.production.queues.producers]]
+binding = "DOCUMENT_QUEUE"
+queue   = "bizforma-documents"
+
+[[env.production.queues.producers]]
+binding = "REMINDER_QUEUE"
+queue   = "bizforma-reminders"
+
+[[env.production.queues.consumers]]
+queue             = "bizforma-documents"
+max_batch_size    = 5
+max_batch_timeout = 30
+max_retries       = 3
+dead_letter_queue = "bizforma-documents-dlq"
+
+[[env.production.queues.consumers]]
+queue             = "bizforma-reminders"
+max_batch_size    = 20
+max_batch_timeout = 60
+max_retries       = 3
+dead_letter_queue = "bizforma-reminders-dlq"
+
+[[env.production.durable_objects.bindings]]
+name       = "FORMATION_AGENT"
+class_name = "FormationAgent"
+
+[[env.production.durable_objects.bindings]]
+name       = "COMPLIANCE_AGENT"
+class_name = "ComplianceAgent"
+
+[[env.production.workflows]]
+name       = "FORMATION_WORKFLOW"
+binding    = "FORMATION_WORKFLOW"
+class_name = "FormationWorkflow"
+
+[[env.production.workflows]]
+name       = "COMPLIANCE_WORKFLOW"
+binding    = "COMPLIANCE_WORKFLOW"
+class_name = "ComplianceWorkflow"
+
+[env.production.ai]
+binding = "AI"
+
+[[env.production.analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "insighthunter_bizforma_events"
+
+[[env.production.services]]
+binding = "AUTH_WORKER"
+service = "insighthunter-auth"
+environment = "production"
+
+[[env.production.services]]
+binding = "BOOKKEEPING_WORKER"
+service = "insighthunter-bookkeeping"
+environment = "production"
