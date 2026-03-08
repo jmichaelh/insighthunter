@@ -5,7 +5,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   // Cloudflare Workers adapter — SSR + static assets
-  output: 'hybrid',
+  output: 'static',
   adapter: cloudflare({
     mode: 'directory',
     functionPerRoute: false,

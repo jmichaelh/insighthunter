@@ -15,6 +15,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^12.3.0",
     "@astrojs/svelte": "^7.0.5",
+    "@astrojs/sitemap": "^3.1.6",
     "astro": "^5.4.0",
     "hono": "^4.12.5",
     "svelte": "^5.22.5",
