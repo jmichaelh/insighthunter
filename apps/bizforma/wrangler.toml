@@ -1,0 +1,41 @@
+# Bizforma — InsightHunters Business Formation Assistant
+# Astro + Svelte + Hono + Cloudflare Workers
+name = "bizforma"
+main = "worker/index.ts"
+compatibility_date = "2025-03-07"
+compatibility_flags = ["nodejs_compat"]
+
+# Serve Astro build output from the './dist' directory
+[site]
+bucket = "./dist"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# D1 — relational storage (businesses, sessions, compliance, documents)
+[[d1_databases]]
+binding = "DB"
+database_name = "bizforma_db"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+
+# KV — session persistence + business cache
+[[kv_namespaces]]
+binding = "BUSINESS_DATA"
+id = "REPLACE_WITH_YOUR_KV_ID"
+preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_ID"
+
+# R2 — formation documents (Articles, EIN letters, etc.)
+[[r2_buckets]]
+binding = "DOCUMENTS"
+bucket_name = "bizforma-documents"
+
+# Workers AI — llama-3.1-8b for all AI features
+[ai]
+binding = "AI"
+
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets (set via: wrangler secret put ANTHROPIC_API_KEY)
+# ANTHROPIC_API_KEY — optional Claude integration

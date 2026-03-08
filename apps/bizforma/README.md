@@ -1,25 +1,22 @@
 # Bizforma — InsightHunters Business Formation Assistant
-
-A full-stack AI-powered business formation wizard that guides entrepreneurs through every step of starting a business — from initial concept to compliance calendar.
+### Astro + Svelte + Hono + Cloudflare Workers PWA
 
 ---
 
-## Architecture
+## Stack
 
-```
-Cloudflare Worker (src/worker.ts)
-  ├── Hono router — API at /api/*
-  ├── Workers AI — llama-3.1-8b for name suggestions, entity rec, compliance calendar, chat
-  ├── D1 (SQLite) — persistent business data, compliance events, sessions
-  ├── KV — session cache, fast business lookups
-  └── R2 — formation document storage
-
-React SPA (Vite + Tailwind)
-  ├── 11-step formation wizard
-  ├── Glassmorphism UI / dark theme
-  ├── AI-powered suggestions at each step
-  └── Downloadable formation summary
-```
+| Layer | Technology |
+|-------|-----------|
+| Framework | **Astro 5** (hybrid SSR/static) |
+| UI Components | **Svelte 5** (reactive, zero-bundle overhead) |
+| API Router | **Hono** (runs on Cloudflare Workers) |
+| AI | **Workers AI** (llama-3.1-8b-instruct) |
+| Database | **Cloudflare D1** (SQLite at the edge) |
+| Cache/Sessions | **Cloudflare KV** |
+| Document Storage | **Cloudflare R2** |
+| Styling | **Tailwind CSS v3** + CSS custom properties (Apple HIG tokens) |
+| PWA | Web App Manifest + Service Worker (offline-capable) |
+| Design | Apple Human Interface Guidelines — dark mode, SF Pro fonts, glass materials |
 
 ---
 
@@ -27,151 +24,110 @@ React SPA (Vite + Tailwind)
 
 ```
 bizforma/
-├── App.tsx                          # Root React component
-├── index.html                       # HTML entry point
-├── package.json
-├── vite.config.ts
-├── wrangler.jsonc                   # Cloudflare Worker config
+├── astro.config.mjs              ← Astro + Svelte + Cloudflare adapter
+├── wrangler.jsonc                ← D1, KV, R2, AI, Assets bindings
+├── tailwind.config.js            ← Apple color tokens
 ├── tsconfig.json
-├── schema.sql                       # D1 database schema
+├── schema.sql                    ← D1 database schema
+│
+├── worker/
+│   └── index.ts                  ← Hono API (all /api/* routes)
 │
 ├── src/
-│   ├── main.tsx                     # React entry point
-│   └── worker.ts                    # Cloudflare Worker (Hono API)
-│
-├── components/
-│   ├── BusinessWizard.tsx           # Main wizard controller + state
-│   ├── GlassComponents.tsx          # Glassmorphism UI primitives
-│   ├── ProgressStepper.tsx          # Step progress indicator
-│   ├── figma/
-│   │   └── ImageWithFallback.tsx
-│   ├── steps/
-│   │   ├── ConceptStep.tsx          # Step 1: Business concept
-│   │   ├── NameSelectionStep.tsx    # Step 2: Business name + AI suggestions
-│   │   ├── EntityTypeStep.tsx       # Step 3: LLC / Corp / etc + AI rec
-│   │   ├── RegistrationStep.tsx     # Step 4: State registration
-│   │   ├── EINTaxStep.tsx           # Step 5: EIN + tax election
-│   │   ├── ComplianceStep.tsx       # Step 6: State compliance
-│   │   ├── AccountingStep.tsx       # Step 7: Accounting setup
-│   │   ├── FinancingStep.tsx        # Step 8: Funding & banking
-│   │   ├── MarketingStep.tsx        # Step 9: Marketing plan
-│   │   ├── WebDesignStep.tsx        # Step 10: Web & domain
-│   │   └── CalendarStep.tsx         # Step 11: Compliance calendar (AI-generated)
-│   └── ui/                          # shadcn/radix component library
-│       ├── button.tsx
-│       ├── card.tsx
-│       ├── input.tsx
-│       ├── select.tsx
-│       ├── tabs.tsx
-│       └── ... (full shadcn set)
-│
-├── utils/
-│   └── api.ts                       # Frontend API client
-│
-├── styles/
-│   └── globals.css                  # Tailwind v4 + design tokens
+│   ├── pages/
+│   │   └── index.astro           ← Single entry page
+│   ├── layouts/
+│   │   └── Base.astro            ← PWA meta, Apple HIG CSS tokens, SW registration
+│   ├── stores/
+│   │   └── wizard.ts             ← Svelte reactive store (all 11 step state)
+│   ├── lib/
+│   │   └── api.ts                ← Frontend API client (fetch + stream)
+│   └── components/
+│       ├── WizardShell.svelte    ← Main shell: nav, progress, step routing, chat
+│       ├── ui/
+│       │   ├── ProgressBar.svelte  ← Apple-style sticky progress indicator
+│       │   ├── AiChat.svelte       ← Floating AI assistant (bottom sheet / side panel)
+│       │   └── GlassField.svelte   ← Reusable glass-morphism form field
+│       └── steps/
+│           ├── ConceptStep.svelte      ← Step 1: Business idea
+│           ├── NamingStep.svelte       ← Step 2: Name + AI suggestions
+│           ├── EntityStep.svelte       ← Step 3: Entity type + AI recommendation
+│           ├── RegistrationStep.svelte ← Step 4: State registration
+│           ├── EINTaxStep.svelte       ← Step 5: EIN + tax election
+│           ├── ComplianceStep.svelte   ← Step 6: State compliance
+│           ├── AccountingStep.svelte   ← Step 7: Accounting
+│           ├── FinancingStep.svelte    ← Step 8: Funding
+│           ├── MarketingStep.svelte    ← Step 9: Marketing
+│           ├── WebDesignStep.svelte    ← Step 10: Web & domain
+│           └── CalendarStep.svelte     ← Step 11: AI compliance calendar + .ics export
 │
 └── public/
-    ├── favicon.svg
-    └── robots.txt
+    ├── manifest.json             ← PWA manifest (installable)
+    ├── sw.js                     ← Service worker (offline support)
+    └── icons/                    ← App icons (add your own PNGs here)
 ```
+
+---
+
+## Apple HIG Design Features
+
+- **SF Pro system font** — uses `-apple-system, BlinkMacSystemFont` stack
+- **Dark mode by default** — `#0a0a14` background, white labels at varying opacities
+- **Glassmorphism** — `backdrop-filter: blur(20px)` nav + card surfaces
+- **Safe area insets** — `env(safe-area-inset-*)` for notch/home indicator
+- **Spring animations** — `cubic-bezier(0.34, 1.56, 0.64, 1)` for interactive elements
+- **Apple color system** — blue `#0a84ff`, green `#30d158`, orange `#ff9f0a`, etc.
+- **iOS toggle switches** — native-looking boolean toggles with spring transitions
+- **Bottom sheet** — AI chat presents as an iOS-style bottom sheet on mobile, side panel on desktop
+- **`100dvh`** — uses dynamic viewport height for proper mobile layout
+- **Haptic-style interactions** — `scale(0.96)` on button press
 
 ---
 
 ## Quick Start
 
-### 1. Install dependencies
 ```bash
+# Install
 npm install
-```
 
-### 2. Create Cloudflare resources
-```bash
-# Create D1 database
-wrangler d1 create bizforma_db
+# Create Cloudflare resources
+npm run db:create      # D1 database
+npm run kv:create      # KV namespace
+npm run r2:create      # R2 bucket
+npm run db:init        # Initialize schema
 
-# Create KV namespace
-wrangler kv namespace create BUSINESS_DATA
+# Update wrangler.jsonc with real IDs from above commands
 
-# Create R2 bucket
-wrangler r2 bucket create bizforma-documents
+# Set secrets
+wrangler secret put ANTHROPIC_API_KEY   # optional
 
-# Initialize the database
-wrangler d1 execute bizforma_db --file=./schema.sql
-```
+# Local development
+npm run dev            # Astro dev server (port 4321)
+npm run worker:dev     # Hono Worker (port 8787) — proxied by Vite
 
-### 3. Update wrangler.jsonc
-Replace the placeholder IDs in `wrangler.jsonc` with the real IDs from the commands above.
-
-### 4. Set secrets
-```bash
-# Optional — for Claude-powered premium AI features
-wrangler secret put ANTHROPIC_API_KEY
-```
-
-### 5. Run locally
-```bash
-# Start the React dev server (port 3000)
-npm run dev
-
-# In a second terminal — start the Cloudflare Worker (port 8787)
-npm run worker:dev
-```
-
-Vite proxies `/api/*` to `localhost:8787` automatically.
-
-### 6. Deploy
-```bash
-npm run worker:deploy
+# Deploy
+npm run deploy
 ```
 
 ---
 
-## API Endpoints
+## API Routes (Hono Worker)
 
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | /api/health | Health check |
-| POST | /api/session | Create or resume wizard session |
-| PUT | /api/session/:id | Save session progress |
-| POST | /api/business | Save completed business data |
-| GET | /api/business?name= | Retrieve business by name |
-| POST | /api/ai/name-suggestions | AI business name ideas |
-| POST | /api/ai/entity-recommendation | AI entity type recommendation |
-| POST | /api/ai/compliance-calendar | AI compliance calendar |
-| POST | /api/ai/chat | Streaming AI business advisor chat |
-| POST | /api/documents/:businessId | Upload formation document to R2 |
-| GET | /api/documents/:businessId/:filename | Download formation document |
-| GET | /api/compliance/:businessId | Get compliance events |
-| POST | /api/compliance/:businessId | Add compliance event |
-
----
-
-## Wizard Steps
-
-1. **Concept** — Business idea, target market, value proposition
-2. **Naming** — Business name + AI-powered suggestions
-3. **Entity Type** — LLC, S-Corp, C-Corp, Sole Prop + AI recommendation
-4. **Registration** — Registered agent, business address, state filing
-5. **EIN & Tax** — Apply for EIN, tax election (S-Corp, default LLC, etc.)
-6. **Compliance** — SOS filing, annual report, sales tax permit
-7. **Accounting** — Software selection, CPA, tax strategy
-8. **Financing** — Startup costs, funding sources, business banking
-9. **Marketing** — Strategy, channels, budget
-10. **Web & Domain** — Domain name, hosting, DNS, email
-11. **Calendar** — AI-generated compliance + tax deadline calendar
-
----
-
-## Built With
-
-- **Frontend**: React 18 + TypeScript + Vite + Tailwind CSS v4
-- **Backend**: Cloudflare Workers + Hono
-- **AI**: Cloudflare Workers AI (llama-3.1-8b-instruct)
-- **Database**: Cloudflare D1 (SQLite)
-- **Cache**: Cloudflare KV
-- **Storage**: Cloudflare R2
-- **UI**: shadcn/ui + Radix UI + Lucide Icons
+| POST | /api/session | Create/resume wizard session (KV) |
+| PUT | /api/session/:id | Save step progress (KV) |
+| POST | /api/business | Save business data (D1 + KV) |
+| GET | /api/business | Retrieve by name or ID |
+| POST | /api/ai/names | AI business name suggestions |
+| POST | /api/ai/entity | AI entity type recommendation |
+| POST | /api/ai/calendar | AI compliance calendar |
+| POST | /api/ai/chat | Streaming AI chat (SSE) |
+| POST | /api/documents/:id | Upload to R2 |
+| GET | /api/documents/:id/:file | Download from R2 |
+| GET | /api/compliance/:id | Get compliance events (D1) |
+| POST | /api/compliance/:id | Save compliance event (D1) |
 
 ---
 
