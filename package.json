@@ -9,25 +9,29 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "dev":          "turbo run dev --parallel",
-    "dev:main":     "pnpm --filter insighthunter-main dev",
-    "dev:lite":     "pnpm --filter insighthunter-lite dev",
-    "build":        "turbo run build",
-    "build:main":   "pnpm --filter insighthunter-main build",
-    "build:lite":   "pnpm --filter insighthunter-lite build",
-    "deploy":       "turbo run deploy",
-    "deploy:main":  "pnpm --filter insighthunter-main deploy",
-    "deploy:lite":  "pnpm --filter insighthunter-lite deploy",
-    "typecheck":    "turbo run typecheck",
-    "lint":         "turbo run lint",
-    "clean":        "turbo run clean && rm -rf node_modules",
-    "test":         "jest"
+    "dev": "turbo run dev --parallel",
+    "dev:main": "pnpm --filter insighthunter-main dev",
+    "dev:lite": "pnpm --filter insighthunter-lite dev",
+    "build": "turbo run build",
+    "build:main": "pnpm --filter insighthunter-main build",
+    "build:lite": "pnpm --filter insighthunter-lite build",
+    "deploy": "npm run deploy && wrangler deploy",
+    "deploy:main": "pnpm --filter insighthunter-main deploy",
+    "deploy:lite": "pnpm --filter insighthunter-lite deploy",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "test": "jest"
   },
   "devDependencies": {
-    "turbo":      "^2.3.0",
-    "typescript": "^5.7.0",
+    "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
-    "@types/jest": "^29.5.12"
+    "turbo": "^2.3.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "astro": "^5.18.0",
+    "binary": "^0.3.0"
   }
 }

@@ -1,8 +1,10 @@
+
 // apps/insighthunter-main/astro.config.mjs
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import svelte from '@astrojs/svelte';
 import sitemap from '@astrojs/sitemap';
+import path from "path";
 
 export default defineConfig({
   // Deployed URL — used for sitemap, canonical URLs, OG tags
@@ -51,6 +53,13 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ['@astrojs/cloudflare'],
     },
+    resolve: {
+      alias: {
+        "@insighthunter/auth-middleware": path.resolve(
+          "../insighthunter-auth/src/index.ts"
+        )
+      }
+    }
   },
 
   // Pre-render ALL marketing pages as static HTML (zero CPU cost at edge)
