@@ -7,9 +7,9 @@ export CLOUDFLARE_API_TOKEN="kAY9u88TaeuI9wByQkismZ2oGjBWqf5mVBhDTYNE"
 
 # pnpm install apps/insighthunter-agents 
 
-pnpm --filter @insighthunter/agents dev
+npx pnpm --filter @insighthunter/agents dev
 
-pnpm --filter @insighthunter/agents deploy
+npx pnpm --filter @insighthunter/agents deploy
 # npx wrangler / create insighthunter-embeddings --dimensions=768 --metric=cosine
 # npx wrangler vectorize create insighthunter-embeddings-staging --dimensions=768 --metric=cosine
 
