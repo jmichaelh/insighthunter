@@ -1,0 +1,563 @@
+---
+import Badge from '@/components/shared/Badge.astro';
+import { APPS } from '@/data/apps';
+
+export interface Props {
+  items?: { label: string; href: string }[];
+}
+
+const path = Astro.url.pathname;
+
+// Top-level nav — Features gets a mega-dropdown
+const NAV = [
+  { label: 'Features', href: '/features',  hasDropdown: true  },
+  { label: 'Pricing',  href: '/pricing',   hasDropdown: false },
+  { label: 'About',    href: '/about',     hasDropdown: false },
+  { label: 'Contact',  href: '/contact',   hasDropdown: false },
+];
+
+// Split apps into available vs coming soon for dropdown columns
+const availableApps  = APPS.filter(a => a.available && !a.comingSoon);
+const comingSoonApps = APPS.filter(a => a.comingSoon);
+
+function isActive(href: string): boolean {
+  if (href === '/') return path === '/';
+  return path.startsWith(href);
+}
+---
+
+<header class="nav" id="main-nav">
+  <div class="nav__inner">
+
+    <!-- Logo -->
+    <a href="/" class="nav__logo" aria-label="InsightHunter Home">
+      <img src="/logo.svg" alt="InsightHunter" width="148" height="34" />
+    </a>
+
+    <!-- Desktop nav links -->
+    <nav class="nav__links" aria-label="Main navigation">
+      {NAV.map(item => (
+        <div class:list={['nav__item', item.hasDropdown && 'nav__item--has-dropdown']}>
+          <a
+            href={item.href}
+            class:list={['nav__link', isActive(item.href) && 'nav__link--active']}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            aria-haspopup={item.hasDropdown ? 'true' : undefined}
+          >
+            {item.label}
+            {item.hasDropdown && (
+              <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            )}
+          </a>
+
+          <!-- Mega dropdown for Features -->
+          {item.hasDropdown && (
+            <div class="nav__dropdown" role="region" aria-label="Features menu">
+              <div class="nav__dropdown-inner">
+
+                <!-- Available apps column -->
+                <div class="nav__dropdown-col">
+                  <p class="nav__dropdown-heading">Products</p>
+                  {availableApps.map(app => (
+                    <a href={app.featurePage} class="nav__dropdown-item">
+                      <span class="nav__dropdown-icon" aria-hidden="true">{app.icon}</span>
+                      <span class="nav__dropdown-text">
+                        <strong>{app.name}</strong>
+                        <span>{app.description.slice(0, 52)}{app.description.length > 52 ? '…' : ''}</span>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+
+                <!-- Coming soon column -->
+                {comingSoonApps.length > 0 && (
+                  <div class="nav__dropdown-col nav__dropdown-col--muted">
+                    <p class="nav__dropdown-heading">Coming Soon</p>
+                    {comingSoonApps.map(app => (
+                      <div class="nav__dropdown-item nav__dropdown-item--disabled">
+                        <span class="nav__dropdown-icon" aria-hidden="true">{app.icon}</span>
+                        <span class="nav__dropdown-text">
+                          <strong>
+                            {app.name}
+                            <Badge variant="tan" class="nav__soon-badge">Soon</Badge>
+                          </strong>
+                          <span>{app.description.slice(0, 52)}{app.description.length > 52 ? '…' : ''}</span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <!-- CTA panel -->
+                <div class="nav__dropdown-cta">
+                  <p class="nav__dropdown-cta-title">Ready to get started?</p>
+                  <p class="nav__dropdown-cta-sub">Free tier available — no credit card required.</p>
+                  <a href="/auth/register" class="btn btn--primary btn--sm">
+                    Start for Free →
+                  </a>
+                  <a href="/pricing" class="btn btn--ghost btn--sm" style="margin-top:6px">
+                    View Pricing
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </nav>
+
+    <!-- Desktop CTA -->
+    <div class="nav__actions">
+      <a href="/auth/login"    class="btn btn--ghost   btn--sm">Sign In</a>
+      <a href="/auth/register" class="btn btn--primary btn--sm">Get Started Free</a>
+    </div>
+
+    <!-- Mobile hamburger toggle -->
+    <button
+      class="nav__hamburger"
+      id="nav-hamburger"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+</header>
+
+<!-- Mobile drawer -->
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+
+    {NAV.map(item => (
+      <div class="mobile-menu__section">
+        <a
+          href={item.href}
+          class:list={['mobile-menu__link', isActive(item.href) && 'mobile-menu__link--active']}
+        >
+          {item.label}
+        </a>
+
+        {item.hasDropdown && (
+          <div class="mobile-menu__sub">
+            {availableApps.map(app => (
+              <a href={app.featurePage} class="mobile-menu__sub-link">
+                <span aria-hidden="true">{app.icon}</span>
+                {app.name}
+              </a>
+            ))}
+            {comingSoonApps.map(app => (
+              <span class="mobile-menu__sub-link mobile-menu__sub-link--disabled">
+                <span aria-hidden="true">{app.icon}</span>
+                {app.name}
+                <Badge variant="tan">Soon</Badge>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+
+  </nav>
+
+  <div class="mobile-menu__footer">
+    <a href="/auth/login"    class="btn btn--ghost   btn--full">Sign In</a>
+    <a href="/auth/register" class="btn btn--primary btn--full">Get Started Free</a>
+  </div>
+</div>
+
+<!-- Backdrop -->
+<div class="mobile-backdrop" id="mobile-backdrop" aria-hidden="true"></div>
+
+<script>
+  const hamburger = document.getElementById('nav-hamburger')!;
+  const menu      = document.getElementById('mobile-menu')!;
+  const backdrop  = document.getElementById('mobile-backdrop')!;
+  const nav       = document.getElementById('main-nav')!;
+
+  let open = false;
+
+  function toggleMenu(force?: boolean) {
+    open = force !== undefined ? force : !open;
+    hamburger.setAttribute('aria-expanded', String(open));
+    menu.setAttribute('aria-hidden', String(!open));
+    menu.classList.toggle('mobile-menu--open', open);
+    backdrop.classList.toggle('mobile-backdrop--visible', open);
+    hamburger.classList.toggle('nav__hamburger--open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  hamburger.addEventListener('click', () => toggleMenu());
+  backdrop.addEventListener('click', () => toggleMenu(false));
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && open) toggleMenu(false);
+  });
+
+  // Close mobile menu on route change (for SPA-style navigation)
+  document.addEventListener('astro:page-load', () => toggleMenu(false));
+
+  // Sticky nav shadow on scroll
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('nav--scrolled', window.scrollY > 8);
+  }, { passive: true });
+</script>
+
+<style>
+  /* ── Root ────────────────────────────────────────────────────── */
+  .nav {
+    position:      sticky;
+    top:           0;
+    z-index:       200;
+    background:    #fff;
+    border-bottom: 1px solid var(--color-border);
+    transition:    box-shadow 0.2s;
+  }
+  .nav--scrolled {
+    box-shadow: 0 2px 16px rgba(181,164,138,0.18);
+  }
+
+  .nav__inner {
+    max-width:   1200px;
+    margin:      0 auto;
+    padding:     0 1.5rem;
+    height:      64px;
+    display:     flex;
+    align-items: center;
+    gap:         2rem;
+  }
+
+  /* ── Logo ──────────────────────────────────────────────────── */
+  .nav__logo {
+    flex-shrink: 0;
+    display:     flex;
+    align-items: center;
+  }
+  .nav__logo:hover { opacity: 0.85; }
+
+  /* ── Desktop links ─────────────────────────────────────────── */
+  .nav__links {
+    display:     flex;
+    align-items: center;
+    gap:         0.25rem;
+    flex:        1;
+  }
+
+  .nav__item {
+    position: relative;
+  }
+
+  .nav__link {
+    display:       flex;
+    align-items:   center;
+    gap:           4px;
+    padding:       8px 12px;
+    font-size:     0.9rem;
+    font-weight:   500;
+    color:         var(--color-text-muted);
+    border-radius: var(--radius-md);
+    transition:    color 0.15s, background 0.15s;
+    white-space:   nowrap;
+    text-decoration: none;
+  }
+  .nav__link:hover {
+    color:      var(--color-text);
+    background: var(--color-sand-100);
+  }
+  .nav__link--active {
+    color:      var(--color-text);
+    font-weight: 600;
+  }
+
+  .nav__chevron {
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .nav__item--has-dropdown:hover .nav__chevron,
+  .nav__item--has-dropdown:focus-within .nav__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* ── Dropdown ──────────────────────────────────────────────── */
+  .nav__dropdown {
+    position:   absolute;
+    top:        calc(100% + 10px);
+    left:       50%;
+    transform:  translateX(-50%);
+    width:      680px;
+    background: #fff;
+    border:     1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-elevated);
+    opacity:    0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    transform:  translateX(-50%) translateY(-6px);
+    z-index:    300;
+  }
+  .nav__item--has-dropdown:hover .nav__dropdown,
+  .nav__item--has-dropdown:focus-within .nav__dropdown {
+    opacity:        1;
+    visibility:     visible;
+    pointer-events: auto;
+    transform:      translateX(-50%) translateY(0);
+  }
+
+  .nav__dropdown-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+  }
+
+  .nav__dropdown-col {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-right: 1px solid var(--color-border);
+  }
+  .nav__dropdown-col--muted {
+    background: var(--color-sand-50);
+  }
+
+  .nav__dropdown-heading {
+    font-size:      0.7rem;
+    font-weight:    700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color:          var(--color-text-muted);
+    margin-bottom:  6px;
+    padding:        0 4px;
+  }
+
+  .nav__dropdown-item {
+    display:       flex;
+    align-items:   flex-start;
+    gap:           10px;
+    padding:       8px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color:         inherit;
+    transition:    background 0.12s;
+    cursor:        pointer;
+  }
+  .nav__dropdown-item:hover {
+    background: var(--color-sand-100);
+    text-decoration: none;
+  }
+  .nav__dropdown-item--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .nav__dropdown-icon {
+    font-size:   1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top:  1px;
+  }
+
+  .nav__dropdown-text {
+    display:        flex;
+    flex-direction: column;
+    gap:            2px;
+  }
+  .nav__dropdown-text strong {
+    font-size:   0.875rem;
+    font-weight: 600;
+    color:       var(--color-text);
+    display:     flex;
+    align-items: center;
+    gap:         6px;
+  }
+  .nav__dropdown-text span {
+    font-size: 0.775rem;
+    color:     var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  :global(.nav__soon-badge) {
+    font-size: 0.6rem !important;
+    padding:   1px 5px !important;
+  }
+
+  /* ── Dropdown CTA panel ─────────────────────────────────── */
+  .nav__dropdown-cta {
+    padding:        1.5rem 1.25rem;
+    display:        flex;
+    flex-direction: column;
+    gap:            6px;
+    background:     var(--color-sand-50);
+    min-width:      160px;
+    justify-content: center;
+  }
+  .nav__dropdown-cta-title {
+    font-size:   0.875rem;
+    font-weight: 700;
+    color:       var(--color-text);
+  }
+  .nav__dropdown-cta-sub {
+    font-size:   0.775rem;
+    color:       var(--color-text-muted);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  /* ── Desktop CTA buttons ────────────────────────────────── */
+  .nav__actions {
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+    flex-shrink: 0;
+  }
+
+  /* ── Hamburger ──────────────────────────────────────────── */
+  .nav__hamburger {
+    display:        none;
+    flex-direction: column;
+    justify-content: center;
+    gap:            5px;
+    width:          36px;
+    height:         36px;
+    background:     none;
+    border:         1px solid var(--color-border);
+    border-radius:  var(--radius-md);
+    cursor:         pointer;
+    padding:        6px 8px;
+    flex-shrink:    0;
+    transition:     background 0.15s;
+  }
+  .nav__hamburger:hover { background: var(--color-sand-100); }
+
+  .nav__hamburger span {
+    display:          block;
+    width:            100%;
+    height:           2px;
+    background:       var(--color-text);
+    border-radius:    2px;
+    transition:       transform 0.22s ease, opacity 0.22s ease;
+    transform-origin: center;
+  }
+
+  /* Animate to X when open */
+  .nav__hamburger--open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav__hamburger--open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav__hamburger--open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── Mobile menu drawer ─────────────────────────────────── */
+  .mobile-menu {
+    position:   fixed;
+    top:        64px;
+    left:       0;
+    right:      0;
+    bottom:     0;
+    background: #fff;
+    z-index:    199;
+    overflow-y: auto;
+    transform:  translateX(-100%);
+    transition: transform 0.25s ease;
+    display:    flex;
+    flex-direction: column;
+    padding:    1.25rem;
+    gap:        1.5rem;
+  }
+  .mobile-menu--open { transform: translateX(0); }
+
+  .mobile-menu__nav {
+    display:        flex;
+    flex-direction: column;
+    gap:            0.25rem;
+    flex:           1;
+  }
+
+  .mobile-menu__section {
+    display:        flex;
+    flex-direction: column;
+    gap:            2px;
+  }
+
+  .mobile-menu__link {
+    padding:       12px 14px;
+    font-size:     1rem;
+    font-weight:   600;
+    color:         var(--color-text);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition:    background 0.12s;
+  }
+  .mobile-menu__link:hover { background: var(--color-sand-100); }
+  .mobile-menu__link--active { color: var(--color-primary-dark); }
+
+  .mobile-menu__sub {
+    display:        flex;
+    flex-direction: column;
+    gap:            2px;
+    padding-left:   1rem;
+    margin-bottom:  0.5rem;
+  }
+  .mobile-menu__sub-link {
+    display:       flex;
+    align-items:   center;
+    gap:           8px;
+    padding:       8px 10px;
+    font-size:     0.875rem;
+    color:         var(--color-text-muted);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition:    background 0.12s;
+    cursor:        pointer;
+  }
+  .mobile-menu__sub-link:hover:not(.mobile-menu__sub-link--disabled) {
+    background:  var(--color-sand-100);
+    color:       var(--color-text);
+  }
+  .mobile-menu__sub-link--disabled { opacity: 0.6; pointer-events: none; }
+
+  .mobile-menu__footer {
+    display:        flex;
+    flex-direction: column;
+    gap:            10px;
+    padding-top:    1.25rem;
+    border-top:     1px solid var(--color-border);
+  }
+
+  /* ── Backdrop ────────────────────────────────────────────── */
+  .mobile-backdrop {
+    display:    none;
+    position:   fixed;
+    inset:      0;
+    top:        64px;
+    background: rgba(34,31,26,0.4);
+    z-index:    198;
+    transition: opacity 0.25s;
+    opacity:    0;
+  }
+  .mobile-backdrop--visible {
+    display: block;
+    opacity: 1;
+  }
+
+  /* ── Responsive breakpoints ─────────────────────────────── */
+  @media (max-width: 900px) {
+    .nav__links,
+    .nav__actions { display: none; }
+    .nav__hamburger { display: flex; }
+    .nav__inner { gap: auto; justify-content: space-between; }
+  }
+
+  @media (max-width: 480px) {
+    .nav__inner { padding: 0 1rem; }
+    .mobile-menu { padding: 1rem; }
+  }
+</style>

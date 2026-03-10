@@ -1,0 +1,95 @@
+.dashboard-body {
+    display: flex; height: 100vh; overflow: hidden;
+    background: var(--color-sand-100);
+  }
+  
+  .dashboard-main {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  }
+  
+  .dashboard-content {
+    flex: 1; overflow-y: auto; padding: 2rem;
+  }
+  
+  .dashboard-header {
+    margin-bottom: 1.5rem;
+    h1  { font-size: 1.75rem; font-weight: 700; }
+    .dashboard-sub { color: var(--color-text-muted); }
+  }
+  
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
+  }
+  
+  .kpi-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+    &__label { font-size: 0.8rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    &__value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
+    &__skeleton { height: 2rem; background: var(--color-sand-200); border-radius: var(--radius-sm); margin-top: 4px; animation: pulse 1.4s ease-in-out infinite; }
+  }
+  
+  .dashboard-grid {
+    display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem;
+    &__main, &__side { display: flex; flex-direction: column; gap: 1.5rem; }
+  }
+  
+  .sidebar {
+    width: 240px; background: #fff; border-right: 1px solid var(--color-border);
+    display: flex; flex-direction: column; transition: width 0.2s;
+    &.collapsed { width: 64px; }
+    &__logo { padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    &__toggle { background: none; border: none; cursor: pointer; font-size: 1rem; }
+    &__nav { flex: 1; padding: 0.5rem 0; overflow-y: auto; }
+    &__link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 1.25rem; color: var(--color-text-muted);
+      border-radius: 0; transition: background 0.1s;
+      &:hover { background: var(--color-sand-100); color: var(--color-text); text-decoration: none; }
+      &.active { background: var(--color-sand-100); color: var(--color-primary-dark); font-weight: 600; border-right: 3px solid var(--color-primary); }
+    }
+    &__icon { font-size: 1.1rem; min-width: 24px; text-align: center; }
+    &__footer { padding: 1rem; border-top: 1px solid var(--color-border); }
+    &__email { font-size: 0.8rem; color: var(--color-text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    &__logout { background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--color-text-muted); margin-top: 6px; width: 100%; text-align: left; padding: 0; }
+  }
+  
+  .topbar {
+    height: 60px; background: #fff; border-bottom: 1px solid var(--color-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; gap: 1rem;
+    &__search { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 8px 14px; font-size: 0.875rem; width: 300px; background: var(--color-sand-50); }
+    &__right { display: flex; align-items: center; gap: 12px; }
+    &__avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  }
+  
+  .panel-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+  
+  .insight-panel, .activity-feed, .quick-actions {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .insight-item {
+    display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--color-border);
+    &:last-child { border-bottom: none; }
+    &--warning strong { color: var(--color-warning); }
+    &--opportunity strong { color: var(--color-success); }
+  }
+  
+  .quick-actions__grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  
+  .quick-action-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 500;
+    transition: background 0.1s;
+    &:hover { background: var(--color-sand-100); text-decoration: none; }
+  }
+  

@@ -1,0 +1,36 @@
+:root {
+    // Sand/taupe palette
+    --color-sand-50:   #faf8f4;
+    --color-sand-100:  #f3ede3;
+    --color-sand-200:  #e8ddd0;
+    --color-sand-300:  #d4c5b0;
+    --color-sand-400:  #b5a48a;
+    --color-sand-500:  #9b8a72;
+    --color-sand-600:  #7d6f5c;
+    --color-sand-700:  #5e5244;
+    --color-sand-800:  #3e3730;
+    --color-sand-900:  #221f1a;
+  
+    --color-primary:   var(--color-sand-400);
+    --color-primary-dark: var(--color-sand-600);
+    --color-surface:   var(--color-sand-50);
+    --color-border:    var(--color-sand-200);
+    --color-text:      var(--color-sand-900);
+    --color-text-muted: var(--color-sand-600);
+  
+    --color-success: #3d9a6e;
+    --color-warning: #e0921e;
+    --color-danger:  #c0392b;
+    --color-info:    #2e86c1;
+  
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+  
+    --shadow-card: 0 2px 12px rgba(181,164,138,0.15);
+    --shadow-elevated: 0 6px 24px rgba(181,164,138,0.22);
+  
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  
