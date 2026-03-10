@@ -1,110 +1,62 @@
-// ── User ──────────────────────────────────────────────────────────────────────
-export interface User {
-  id:              string;
-  org_id:          string;
-  email:           string;
-  name:            string;
-  password_hash:   string;
-  role:            Role;
-  tier:            Tier;
-  email_verified:  number;   // 0 | 1  (D1 boolean)
-  status:          UserStatus;
-  created_at:      string;
-  updated_at:      string;
-}
-
-export type UserStatus  = "active" | "suspended" | "pending";
-export type Role        = "owner" | "admin" | "member" | "viewer";
-export type Tier        = "lite" | "standard" | "enterprise";
-
-// ── Session ───────────────────────────────────────────────────────────────────
-export interface SessionRecord {
-  userId:    string;
+export interface AuthUser {
+  id:        string;
+  email:     string;
+  name:      string;
   orgId:     string;
-  role:      Role;
-  tier:      Tier;
-  ip:        string;
-  userAgent: string;
-  createdAt: number;
-  expiresAt: number;
+  role:      'owner' | 'admin' | 'member' | 'viewer';
+  plan:      'free' | 'pro' | 'white_label';
+  createdAt: string;
 }
 
-// ── JWT ───────────────────────────────────────────────────────────────────────
-export interface AccessTokenPayload {
-  sub:   string;
+export interface AuthOrg {
+  id:        string;
+  name:      string;
+  plan:      'free' | 'pro' | 'white_label';
+  ownerId:   string;
+  createdAt: string;
+}
+
+// The canonical context every app receives after verification
+export interface AuthContext {
+  userId: string;
+  orgId:  string;
+  email:  string;
+  name:   string;
+  role:   'owner' | 'admin' | 'member' | 'viewer';
+  plan:   'free' | 'pro' | 'white_label';
+}
+
+export interface JWTPayload {
+  sub:   string;   // userId
+  org:   string;   // orgId
   email: string;
-  name:  string;
-  orgId: string;
-  role:  Role;
-  tier:  Tier;
-  type:  "access";
+  role:  string;
+  plan:  string;
   iat:   number;
   exp:   number;
 }
 
-export interface RefreshTokenPayload {
-  sub:  string;
-  jti:  string;  // unique token ID for rotation
-  type: "refresh";
-  iat:  number;
-  exp:  number;
+export interface LoginRequest {
+  email:    string;
+  password: string;
 }
 
-// ── Request bodies ────────────────────────────────────────────────────────────
-export interface RegisterBody {
+export interface RegisterRequest {
+  email:    string;
+  password: string;
   name:     string;
-  email:    string;
-  password: string;
-  orgName?: string;
+  orgName:  string;
 }
 
-export interface LoginBody {
-  email:    string;
-  password: string;
-}
-
-export interface RefreshBody {
-  refreshToken: string;
-}
-
-export interface ForgotPasswordBody {
-  email: string;
-}
-
-export interface ResetPasswordBody {
-  token:    string;
-  password: string;
-}
-
-export interface VerifyEmailBody {
-  token: string;
-}
-
-export interface AssignRoleBody {
-  userId: string;
-  role:   Role;
-}
-
-// ── Response ──────────────────────────────────────────────────────────────────
-export interface AuthTokens {
-  accessToken:  string;
-  refreshToken: string;
+export interface TokenPair {
+  accessToken:  string;   // 15 min
+  refreshToken: string;   // 30 days (stored in KV)
   expiresIn:    number;
-  tokenType:    "Bearer";
 }
 
-export interface AuthResponse {
-  ok:     true;
-  tokens: AuthTokens;
-  user:   PublicUser;
-}
-
-export interface PublicUser {
-  id:             string;
-  email:          string;
-  name:           string;
-  orgId:          string;
-  role:           Role;
-  tier:           Tier;
-  emailVerified:  boolean;
+// What the internal /internal/verify endpoint returns
+export interface VerifyResponse {
+  valid:   boolean;
+  context: AuthContext | null;
+  error:   string | null;
 }

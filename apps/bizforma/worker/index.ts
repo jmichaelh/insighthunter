@@ -6,6 +6,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
+import { requireAuth } from '../../middleware/requireAuth';
 
 export interface Env {
   DB: D1Database;
@@ -27,13 +28,11 @@ app.use('/api/*', cors({
   allowHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// ── Health ────────────────────────────────────────────────────────────────────
+// ── Unauthenticated Routes ──────────────────────────────────────────────────
 
 app.get('/api/health', (c) =>
   c.json({ status: 'ok', ts: new Date().toISOString(), service: 'Bizforma' })
 );
-
-// ── Sessions (KV) ─────────────────────────────────────────────────────────────
 
 app.post('/api/session', async (c) => {
   try {
@@ -63,83 +62,8 @@ app.post('/api/session', async (c) => {
   }
 });
 
-app.put('/api/session/:id', async (c) => {
-  try {
-    const id = c.req.param('id');
-    const body = await c.req.json();
-    const updated = { ...body, sessionId: id, updatedAt: new Date().toISOString() };
-    await c.env.BUSINESS_DATA.put(`session:${id}`, JSON.stringify(updated), {
-      expirationTtl: 60 * 60 * 24 * 30,
-    });
-    return c.json({ success: true });
-  } catch (err) {
-    console.error('session save:', err);
-    return c.json({ error: 'Failed to save session' }, 500);
-  }
-});
 
-// ── Business (D1) ─────────────────────────────────────────────────────────────
-
-app.post('/api/business', async (c) => {
-  try {
-    const data = await c.req.json<{
-      businessName: string;
-      entityType?: string;
-      state?: string;
-      formData?: Record<string, unknown>;
-    }>();
-
-    if (!data.businessName) return c.json({ error: 'businessName required' }, 400);
-
-    const result = await c.env.DB.prepare(
-      `INSERT INTO businesses (business_name, entity_type, state, form_data, created_at, updated_at)
-       VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))`
-    ).bind(
-      data.businessName,
-      data.entityType ?? null,
-      data.state ?? null,
-      JSON.stringify(data.formData ?? {})
-    ).run();
-
-    const slug = data.businessName.toLowerCase().replace(/\s+/g, '-');
-    await c.env.BUSINESS_DATA.put(
-      `business:${slug}`,
-      JSON.stringify({ ...data, id: result.meta.last_row_id }),
-      { expirationTtl: 60 * 60 * 24 * 90 }
-    );
-
-    return c.json({ success: true, businessId: result.meta.last_row_id });
-  } catch (err) {
-    console.error('save business:', err);
-    return c.json({ error: 'Failed to save business' }, 500);
-  }
-});
-
-app.get('/api/business', async (c) => {
-  try {
-    const name = c.req.query('name');
-    const id = c.req.query('id');
-    if (!name && !id) return c.json({ error: 'Provide name or id' }, 400);
-
-    if (name) {
-      const slug = name.toLowerCase().replace(/\s+/g, '-');
-      const cached = await c.env.BUSINESS_DATA.get(`business:${slug}`, 'json');
-      if (cached) return c.json({ success: true, data: cached, source: 'cache' });
-    }
-
-    const row = id
-      ? await c.env.DB.prepare('SELECT * FROM businesses WHERE id = ?').bind(id).first()
-      : await c.env.DB.prepare('SELECT * FROM businesses WHERE business_name = ?').bind(name).first();
-
-    if (!row) return c.json({ error: 'Not found' }, 404);
-    return c.json({ success: true, data: row, source: 'database' });
-  } catch (err) {
-    console.error('get business:', err);
-    return c.json({ error: 'Failed to retrieve business' }, 500);
-  }
-});
-
-// ── AI: Name Suggestions ──────────────────────────────────────────────────────
+// ── AI Endpoints (Public) ───────────────────────────────────────────────────
 
 app.post('/api/ai/names', async (c) => {
   try {
@@ -172,8 +96,6 @@ Return ONLY a JSON array, no markdown:
     return c.json({ error: 'AI request failed' }, 500);
   }
 });
-
-// ── AI: Entity Recommendation ─────────────────────────────────────────────────
 
 app.post('/api/ai/entity', async (c) => {
   try {
@@ -210,8 +132,6 @@ Return ONLY JSON, no markdown:
   }
 });
 
-// ── AI: Compliance Calendar ───────────────────────────────────────────────────
-
 app.post('/api/ai/calendar', async (c) => {
   try {
     const body = await c.req.json<{
@@ -246,8 +166,6 @@ Include: annual reports, federal taxes, estimated taxes, BOI report, sales tax i
     return c.json({ error: 'AI request failed' }, 500);
   }
 });
-
-// ── AI: Chat (streaming SSE) ──────────────────────────────────────────────────
 
 app.post('/api/ai/chat', async (c) => {
   try {
@@ -287,9 +205,86 @@ Always note you are not a licensed attorney.`;
   }
 });
 
-// ── Documents (R2) ────────────────────────────────────────────────────────────
+// ── Authenticated Routes ──────────────────────────────────────────────────────
 
-app.post('/api/documents/:businessId', async (c) => {
+const protectedApi = new Hono<{ Bindings: Env }>();
+protectedApi.use('/*', requireAuth);
+
+protectedApi.put('/api/session/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const body = await c.req.json();
+    const updated = { ...body, sessionId: id, updatedAt: new Date().toISOString() };
+    await c.env.BUSINESS_DATA.put(`session:${id}`, JSON.stringify(updated), {
+      expirationTtl: 60 * 60 * 24 * 30,
+    });
+    return c.json({ success: true });
+  } catch (err) {
+    console.error('session save:', err);
+    return c.json({ error: 'Failed to save session' }, 500);
+  }
+});
+
+protectedApi.post('/api/business', async (c) => {
+  try {
+    const data = await c.req.json<{
+      businessName: string;
+      entityType?: string;
+      state?: string;
+      formData?: Record<string, unknown>;
+    }>();
+
+    if (!data.businessName) return c.json({ error: 'businessName required' }, 400);
+
+    const result = await c.env.DB.prepare(
+      `INSERT INTO businesses (business_name, entity_type, state, form_data, created_at, updated_at)
+       VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))`
+    ).bind(
+      data.businessName,
+      data.entityType ?? null,
+      data.state ?? null,
+      JSON.stringify(data.formData ?? {})
+    ).run();
+
+    const slug = data.businessName.toLowerCase().replace(/\s+/g, '-');
+    await c.env.BUSINESS_DATA.put(
+      `business:${slug}`,
+      JSON.stringify({ ...data, id: result.meta.last_row_id }),
+      { expirationTtl: 60 * 60 * 24 * 90 }
+    );
+
+    return c.json({ success: true, businessId: result.meta.last_row_id });
+  } catch (err) {
+    console.error('save business:', err);
+    return c.json({ error: 'Failed to save business' }, 500);
+  }
+});
+
+protectedApi.get('/api/business', async (c) => {
+  try {
+    const name = c.req.query('name');
+    const id = c.req.query('id');
+    if (!name && !id) return c.json({ error: 'Provide name or id' }, 400);
+
+    if (name) {
+      const slug = name.toLowerCase().replace(/\s+/g, '-');
+      const cached = await c.env.BUSINESS_DATA.get(`business:${slug}`, 'json');
+      if (cached) return c.json({ success: true, data: cached, source: 'cache' });
+    }
+
+    const row = id
+      ? await c.env.DB.prepare('SELECT * FROM businesses WHERE id = ?').bind(id).first()
+      : await c.env.DB.prepare('SELECT * FROM businesses WHERE business_name = ?').bind(name).first();
+
+    if (!row) return c.json({ error: 'Not found' }, 404);
+    return c.json({ success: true, data: row, source: 'database' });
+  } catch (err) {
+    console.error('get business:', err);
+    return c.json({ error: 'Failed to retrieve business' }, 500);
+  }
+});
+
+protectedApi.post('/api/documents/:businessId', async (c) => {
   try {
     const businessId = c.req.param('businessId');
     const filename = c.req.query('filename') ?? `doc-${Date.now()}`;
@@ -315,7 +310,7 @@ app.post('/api/documents/:businessId', async (c) => {
   }
 });
 
-app.get('/api/documents/:businessId/:filename', async (c) => {
+protectedApi.get('/api/documents/:businessId/:filename', async (c) => {
   try {
     const { businessId, filename } = c.req.param();
     const docType = c.req.query('type') ?? 'general';
@@ -332,9 +327,7 @@ app.get('/api/documents/:businessId/:filename', async (c) => {
   }
 });
 
-// ── Compliance Events (D1) ────────────────────────────────────────────────────
-
-app.get('/api/compliance/:businessId', async (c) => {
+protectedApi.get('/api/compliance/:businessId', async (c) => {
   const { businessId } = c.req.param();
   const results = await c.env.DB
     .prepare('SELECT * FROM compliance_events WHERE business_id = ? ORDER BY event_date ASC')
@@ -342,7 +335,7 @@ app.get('/api/compliance/:businessId', async (c) => {
   return c.json({ success: true, events: results.results });
 });
 
-app.post('/api/compliance/:businessId', async (c) => {
+protectedApi.post('/api/compliance/:businessId', async (c) => {
   try {
     const businessId = c.req.param('businessId');
     const ev = await c.req.json<{
@@ -362,6 +355,8 @@ app.post('/api/compliance/:businessId', async (c) => {
     return c.json({ error: 'Save failed' }, 500);
   }
 });
+
+app.route('/', protectedApi);
 
 // ── SPA Fallback ──────────────────────────────────────────────────────────────
 
