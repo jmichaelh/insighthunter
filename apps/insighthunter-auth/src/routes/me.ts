@@ -25,18 +25,16 @@ meRoutes.get('/me', async c => {
   if (!user) return c.json({ error: 'User not found' }, 404);
 
   // Never return password_hash
-  return c.json({
-     {
-      id:        user.id,
-      email:     user.email,
-      name:      user.name,
-      orgId:     user.orgId,
-      role:      user.role,
-      plan:      user.plan,
-      lastLogin: user.lastLogin,
-      createdAt: user.createdAt,
+  return c.json({ id:  user.id, 
+    email: user.email, 
+    name: user.name, 
+    orgId: user.orgId, 
+    role: user.role, 
+    plan: user.plan,
+    lastLogin: user.lastLogin,
+    createdAt: user.createdAt,
     },
-  });
+);
 });
 
 // ── PATCH /auth/me ────────────────────────────────────────────────────────────
