@@ -4,7 +4,7 @@ import type { Env } from '../types/env';
 import type { AuthContext } from '../types/auth';
 import { getUserById, updateUser } from '../db/queries';
 import { hashPassword, verifyPassword } from '../lib/password';
-import { trackEvent } from '../lib/analytics';
+import { trackAuthEvent } from '../lib/analytics';
 
 // Define a type for Hono's context, including variables set by middleware
 type HonoContext = {
@@ -80,7 +80,7 @@ meRoutes.patch('/me', async c => {
     ...(body.email && { email: body.email.toLowerCase() }),
   });
 
-  trackEvent(c.env.ANALYTICS, 'user_updated', ctx.orgId, { userId: ctx.userId });
+  trackAuthEvent(c.env, 'user_updated', ctx.orgId, { userId: ctx.userId });
   return c.json({ ok: true });
 });
 
@@ -118,7 +118,7 @@ meRoutes.post('/me/password', async c => {
   const list = await c.env.KV.list({ prefix: `refresh:${ctx.userId}:` });
   await Promise.all(list.keys.map(k => c.env.KV.delete(k.name)));
 
-  trackEvent(c.env.ANALYTICS, 'password_changed', ctx.orgId, { userId: ctx.userId });
+  trackAuthEvent(c.env, 'password_changed', ctx.orgId, { userId: ctx.userId });
   return c.json({ ok: true, message: 'Password updated successfully. Please log in again.' });
 });
 
@@ -139,6 +139,6 @@ meRoutes.delete('/me', async c => {
   const list = await c.env.KV.list({ prefix: `refresh:${ctx.userId}:` });
   await Promise.all(list.keys.map(k => c.env.KV.delete(k.name)));
 
-  trackEvent(c.env.ANALYTICS, 'user_deactivated', ctx.orgId, { userId: ctx.userId });
+  trackAuthEvent(c.env, 'user_deactivated', ctx.orgId, { userId: ctx.userId });
   return c.json({ ok: true });
 });

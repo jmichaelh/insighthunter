@@ -1,81 +1,59 @@
-
 import { defineMiddleware } from 'astro:middleware';
 
-// Added functions to replace the missing @insighthunter/auth-middleware package
+const PUBLIC_ROUTES = [
+  '/',
+  '/pricing',
+  '/about',
+  '/contact',
+  '/features',
+  '/auth/login',
+  '/auth/register',
+  '/auth/forgot-password',
+  '/auth/callback',
+  '/api',
+];
 
-const protectedRoutes = ['/dashboard', '/account', '/admin'];
-function isProtectedRoute(pathname: string) {
-  return protectedRoutes.some(route => pathname.startsWith(route));
+function isPublic(pathname: string): boolean {
+  return PUBLIC_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'))
+    || pathname.startsWith('/features/')
+    || pathname.startsWith('/_astro/')
+    || pathname.startsWith('/icons/')
+    || pathname.match(/\.(ico|svg|png|webmanifest|css|js)$/) !== null;
 }
 
-interface AuthPayload {
-    userId: string | null;
-    userEmail: string | null;
-    subscriptionTier: string | null;
-}
+export const onRequest = defineMiddleware(async (context, next) => {
+  const { pathname } = new URL(context.request.url);
 
-interface TokenPayload {
-    sub: string;
-    email: string;
-    tier: string;
-    exp?: number;
-}
+  if (isPublic(pathname)) return next();
 
-async function resolveAuth(cookie: string | null, secret: string): Promise<AuthPayload> {
-    const nullAuth = { userId: null, userEmail: null, subscriptionTier: null };
-    if (!cookie) return nullAuth;
-
-    const tokenCookie = cookie.split(';').find(c => c.trim().startsWith('auth_token='));
-    if (!tokenCookie) return nullAuth;
-
-    const token = tokenCookie.split('=')[1];
-    if (!token) return nullAuth;
-
-    try {
-        const [headerB64, payloadB64, sigB64] = token.split(".");
-        if (!headerB64 || !payloadB64 || !sigB64) return nullAuth;
-
-        const enc = new TextEncoder();
-        const keyData = enc.encode(secret);
-        const cryptoKey = await crypto.subtle.importKey("raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
-        const sigBuf = Uint8Array.from(atob(sigB64.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
-        const data = enc.encode(`${headerB64}.${payloadB64}`);
-        const valid = await crypto.subtle.verify("HMAC", cryptoKey, sigBuf, data);
-
-        if (!valid) return nullAuth;
-
-        const payload = JSON.parse(atob(payloadB64)) as TokenPayload;
-        if (payload.exp && Date.now() / 1000 > payload.exp) {
-            return nullAuth;
-        }
-
-        return { userId: payload.sub, userEmail: payload.email, subscriptionTier: payload.tier };
-    } catch (err) {
-        console.error("Error resolving auth:", err);
-        return nullAuth;
-    }
-}
-
-// Original middleware logic
-export const onRequest = defineMiddleware(async ({ locals, request, url, redirect }, next) => {
-  const env = locals.runtime?.env;
-
-  const auth = await resolveAuth(
-    request.headers.get('cookie'),
-    env?.JWT_SECRET ?? ''
-  );
-
-  locals.userId           = auth.userId;
-  locals.userEmail        = auth.userEmail;
-  locals.subscriptionTier = auth.subscriptionTier;
-
-  if (isProtectedRoute(url.pathname)) {
-    if (!auth.userId) {
-      return redirect(
-        `https://insighthunter.app/auth/login?redirect=${encodeURIComponent(url.href)}`
-      );
-    }
+  // Validate session cookie
+  const token = context.cookies.get('ih_session')?.value;
+  if (!token) {
+    return context.redirect(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
   }
 
-  return next();
+  try {
+    const res = await (context.locals as any).runtime.env.AUTH_WORKER.fetch(
+      new Request('https://auth/verify', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ token }),
+      })
+    );
+
+    if (!res.ok) throw new Error('Invalid session');
+
+    const auth = await res.json({ 
+      userId: string;
+      orgId:  string;
+      email:  string;
+      role:   string;
+    })();
+
+    context.locals.auth = auth;
+    return next();
+  } catch {
+    context.cookies.delete('ih_session', { path: '/' });
+    return context.redirect(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
+  }
 });

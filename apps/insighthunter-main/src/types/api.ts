@@ -1,31 +1,91 @@
-export interface ApiResponse<T> {
-    T;
-error?:  never;
-}
+import type { AppDefinition } from '@/types/apps';
 
-export interface ApiError {
-data?:   never;
-error:   string;
-status:  number;
-}
- 
-export type ApiResult<T> = ApiResponse<T> | ApiError;
+export const APPS: AppDefinition[] = [
+  {
+    slug:        'bookkeeping',
+    name:        'Bookkeeping',
+    description: 'Automated ledger, bank feeds via Plaid, reconciliation, and Chart of Accounts management.',
+    icon:        '📒',
+    href:        '/dashboard/bookkeeping',
+    featurePage: '/features/bookkeeping',
+    tier:        'standard',
+    available:   true,
+  },
+  {
+    slug:        'bizforma',
+    name:        'BizForma',
+    description: 'AI-guided business formation — entity selection, EIN, state registration, and compliance calendar.',
+    icon:        '🏛️',
+    href:        '/dashboard/bizforma',
+    featurePage: '/features/bizforma',
+    tier:        'standard',
+    available:   true,
+  },
+  {
+    slug:        'insight-lite',
+    name:        'Insight Lite',
+    description: 'Free-tier financial dashboard — basic KPIs, CSV upload, and limited AI insights.',
+    icon:        '📊',
+    href:        '/dashboard',
+    featurePage: '/features/insight-lite',
+    tier:        'lite',
+    available:   true,
+  },
+  {
+    slug:        'insight-standard',
+    name:        'Insight Standard',
+    description: 'Full P&L reporting, cash flow forecasting, and unlimited AI CFO insights.',
+    icon:        '📈',
+    href:        '/dashboard',
+    featurePage: '/features/insight-standard',
+    tier:        'standard',
+    available:   true,
+  },
+  {
+    slug:        'insight-pro',
+    name:        'Insight Pro',
+    description: 'White-label CFO workspace for fractional CFOs managing multiple client accounts.',
+    icon:        '🏢',
+    href:        '/dashboard',
+    featurePage: '/features/insight-pro',
+    tier:        'pro',
+    available:   true,
+  },
+  {
+    slug:        'payroll',
+    name:        'Payroll',
+    description: 'W-4, 1099, and payroll run automation. Integrates with bookkeeping and tax accounts.',
+    icon:        '💵',
+    href:        '/dashboard/payroll',
+    featurePage: '/features/payroll',
+    tier:        'pro',
+    available:   false,
+    comingSoon:  true,
+  },
+  {
+    slug:        'scout',
+    name:        'Scout',
+    description: 'Business intelligence and competitive benchmarking for small businesses.',
+    icon:        '🔭',
+    href:        '/dashboard/scout',
+    featurePage: '/features/scout',
+    tier:        'pro',
+    available:   false,
+    comingSoon:  true,
+  },
+  {
+    slug:        'pbx',
+    name:        'PBX',
+    description: 'Business phone and communication management integrated with your workspace.',
+    icon:        '📞',
+    href:        '/dashboard/pbx',
+    featurePage: '/features/pbx',
+    tier:        'enterprise',
+    available:   false,
+    comingSoon:  true,
+  },
+];
 
-export interface KPISummary {
-revenue:       number;
-expenses:      number;
-netIncome:     number;
-cashOnHand:    number;
-burnRate:      number;
-runway:        number;          // months
-period:        string;
-}
-
-export interface InsightCard {
-id:       string;
-type:     'warning' | 'opportunity' | 'info';
-title:    string;
-body:     string;
-priority: 'high' | 'medium' | 'low';
-cta?:     { label: string; href: string };
+export function getApp(slug: string): AppDefinition | undefined {
+  return APPS.find(a => a.slug === slug);
 }

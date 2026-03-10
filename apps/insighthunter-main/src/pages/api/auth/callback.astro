@@ -1,0 +1,25 @@
+---
+// OAuth callback — exchange code for session cookie, then redirect
+const code     = Astro.url.searchParams.get('code');
+const redirect = Astro.url.searchParams.get('state') ?? '/dashboard';
+
+if (code) {
+  const res = await fetch(`${Astro.url.origin}/api/auth/callback`, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ code }),
+  });
+  if (res.ok) {
+    const { token } = await res.json<{ token: string }>();
+    Astro.cookies.set('ih_session', token, {
+      httpOnly: true,
+      secure:   true,
+      sameSite: 'lax',
+      path:     '/',
+      maxAge:   60 * 60 * 24 * 7,
+    });
+    return Astro.redirect(redirect);
+  }
+}
+return Astro.redirect('/auth/login?error=callback_failed');
+---

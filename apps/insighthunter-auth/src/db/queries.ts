@@ -60,6 +60,17 @@ export async function updateUserStatus(db: D1Database, userId: string, status: s
     .run();
 }
 
+export async function updateUser(db: D1Database, userId: string, data: { name?: string; email?: string }): Promise<void> {
+    const fields = Object.keys(data);
+    const values = Object.values(data);
+    const setClause = fields.map(field => `${field} = ?`).join(', ');
+
+    await db
+        .prepare(`UPDATE users SET ${setClause}, updated_at = datetime('now') WHERE id = ?`)
+        .bind(...values, userId)
+        .run();
+}
+
 // ── Sessions ──────────────────────────────────────────────────────────────────
 export async function insertSession(
   db: D1Database,

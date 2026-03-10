@@ -1,0 +1,14 @@
+---
+import AuthLayout from '@/layouts/AuthLayout.astro';
+import LoginForm  from '@/components/auth/LoginForm.svelte';
+
+const redirect = Astro.url.searchParams.get('redirect') ?? '/dashboard';
+---
+<AuthLayout title="Sign In">
+  <h1 class="auth-title">Welcome back</h1>
+  <p class="auth-sub">Sign in to your InsightHunter workspace</p>
+  <LoginForm client:load redirect={redirect} />
+  <p class="auth-footer">
+    Don't have an account? <a href="/auth/register">Sign up free</a>
+  </p>
+</AuthLayout>

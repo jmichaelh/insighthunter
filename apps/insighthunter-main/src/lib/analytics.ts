@@ -1,28 +1,11 @@
-import type { Env } from "@/types";
+export function trackPageView(path: string): void {
+  if (typeof window === 'undefined') return;
+  // Cloudflare Web Analytics (beacon is injected via MarketingLayout)
+  if ((window as any).__cfBeacon) return;
+  navigator.sendBeacon?.('/api/analytics/pageview', JSON.stringify({ path }));
+}
 
-export type EventName =
-  | "dashboard_viewed"
-  | "report_generated"
-  | "report_exported"
-  | "forecast_run"
-  | "insight_generated"
-  | "transaction_imported"
-  | "client_created"
-  | "api_error";
-
-export function trackEvent(
-  env: Env,
-  event: EventName,
-  orgId: string,
-  meta: Record<string, string | number | boolean> = {}
-): void {
-  try {
-    env.EVENTS.writeDataPoint({
-      blobs:   [event, orgId, env.APP_ENV],
-      doubles: [Date.now()],
-      indexes: [orgId],
-    });
-  } catch {
-    // non-blocking — never throw from analytics
-  }
+export function trackEvent(event: string, props: Record<string, string | number> = {}): void {
+  if (typeof window === 'undefined') return;
+  navigator.sendBeacon?.('/api/analytics/event', JSON.stringify({ event, ...props }));
 }

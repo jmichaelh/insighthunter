@@ -1,1 +1,12 @@
-.
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro';
+import PricingTable    from '@/components/marketing/PricingTable.astro';
+import { PRICING_TIERS } from '@/data/pricing';
+---
+<MarketingLayout title="Pricing" description="Simple, transparent pricing for every stage of your business.">
+  <section class="page-hero">
+    <h1>Simple, Transparent Pricing</h1>
+    <p>Start free. Scale as you grow. No surprise fees.</p>
+  </section>
+  <PricingTable tiers={PRICING_TIERS} />
+</MarketingLayout>

@@ -50,3 +50,12 @@ Use `/vibe-help` anytime for context-aware guidance on what to do next.
 - **`SM`** Squad Mode — Bring multiple agent personas into one session to collaborate and discuss *(Maestro)*
 
 <!-- vibe-flow:end -->
+
+<!-- vibecheck:file-locks -->
+# 🔒 File Lock Rules — AUTO GENERATED
+
+> **CRITICAL**: Do NOT modify the files/folders listed below.
+
+*No files are currently locked.*
+
+<!-- vibecheck:file-locks -->

@@ -1,44 +1,49 @@
 ---
-import Layout from './Layout.astro';
-import '../styles/dashboard.css';
+import { DASHBOARD_NAV } from '@/data/navigation';
+import Sidebar           from '@/components/dashboard/Sidebar.svelte';
+import TopBar            from '@/components/dashboard/TopBar.svelte';
+import type { AuthUser } from '@/types/auth';
 
-interface Props {
+export interface Props {
   title: string;
 }
 
-const { title } = Astro.props;
-const { pathname } = Astro.url;
-
-const navLinks = [
-  { href: '/dashboard',              label: 'Dashboard' },
-  { href: '/dashboard/bookkeeping',  label: 'Bookkeeping' },
-  { href: '/dashboard/reconciliation', label: 'Reconciliation' },
-  { href: '/dashboard/reports',      label: 'Reports' },
-  { href: '/dashboard/clients',      label: 'Clients' },
-  { href: '/dashboard/compliance',   label: 'Compliance' },
-  { href: '/dashboard/settings',     label: 'Settings' },
-];
+const { title }  = Astro.props;
+const auth        = Astro.locals.auth as AuthUser;
+const currentPath = Astro.url.pathname;
 ---
 
-<Layout title={title} requiresAuth={true}>
-  <div class="dashboard-shell">
-
-    <aside class="sidebar">
-      <nav aria-label="Dashboard navigation">
-        {navLinks.map(({ href, label }) => (
-          <a href={href} aria-current={pathname === href ? 'page' : undefined}>
-            {label}
-          </a>
-        ))}
-        <hr />
-        <a href="/account">My Account</a>
-        <a href="/auth/logout">Logout</a>
-      </nav>
-    </aside>
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} | InsightHunter</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon"     href="/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#b5a48a" />
+  <style is:global>
+    @import '../styles/globals.scss';
+    @import '../styles/theme.scss';
+    @import '../styles/dashboard.scss';
+  </style>
+</head>
+<body class="dashboard-body">
+  <Sidebar
+    client:load
+    items={DASHBOARD_NAV}
+    currentPath={currentPath}
+    user={auth}
+  />
+  <div class="dashboard-main">
+    <TopBar client:load user={auth} />
     <main class="dashboard-content">
       <slot />
     </main>
-
   </div>
-</Layout>
+  <script>
+    import { registerSW } from '@/lib/pwa';
+    registerSW();
+  </script>
+</body>
+</html>

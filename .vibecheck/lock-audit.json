@@ -1,0 +1,25 @@
+[
+  {
+    "timestamp": "2026-03-10T02:33:07.608Z",
+    "event": "lock",
+    "file": "/home/user/insighthunter/CLAUDE.md"
+  },
+  {
+    "timestamp": "2026-03-10T02:33:09.389Z",
+    "event": "access_attempt",
+    "file": "/home/user/insighthunter/CLAUDE.md",
+    "source": "AI tool"
+  },
+  {
+    "timestamp": "2026-03-10T02:33:18.104Z",
+    "event": "unlock",
+    "file": "/home/user/insighthunter/CLAUDE.md"
+  },
+  {
+    "timestamp": "2026-03-10T02:33:18.104Z",
+    "event": "access_granted",
+    "file": "/home/user/insighthunter/CLAUDE.md",
+    "source": "AI tool",
+    "detail": "Unlocked"
+  }
+]

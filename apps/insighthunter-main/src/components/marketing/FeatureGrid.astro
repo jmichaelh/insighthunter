@@ -1,0 +1,72 @@
+---
+import type { AppDefinition } from '@/types/apps';
+
+interface Props {
+  apps: AppDefinition[];
+}
+
+const { apps } = Astro.props;
+---
+<section class="feature-grid">
+  <div class="grid-container">
+    {apps.map((app) => (
+      <a href={app.featurePage} class="feature-card">
+        <div class="feature-icon">{app.icon}</div>
+        <h3 class="feature-title">{app.name}</h3>
+        <p class="feature-description">{app.description}</p>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .feature-grid {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+  }
+
+  .feature-card {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform 0.2s ease-in-out;
+    box-shadow: var(--shadow-soft-glow);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .feature-title {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .feature-description {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
