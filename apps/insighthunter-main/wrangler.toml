@@ -1,79 +1,25 @@
-name                   = "insighthunter-main"
-main                   = "src/worker.ts"
-compatibility_date     = "2025-03-07"
-compatibility_flags    = ["nodejs_compat"]
-pages_build_output_dir = "dist"
+name = "insighthunter-main"
+compatibility_date = "2025-03-07"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".svelte-kit/cloudflare"
 
 [observability]
-enabled            = true
+enabled = true
 head_sampling_rate = 1
 
-[assets]
-directory          = "./dist"
-binding            = "ASSETS_MAIN"
-not_found_handling = "single-page-application"
-
-[vars]
-APP_URL      = "https://insighthunter.app"
-APP_ENV      = "production"
-APP_VERSION  = "1.0.0"
-CORS_ORIGINS = "https://insighthunter.app"
-
 [[d1_databases]]
-binding        = "DB"
-database_name  = "insighthunter-db"
-database_id    = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
-migrations_dir = "src/db/migrations"
+binding = "INSIGHTHUNTER_DB"
+database_name = "insighthunter_db"
+database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
 
 [[kv_namespaces]]
-binding    = "SESSIONS"
-id         = "60e34ba310ca40c79edec05470c7a271"
-preview_id = "60e34ba310ca40c79edec05470c7a271"
+binding = "INSIGHTHUNTER_KV"
+id = "YOUR_KV_NAMESPACE_ID"
+'
+[vars]
+APP_URL = "https://insighthunter.app"
+STRIPE_PUBLISHABLE_KEY = "pk_live_..."
 
-[[analytics_engine_datasets]]
-binding = "EVENTS"
-dataset = "insighthunter_page_views"
-
-[env.staging]
-name = "insighthunter-main-staging"
-
-[env.staging.vars]
-APP_URL      = "https://staging.insighthunter.app"
-APP_ENV      = "staging"
-APP_VERSION  = "1.0.0"
-CORS_ORIGINS = "https://staging.insighthunter.app"
-
-[[env.staging.d1_databases]]
-binding        = "DB"
-database_name  = "insighthunter-db-staging"
-database_id    = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
-migrations_dir = "src/db/migrations"
-
-[[env.staging.kv_namespaces]]
-binding    = "SESSIONS"
-id         = "60e34ba310ca40c79edec05470c7a271"
-preview_id = "60e34ba310ca40c79edec05470c7a271"
-
-[[env.staging.analytics_engine_datasets]]
-binding = "EVENTS"
-dataset = "insighthunter_page_views_staging"
-
-[env.dev]
-name = "insighthunter-main-dev"
-
-[env.dev.vars]
-APP_URL      = "http://localhost:8787"
-APP_ENV      = "dev"
-APP_VERSION  = "0.0.0"
-CORS_ORIGINS = "http://localhost:4321,http://localhost:8787"
-
-[[env.dev.d1_databases]]
-binding        = "DB"
-database_name  = "insighthunter-db-dev"
-database_id    = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
-migrations_dir = "src/db/migrations"
-
-[[env.dev.kv_namespaces]]
-binding    = "SESSIONS"
-id         = "60e34ba310ca40c79edec05470c7a271"
-preview_id = "60e34ba310ca40c79edec05470c7a271"
+# Secrets (set via wrangler secret put):
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
