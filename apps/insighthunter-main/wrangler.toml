@@ -14,7 +14,7 @@ database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
 
 [[kv_namespaces]]
 binding = "INSIGHTHUNTER_KV"
-id = "YOUR_KV_NAMESPACE_ID"
+id = "e412ddb53db24e10bb59735e62732bf0"
 '
 [vars]
 APP_URL = "https://insighthunter.app"
