@@ -10,11 +10,11 @@
     "type-check": "astro check && tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.13",
+    "@astrojs/cloudflare": "^13.0.2",
     "@astrojs/sitemap": "^3.7.1",
     "@astrojs/svelte": "^5.7.3",
     "@insighthunter/auth-middleware": "workspace:*",
-    "astro": "^4.16.19",
+    "astro": "^6.0.2",
     "svelte": "^5.53.10"
   },
   "devDependencies": {
