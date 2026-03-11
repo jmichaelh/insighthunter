@@ -12,7 +12,6 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.0.2",
     "@astrojs/sitemap": "^3.7.1",
-    "@astrojs/svelte": "^5.7.3",
     "@insighthunter/auth-middleware": "workspace:*",
     "astro": "^6.0.2",
     "svelte": "^5.53.10"
