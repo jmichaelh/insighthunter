@@ -3,24 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev":       "astro dev",
-    "build":     "astro build",
-    "preview":   "astro preview",
-    "deploy":    "astro build && wrangler pages deploy dist --project-name insighthunter-main",
-    "type-check":"astro check && tsc --noEmit"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "astro build && wrangler pages deploy dist --project-name insighthunter-main",
+    "type-check": "astro check && tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.12",
-    "@astrojs/sitemap":    "^3.2.0",
-    "@astrojs/svelte":     "^5.7.0",
-    "astro":               "^4.16.19",
-    "svelte":              "^5.0.0",
-    "@insighthunter/auth-middleware": "workspace:*"
+    "@astrojs/cloudflare": "^12.6.13",
+    "@astrojs/sitemap": "^3.7.1",
+    "@astrojs/svelte": "^5.7.3",
+    "@insighthunter/auth-middleware": "workspace:*",
+    "astro": "^4.16.19",
+    "svelte": "^5.53.10"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260101.0",
-    "typescript":               "^5.4.5",
-    "sass":                     "^1.77.0",
-    "wrangler":                 "^3.90.0"
+    "@cloudflare/workers-types": "^4.20260310.1",
+    "sass": "^1.98.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^3.114.17"
   }
 }

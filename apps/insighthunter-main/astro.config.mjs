@@ -6,7 +6,7 @@ import path              from 'path';
 
 export default defineConfig({
   output:  'server',
-  adapter: cloudflare({ mode: 'directory' }),
+  adapter: cloudflare({ mode: 'directory', platformProxy: { enabled: true } }),
 
   integrations: [svelte(), sitemap()],
 
@@ -19,7 +19,15 @@ export default defineConfig({
       },
     },
     ssr: {
-      noExternal: ['@insighthunter/auth-middleware'],
+      // Use pre-built dist of the workspace package rather than bundling source
+      external: ['@insighthunter/auth-middleware'],
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
     },
   },
 });

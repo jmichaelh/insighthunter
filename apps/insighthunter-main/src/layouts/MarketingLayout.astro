@@ -1,5 +1,8 @@
 ---
-// apps/insighthunter-main/src/layouts/MarketingLayout.astro
+import '../styles/theme.scss';
+import '../styles/globals.scss';
+import '../styles/marketing.scss';
+
 interface Props {
   title:       string;
   description: string;
@@ -14,7 +17,6 @@ const {
   ogImage   = 'https://insighthunter.app/og-default.png',
 } = Astro.props;
 
-// Read plan from worker-injected header (set in worker.ts)
 const plan   = Astro.locals.plan   ?? 'anonymous';
 const userId = Astro.locals.userId ?? '';
 ---
@@ -24,56 +26,36 @@ const userId = Astro.locals.userId ?? '';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Primary Meta -->
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-
-    <!-- Open Graph -->
     <meta property="og:type"        content="website" />
     <meta property="og:url"         content={canonical} />
     <meta property="og:title"       content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image"       content={ogImage} />
     <meta property="og:site_name"   content="InsightHunter" />
-
-    <!-- Twitter Card -->
     <meta name="twitter:card"        content="summary_large_image" />
     <meta name="twitter:title"       content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image"       content={ogImage} />
-
-    <!-- Icons -->
     <link rel="icon"             href="/favicon.ico" sizes="any" />
     <link rel="icon"             href="/icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link rel="manifest"         href="/manifest.webmanifest" />
-
-    <!-- Styles — inlined at build time, zero external requests -->
-    <link rel="stylesheet" href="/styles/styles.css" />
-    <link rel="stylesheet" href="/styles/marketing.css" />
-
-    <!-- Prefetch key routes -->
     <link rel="prefetch" href="/auth/login"  as="document" />
     <link rel="prefetch" href="/auth/signup" as="document" />
     <link rel="prefetch" href="/pricing"     as="document" />
-
-    <!-- Analytics — Cloudflare Web Analytics (no cookies, GDPR-safe) -->
     <script
       defer
       src="https://static.cloudflareinsights.com/beacon.min.js"
       data-cf-beacon='{"token": "<YOUR_CF_ANALYTICS_TOKEN>"}'
     ></script>
   </head>
-
   <body>
-    <!-- User context for Svelte islands (no auth token in DOM) -->
     <script define:vars={{ plan, userId: userId ? '1' : '' }}>
       window.__IH__ = { plan, authenticated: !!userId };
     </script>
-
     <slot />
-
   </body>
 </html>

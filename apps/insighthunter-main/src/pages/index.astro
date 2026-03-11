@@ -1,18 +1,30 @@
 ---
-import MarketingLayout from '@/layouts/MarketingLayout.astro';
-import Hero            from '@/components/marketing/Hero.astro';
-import FeatureGrid     from '@/components/marketing/FeatureGrid.astro';
-import PricingTable    from '@/components/marketing/PricingTable.astro';
-import CTABanner       from '@/components/marketing/CTABanner.astro';
-import { APPS }        from '@/data/apps';
-import { PRICING_TIERS } from '@/data/pricing';
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import Nav             from '../components/marketing/Nav.astro';
+import Hero            from '../components/marketing/Hero.astro';
+import AppCard         from '../components/marketing/AppCard.astro';
+import PricingTable    from '../components/marketing/PricingTable.astro';
+import CTABanner       from '../components/marketing/CTABanner.astro';
+import { APPS }        from '../data/apps';
+import { PRICING_TIERS } from '../data/pricing';
+
+const availableApps = APPS.filter(a => a.available);
 ---
 <MarketingLayout
   title="AI-Powered CFO Workspace"
   description="Stop Flying Blind. InsightHunter delivers enterprise CFO intelligence to small businesses, freelancers, and fractional CFO firms."
 >
+  <Nav />
   <Hero />
-  <FeatureGrid apps={APPS.filter(a => a.available)} />
+  <section class="feature-grid-section">
+    <div class="section-header">
+      <h2>Everything your business needs</h2>
+      <p>From bookkeeping to AI forecasting — one workspace, one price.</p>
+    </div>
+    <div class="feature-grid">
+      {availableApps.map(app => <AppCard app={app} />)}
+    </div>
+  </section>
   <PricingTable tiers={PRICING_TIERS} />
   <CTABanner />
 </MarketingLayout>

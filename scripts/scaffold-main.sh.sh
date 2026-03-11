@@ -69,8 +69,8 @@ cat > package.json <<'JSON'
     "test:coverage":  "vitest run --coverage",
     "lint":           "eslint src --ext .ts",
     "lint:fix":       "eslint src --ext .ts --fix",
-    "migrate:local":  "wrangler d1 migrations apply insighthunter-main-db --local",
-    "migrate:remote": "wrangler d1 migrations apply insighthunter-main-db --remote"
+    "migrate:local":  "wrangler d1 migrations apply insighthunter-db --local",
+    "migrate:remote": "wrangler d1 migrations apply insighthunter-db --remote"
   },
   "dependencies": {
     "hono": "^4.7.4",
@@ -118,7 +118,7 @@ cat > wrangler.jsonc <<'EOF'
   "d1_databases": [
     {
       "binding":       "DB",
-      "database_name": "insighthunter-main-db",
+      "database_name": "insighthunter-db",
       "database_id":   "REPLACE_WITH_D1_DATABASE_ID",
       "migrations_dir": "src/db/migrations"
     }
@@ -1743,7 +1743,7 @@ Routes: dashboard · reports · forecasts · insights · transactions · clients
 cp .env.example .dev.vars
 
 # Create D1 database
-wrangler d1 create insighthunter-main-db
+wrangler d1 create insighthunter-db
 
 # Create KV namespaces
 wrangler kv:namespace create CACHE
