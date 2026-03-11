@@ -1,32 +1,242 @@
 ---
-import MarketingLayout from '../../layouts/MarketingLayout.astro';
-import { getApp } from '../../data/apps.ts';
+import MarketingLayout           from '@/layouts/MarketingLayout.astro';
+import FeatureGrid               from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader             from '@/components/marketing/SectionHeader.astro';
+import FeatureCTA                from '@/components/marketing/FeatureCTA.astro';
+import Badge                     from '@/components/shared/Badge.astro';
+import { FEATURES }              from '@/data/features';
+import type { FeatureCategory }  from '@/data/features';
+import type { GetStaticPaths }   from 'astro';
 
-const { slug } = Astro.params;
-const app = getApp(slug);
+export const getStaticPaths: GetStaticPaths = async () => {
+  return FEATURES.map(f => ({
+    params: { slug: f.key },
+    props:  { feature: f  },
+  }));
+};
 
-if (!app) {
-  Astro.response.status = 404;
-  Astro.response.statusText = 'Not Found';
-  return;
+const { feature } = Astro.props;
+
+if (!feature) {
+  return Astro.redirect('/features');
 }
+
+// Related features — same category, exclude self
+const related = FEATURES.filter(f =>
+  f.category === feature.category && f.key !== feature.key
+).slice(0, 3);
+
+const TIER_LABELS: Record<string, string> = {
+  lite:       'Free',
+  standard:   'Standard',
+  pro:        'Pro',
+  enterprise: 'Enterprise',
+};
+
+const TIER_BADGE: Record<string, 'success' | 'info' | 'warning' | 'tan'> = {
+  lite:       'success',
+  standard:   'info',
+  pro:        'warning',
+  enterprise: 'tan',
+};
+
+const CATEGORY_PAGE: Partial<Record<FeatureCategory, string>> = {
+  analytics:     '/features/analytics',
+  reporting:     '/features/reporting',
+  ai:            '/features/ai',
+  bookkeeping:   '/features/bookkeeping',
+  formation:     '/features/formation',
+  integrations:  '/features/integrations',
+};
+
+const categoryHref = CATEGORY_PAGE[feature.category] ?? '/features';
 ---
-<MarketingLayout title={app.name} description={app.desc}>
-    <section class="hero">
-        <h1>{app.name}</h1>
-        <p>{app.desc}</p>
-    </section>
 
-    <div class="feature-content container">
-        <section class="feature-details">
-            <h2>Features</h2>
-            <ul>
-                {app.features.map(feature => <li>{feature}</li>)}
-            </ul>
-        </section>
+<MarketingLayout
+  title={`${feature.label} — InsightHunter`}
+  description={feature.description}
+>
 
-        <section class="cta">
-            <a href="/shop/checkout" class="btn-primary">Purchase</a>
-        </section>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/features">Features</a>
+    <span aria-hidden="true">›</span>
+    <a href={categoryHref}>{feature.category}</a>
+    <span aria-hidden="true">›</span>
+    <span aria-current="page">{feature.label}</span>
+  </nav>
+
+  <!-- Feature hero -->
+  <section class="feature-detail-hero">
+    <div class="feature-detail-hero__inner">
+
+      {feature.comingSoon && (
+        <div class="coming-soon-banner">
+          🚧 This feature is coming soon. Join the waitlist to get notified.
+        </div>
+      )}
+
+      <p class="feature-detail-hero__category">{feature.category}</p>
+      <h1>{feature.label}</h1>
+      <p class="feature-detail-hero__desc">{feature.description}</p>
+
+      <!-- Tier badges -->
+      <div class="feature-detail-hero__tiers">
+        <span class="tiers-label">Available on:</span>
+        {feature.tiers.map(tier => (
+          <Badge variant={TIER_BADGE[tier]}>{TIER_LABELS[tier]}</Badge>
+        ))}
+      </div>
+
+      <div class="feature-detail-hero__ctas">
+        {feature.comingSoon ? (
+          <a href="/auth/register" class="btn btn--primary btn--lg">
+            Join Waitlist
+          </a>
+        ) : (
+          <>
+            <a href="/auth/register" class="btn btn--primary btn--lg">
+              Start for Free →
+            </a>
+            <a href="/pricing" class="btn btn--ghost btn--lg">
+              View Pricing
+            </a>
+          </>
+        )}
+      </div>
+
     </div>
+  </section>
+
+  <!-- Related features in same category -->
+  {related.length > 0 && (
+    <section class="section">
+      <div class="section__inner">
+        <SectionHeader
+          eyebrow={feature.category}
+          title={`More in ${feature.category}`}
+        />
+        <FeatureGrid features={related} />
+      </div>
+    </section>
+  )}
+
+  <!-- Back to category -->
+  <section class="section section--alt">
+    <div class="section__inner section__inner--centered">
+      <p>Explore everything in the <strong>{feature.category}</strong> category</p>
+      <a href={categoryHref} class="btn btn--outline">
+        ← Back to {feature.category}
+      </a>
+    </div>
+  </section>
+
+  <FeatureCTA
+    title={`Start using ${feature.label} today`}
+    sub={feature.comingSoon ? 'Join the waitlist — launching soon.' : 'Free tier available. No credit card required.'}
+    primaryLabel={feature.comingSoon ? 'Join Waitlist' : 'Get Started Free'}
+    primaryHref="/auth/register"
+    secondaryLabel="Compare Plans"
+    secondaryHref="/pricing"
+  />
+
 </MarketingLayout>
+
+<style>
+  /* ── Breadcrumb ───────────────────────────────────────────── */
+  .breadcrumb {
+    display:     flex;
+    align-items: center;
+    gap:         6px;
+    padding:     0.875rem 1.5rem;
+    font-size:   0.8rem;
+    color:       var(--color-text-muted);
+    max-width:   1100px;
+    margin:      0 auto;
+    flex-wrap:   wrap;
+    a            { color: var(--color-text-muted); text-decoration: none; text-transform: capitalize; }
+    a:hover      { color: var(--color-primary-dark); text-decoration: underline; }
+    span[aria-current] { color: var(--color-text); font-weight: 500; text-transform: capitalize; }
+  }
+
+  /* ── Feature detail hero ──────────────────────────────────── */
+  .feature-detail-hero {
+    background:    var(--color-sand-50);
+    border-bottom: 1px solid var(--color-border);
+    padding:       4rem 1.5rem;
+  }
+  .feature-detail-hero__inner { max-width: 680px; margin: auto; }
+
+  .coming-soon-banner {
+    background:    var(--color-sand-200);
+    border:        1px solid var(--color-sand-300);
+    border-radius: var(--radius-md);
+    padding:       10px 16px;
+    font-size:     0.875rem;
+    font-weight:   500;
+    color:         var(--color-sand-800);
+    margin-bottom: 1.5rem;
+    text-align:    center;
+  }
+
+  .feature-detail-hero__category {
+    font-size:      0.75rem;
+    font-weight:    700;
+    text-transform: capitalize;
+    letter-spacing: 0.08em;
+    color:          var(--color-primary);
+    margin-bottom:  0.5rem;
+  }
+
+  .feature-detail-hero h1 {
+    font-size:     2.5rem;
+    font-weight:   900;
+    color:         var(--color-text);
+    line-height:   1.15;
+    margin-bottom: 1rem;
+  }
+
+  .feature-detail-hero__desc {
+    font-size:     1.05rem;
+    color:         var(--color-text-muted);
+    line-height:   1.7;
+    margin-bottom: 1.25rem;
+  }
+
+  .feature-detail-hero__tiers {
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+    flex-wrap:   wrap;
+    margin-bottom: 1.75rem;
+  }
+  .tiers-label {
+    font-size:  0.78rem;
+    font-weight: 600;
+    color:      var(--color-text-muted);
+  }
+
+  .feature-detail-hero__ctas {
+    display:  flex;
+    gap:      12px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Sections ─────────────────────────────────────────────── */
+  .section { padding: 4rem 1.5rem; }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+  .section__inner--centered {
+    text-align:     center;
+    display:        flex;
+    flex-direction: column;
+    align-items:    center;
+    gap:            1.25rem;
+    p { font-size: 1rem; color: var(--color-text-muted); }
+    strong { color: var(--color-text); text-transform: capitalize; }
+  }
+
+  @media (max-width: 640px) {
+    .feature-detail-hero h1 { font-size: 1.9rem; }
+  }
+</style>

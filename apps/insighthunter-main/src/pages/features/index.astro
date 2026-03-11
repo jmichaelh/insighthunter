@@ -1,288 +1,215 @@
-
 ---
-import Layout from "../../layouts/Layout.astro";
-import { CORE_APPS, ADDON_APPS } from "../../data/apps.ts";
+import MarketingLayout         from '@/layouts/MarketingLayout.astro';
+import AppCard                 from '@/components/marketing/AppCard.astro';
+import FeatureGrid             from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader           from '@/components/marketing/SectionHeader.astro';
+import { FEATURES, getFeaturesByCategory } from '@/data/features';
+import { APPS }                from '@/data/apps';
+import type { FeatureCategory } from '@/data/features';
 
-const STATUS_MAP = {
-  live: { label: "Live", cls: "s-live" },
-  beta: { label: "Beta", cls: "s-beta" },
-  "coming-soon": { label: "Coming Soon", cls: "s-soon" },
-};
-
-const TIER_MAP = {
-  lite: { label: "Lite", cls: "tier-lite" },
-  standard: { label: "Standard", cls: "tier-standard" },
-  pro: { label: "Pro / Enterprise", cls: "tier-pro" },
-};
+const CATEGORIES: { key: FeatureCategory; label: string; icon: string; description: string }[] = [
+  { key: 'analytics',     label: 'Analytics',       icon: '📊', description: 'Real-time KPIs, burn rate, runway, and cash forecasting.' },
+  { key: 'reporting',     label: 'Reports',          icon: '📋', description: 'GAAP-structured P&L, balance sheet, and cash flow exports.' },
+  { key: 'ai',            label: 'AI CFO',           icon: '🤖', description: 'Insights, anomaly detection, and plain-English financial chat.' },
+  { key: 'bookkeeping',   label: 'Bookkeeping',      icon: '📒', description: 'Chart of accounts, bank feeds, reconciliation, journal entries.' },
+  { key: 'formation',     label: 'Formation',        icon: '🏛️', description: 'AI entity wizard, EIN guidance, compliance calendar.' },
+  { key: 'payroll',       label: 'Payroll',          icon: '💸', description: 'Payroll runs, W-4 / 1099 management, journal sync.' },
+  { key: 'integrations',  label: 'Integrations',     icon: '🔗', description: 'QuickBooks, Xero, and Plaid bank feeds.' },
+  { key: 'collaboration', label: 'Collaboration',    icon: '👥', description: 'Team seats, white-label branding, and client workspaces.' },
+  { key: 'platform',      label: 'Platform',         icon: '⚙️', description: 'PWA, 99.99% SLA, and dedicated onboarding.' },
+];
 ---
 
-<Layout title="Features">
-  <!-- ── Hero ────────────────────────────────────────────────────── -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-badge fade-up">🚀 3 Core Plans · 5 Powerful Add-ons</div>
-      <h1 class="fade-up d1">Your complete business<br />intelligence platform</h1>
-      <p class="fade-up d2">
-        Enterprise-grade financial tools built for small businesses. Pick your
-        plan, bolt on what you need — pay only for what you use.
+<MarketingLayout
+  title="Features — InsightHunter"
+  description="Everything InsightHunter can do — from real-time KPIs and AI CFO insights to entity formation and bank reconciliation."
+>
+
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <section class="features-hero">
+    <div class="features-hero__inner">
+      <p class="features-hero__eyebrow">Everything in one place</p>
+      <h1 class="features-hero__title">
+        The financial OS for<br />
+        <span class="gradient-text">growing businesses</span>
+      </h1>
+      <p class="features-hero__sub">
+        From entity formation to AI-powered forecasting — InsightHunter replaces
+        five separate tools with one integrated platform.
       </p>
-      <div class="hero-ctas fade-up d3">
-        <button class="btn-primary" onclick="openAuth('signup')">Start Free Trial</button>
-        <button class="btn-ghost" onclick="scrollTo('plans')">Explore Plans ↓</button>
+      <div class="features-hero__ctas">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Start for Free</a>
+        <a href="/pricing"       class="btn btn--ghost   btn--lg">See Pricing →</a>
       </div>
     </div>
   </section>
 
-  <!-- ── Stats ───────────────────────────────────────────────────── -->
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-num">3</div>
-      <div class="stat-label">Core Plans</div>
+  <!-- ── Category nav ──────────────────────────────────────────── -->
+  <nav class="features-cat-nav" aria-label="Feature categories">
+    <div class="features-cat-nav__inner">
+      {CATEGORIES.map(cat => (
+        <a href={`#${cat.key}`} class="cat-nav-pill">
+          <span aria-hidden="true">{cat.icon}</span>
+          {cat.label}
+        </a>
+      ))}
     </div>
-    <div class="stat-item">
-      <div class="stat-num">5</div>
-      <div class="stat-label">Add-on Apps</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">95%</div>
-      <div class="stat-label">Forecast Accuracy</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">&lt;2min</div>
-      <div class="stat-label">Setup Time</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">$0</div>
-      <div class="stat-label">Per Extra User (Pro)</div>
-    </div>
-  </div>
+  </nav>
 
-  <!-- ── Core Plans ──────────────────────────────────────────────── -->
-  <section class="section" id="plans">
-    <div class="section-header">
-      <div class="section-eyebrow">Core Plans</div>
-      <h2 class="section-title">Choose your tier</h2>
-      <p class="section-sub">
-        All plans include the Insight Hunter dashboard. Upgrade anytime — no data
-        migration, no downtime.
-      </p>
+  <!-- ── Products section ──────────────────────────────────────── -->
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader
+        eyebrow="Products"
+        title="Purpose-built apps, fully integrated"
+        sub="Each app solves one problem perfectly — together they cover your entire financial stack."
+      />
+      <div class="apps-grid">
+        {APPS.map(app => (
+          <AppCard app={app} showFeatures={true} />
+        ))}
+      </div>
     </div>
-    <div id="corePlansGrid" class="cards-grid">
-      {CORE_APPS.map((app, i) => {
-          const status = STATUS_MAP[app.status] || STATUS_MAP.live;
-          const tier = TIER_MAP[app.slug];
-          return (
-            <a class={`fcard fade-up`} style={`animation-delay:${i * 0.07}s`} href={app.pageUrl}>
-              {tier && <div class={`fcard-tier-badge ${tier.cls}`}>{tier.label}</div>}
-              <div class="fcard-top">
-                <div class="fcard-icon">{app.icon}</div>
-                <div class={`fcard-status ${status.cls}`}>{status.label}</div>
-              </div>
-              <div class="fcard-name">{app.name}</div>
-              <div class="fcard-desc">{app.desc}</div>
-              <div class="fcard-tags">
-                {app.tags.map(t => <span class="fcard-tag">{t}</span>)}
-              </div>
-              <div class="fcard-footer">
-                <div class="fcard-price">
-                  <strong>{app.price}</strong>
-                  <span> · {app.tenancy}</span>
-                </div>
-                <div class="fcard-arrow">→</div>
-              </div>
+  </section>
+
+  <!-- ── Per-category feature sections ─────────────────────────── -->
+  {CATEGORIES.map(cat => {
+    const features = getFeaturesByCategory(cat.key);
+    if (features.length === 0) return null;
+    return (
+      <section class="section section--alt" id={cat.key}>
+        <div class="section__inner">
+          <SectionHeader
+            eyebrow={cat.icon + ' ' + cat.label}
+            title={cat.description}
+          />
+          <FeatureGrid features={features} />
+          <div class="section__cta">
+            <a href={`/features/${cat.key}`} class="btn btn--outline">
+              Learn more about {cat.label} →
             </a>
-          );
-        })}
-    </div>
-  </section>
-
-  <!-- ── Add-ons divider ─────────────────────────────────────────── -->
-  <div class="addons-divider">
-    <span class="addons-divider-label">⚡ Add-on Applications</span>
-  </div>
-
-  <!-- ── Add-on Apps ─────────────────────────────────────────────── -->
-  <section class="section" id="addons" style="padding-top:3rem;">
-    <div class="section-header">
-      <div class="section-eyebrow">Add-ons</div>
-      <h2 class="section-title">Bolt on what you need</h2>
-      <p class="section-sub">
-        Add-ons work on any plan. Each lives at its own subdomain and connects
-        directly to your Insight data.
-      </p>
-    </div>
-    <div id="addonsGrid" class="cards-grid">
-      {ADDON_APPS.map((app, i) => {
-          const status = STATUS_MAP[app.status] || STATUS_MAP.live;
-          return (
-            <a class={`fcard fade-up`} style={`animation-delay:${i * 0.07}s`} href={app.pageUrl}>
-              <div class="fcard-top">
-                <div class="fcard-icon">{app.icon}</div>
-                <div class={`fcard-status ${status.cls}`}>{status.label}</div>
-              </div>
-              <div class="fcard-name">{app.name}</div>
-              <div class="fcard-desc">{app.desc}</div>
-              <div class="fcard-tags">
-                {app.tags.map(t => <span class="fcard-tag">{t}</span>)}
-              </div>
-              <div class="fcard-footer">
-                <div class="fcard-price">
-                  <strong>{app.price}</strong>
-                  <span> · {app.tenancy}</span>
-                </div>
-                <div class="fcard-arrow">→</div>
-              </div>
-            </a>
-          );
-        })}
-    </div>
-  </section>
-
-  <!-- ── Auth Modal ──────────────────────────────────────────────── -->
-  <div class="overlay" id="authOverlay" onclick="overlayClick(event)">
-    <div
-      class="modal"
-      id="authModal"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Sign in or create account"
-    >
-      <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
-      <div class="modal-glow"></div>
-      <div class="modal-header">
-        <div class="modal-logo">IH</div>
-        <h3 id="authModalTitle">Welcome back</h3>
-        <p id="authModalSubtitle">Sign in to access your apps</p>
-      </div>
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-        <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
-      </div>
-      <div class="auth-body">
-        <form class="auth-form" id="authForm" novalidate>
-          <input
-            type="text"
-            id="authName"
-            placeholder="Full name"
-            autocomplete="name"
-            style="display:none"
-          />
-          <input
-            type="email"
-            id="authEmail"
-            placeholder="Email address"
-            autocomplete="email"
-            required
-          />
-          <input
-            type="password"
-            id="authPassword"
-            placeholder="Password (min 8 chars)"
-            autocomplete="current-password"
-            required
-            minlength="8"
-          />
-          <div id="authMsg" class="auth-msg" role="alert"></div>
-          <button type="submit" class="auth-submit" id="authSubmit">Sign In</button>
-        </form>
-        <div class="auth-divider" style="margin-top:1rem;">
-          New to Insight Hunter?
-          <a
-            href="#"
-            onclick="switchTab('signup');return false;"
-            style="color:var(--accent)">Create a free account →</a>
+          </div>
         </div>
+      </section>
+    );
+  })}
+
+  <!-- ── Bottom CTA ─────────────────────────────────────────────── -->
+  <section class="features-cta">
+    <div class="features-cta__inner">
+      <h2>Ready to replace five tools with one?</h2>
+      <p>Free tier available — no credit card required.</p>
+      <div class="features-cta__btns">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Get Started Free</a>
+        <a href="/pricing"       class="btn btn--ghost   btn--lg">Compare Plans</a>
       </div>
     </div>
-  </div>
-</Layout>
+  </section>
 
-<script>
-  // Auth Modal
-  const authOverlay = document.getElementById('authOverlay');
-  const authModal = document.getElementById('authModal');
-  const authForm = document.getElementById('authForm');
-  const authName = document.getElementById('authName');
-  const authEmail = document.getElementById('authEmail');
-  const authPassword = document.getElementById('authPassword');
-  const authSubmit = document.getElementById('authSubmit');
-  const authMsg = document.getElementById('authMsg');
-  const authModalTitle = document.getElementById('authModalTitle');
-  const authModalSubtitle = document.getElementById('authModalSubtitle');
-  const tabLogin = document.getElementById('tabLogin');
-  const tabSignup = document.getElementById('tabSignup');
+</MarketingLayout>
 
-  function openAuth(mode = 'login') {
-    authOverlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    switchTab(mode);
+<style>
+  /* ── Hero ────────────────────────────────────────────────────── */
+  .features-hero {
+    background:    var(--color-sand-50);
+    border-bottom: 1px solid var(--color-border);
+    padding:       5rem 1.5rem 4rem;
+    text-align:    center;
+  }
+  .features-hero__inner { max-width: 720px; margin: auto; }
+  .features-hero__eyebrow {
+    font-size:      0.8rem;
+    font-weight:    700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color:          var(--color-primary);
+    margin-bottom:  0.75rem;
+  }
+  .features-hero__title {
+    font-size:   3rem;
+    font-weight: 900;
+    line-height: 1.1;
+    color:       var(--color-text);
+    margin-bottom: 1.25rem;
+  }
+  .gradient-text {
+    background:              linear-gradient(135deg, var(--color-sand-600), var(--color-sand-800));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip:         text;
+  }
+  .features-hero__sub {
+    font-size:     1.05rem;
+    color:         var(--color-text-muted);
+    line-height:   1.7;
+    margin-bottom: 2rem;
+  }
+  .features-hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* ── Category nav pill bar ───────────────────────────────────── */
+  .features-cat-nav {
+    background:    #fff;
+    border-bottom: 1px solid var(--color-border);
+    position:      sticky;
+    top:           64px;
+    z-index:       99;
+    overflow-x:    auto;
+  }
+  .features-cat-nav__inner {
+    display:     flex;
+    gap:         4px;
+    padding:     10px 1.5rem;
+    max-width:   1200px;
+    margin:      auto;
+  }
+  .cat-nav-pill {
+    display:       flex;
+    align-items:   center;
+    gap:           5px;
+    padding:       6px 14px;
+    border-radius: 999px;
+    font-size:     0.8rem;
+    font-weight:   600;
+    color:         var(--color-text-muted);
+    text-decoration: none;
+    white-space:   nowrap;
+    transition:    background 0.12s, color 0.12s;
+  }
+  .cat-nav-pill:hover {
+    background: var(--color-sand-100);
+    color:      var(--color-text);
+    text-decoration: none;
   }
 
-  function closeAuth() {
-    authOverlay.style.display = 'none';
-    document.body.style.overflow = 'auto';
+  /* ── Sections ────────────────────────────────────────────────── */
+  .section {
+    padding: 5rem 1.5rem;
+  }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+
+  .apps-grid {
+    display:               grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:                   1.25rem;
+    margin-top:            2.5rem;
   }
 
-  function overlayClick(event) {
-    if (event.target === authOverlay) {
-      closeAuth();
-    }
+  .section__cta { margin-top: 2rem; text-align: center; }
+
+  /* ── Bottom CTA ──────────────────────────────────────────────── */
+  .features-cta {
+    background:    var(--color-sand-800);
+    color:         #fff;
+    padding:       5rem 1.5rem;
+    text-align:    center;
   }
+  .features-cta__inner { max-width: 600px; margin: auto; }
+  .features-cta h2 { font-size: 2.25rem; font-weight: 800; margin-bottom: 0.75rem; }
+  .features-cta p  { color: var(--color-sand-300); margin-bottom: 2rem; }
+  .features-cta__btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-  function switchTab(mode) {
-    if (mode === 'login') {
-      tabLogin.classList.add('active');
-      tabSignup.classList.remove('active');
-      authModalTitle.textContent = 'Welcome back';
-      authModalSubtitle.textContent = 'Sign in to access your apps';
-      authName.style.display = 'none';
-      authName.required = false;
-      authSubmit.textContent = 'Sign In';
-      // Update the divider link
-      const divider = authForm.nextElementSibling;
-      divider.innerHTML = `
-        New to Insight Hunter?
-        <a href="#" onclick="switchTab('signup');return false;" style="color:var(--accent)">Create a free account →</a>
-      `;
-    } else { // signup
-      tabSignup.classList.add('active');
-      tabLogin.classList.remove('active');
-      authModalTitle.textContent = 'Create your account';
-      authModalSubtitle.textContent = 'Start your 14-day Pro trial';
-      authName.style.display = 'block';
-      authName.required = true;
-      authSubmit.textContent = 'Create Account';
-       // Update the divider link
-      const divider = authForm.nextElementSibling;
-      divider.innerHTML = `
-        Already have an account?
-        <a href="#" onclick="switchTab('login');return false;" style="color:var(--accent)">Sign in →</a>
-      `;
-    }
+  @media (max-width: 640px) {
+    .features-hero__title { font-size: 2rem; }
   }
-
-  authForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    authMsg.textContent = '';
-    // TODO: Add actual authentication logic (e.g., call API)
-    console.log('Form submitted');
-    // Example validation
-    if (!authEmail..value || !authPassword.value || (authName.style.display === 'block' && !authName.value)) {
-      authMsg.textContent = 'Please fill out all required fields.';
-      authMsg.style.color = 'var(--red)';
-      return;
-    }
-    authMsg.textContent = 'Success! (This is a demo)';
-    authMsg.style.color = 'var(--green)';
-    // In a real app, you'd redirect or update the UI here.
-  });
-
-  // Smooth scroll for "Explore Plans"
-  function scrollTo(id) {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-</script>
+</style>

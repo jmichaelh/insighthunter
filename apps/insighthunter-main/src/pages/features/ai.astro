@@ -1,0 +1,237 @@
+---
+import MarketingLayout           from '@/layouts/MarketingLayout.astro';
+import FeatureGrid               from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader             from '@/components/marketing/SectionHeader.astro';
+import FeatureCTA                from '@/components/marketing/FeatureCTA.astro';
+import { getFeaturesByCategory } from '@/data/features';
+
+const features = getFeaturesByCategory('ai');
+---
+
+<MarketingLayout
+  title="AI CFO — InsightHunter"
+  description="AI-powered insights, anomaly alerts, transaction categorization, and a plain-English CFO chat for your finances."
+>
+
+  <section class="feature-hero feature-hero--dark">
+    <div class="feature-hero__inner">
+      <p class="feature-hero__eyebrow">🤖 AI CFO</p>
+      <h1>Your 24/7 AI Chief <em>Financial Officer</em></h1>
+      <p class="feature-hero__sub">
+        InsightHunter's AI watches your books around the clock — flagging anomalies,
+        surfacing opportunities, and answering financial questions in plain English.
+        No jargon. No waiting.
+      </p>
+      <div class="feature-hero__ctas">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Try AI CFO Free</a>
+        <a href="/pricing"       class="btn btn--ghost-light btn--lg">See Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader eyebrow="What's included" title="AI that works for you" />
+      <FeatureGrid features={features} />
+    </div>
+  </section>
+
+  <!-- Chat demo section -->
+  <section class="section section--alt">
+    <div class="section__inner section__inner--split">
+      <div class="split-text">
+        <p class="split-eyebrow">AI CFO Chat</p>
+        <h2>Ask anything about your finances</h2>
+        <p>
+          Type any financial question in plain English and get an instant,
+          context-aware answer — grounded in your actual transaction data,
+          not generic advice.
+        </p>
+        <ul class="feature-list">
+          <li>✓ "Why did expenses spike in March?"</li>
+          <li>✓ "What's my most profitable product line?"</li>
+          <li>✓ "Am I on track to hit $500k revenue this year?"</li>
+          <li>✓ "Which vendor is eating the most margin?"</li>
+        </ul>
+        <p class="split-tier">Available on <strong>Standard, Pro, Enterprise</strong></p>
+      </div>
+      <div class="split-visual">
+        <div class="mock-chat">
+          <div class="mock-chat__header">🤖 AI CFO</div>
+          <div class="mock-chat__messages">
+            <div class="chat-msg chat-msg--user">
+              Why did my expenses go up 22% in February?
+            </div>
+            <div class="chat-msg chat-msg--ai">
+              Your February expenses increased by <strong>$4,180 (+22%)</strong>
+              vs January. The biggest driver was <em>Software & SaaS</em> (+$2,100),
+              followed by <em>Contractor Payments</em> (+$1,600). The SaaS increase
+              is a one-time annual renewal for your design tools.
+            </div>
+            <div class="chat-msg chat-msg--user">
+              Should I be worried about my runway?
+            </div>
+            <div class="chat-msg chat-msg--ai">
+              At your current burn rate of <strong>$10,467/mo</strong>, you have
+              approximately <strong>9 months of runway</strong>. That puts you in
+              the ✅ <em>healthy</em> range. I'd suggest reviewing the $2,100
+              SaaS spend before the next renewal cycle.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Insights section -->
+  <section class="section">
+    <div class="section__inner section__inner--split section__inner--reverse">
+      <div class="split-text">
+        <p class="split-eyebrow">AI Insights</p>
+        <h2>Anomalies caught before they become problems</h2>
+        <p>
+          InsightHunter continuously monitors your transactions and surfaces
+          actionable insights — unusual spending, missed recurring revenue,
+          vendor overcharges, and more.
+        </p>
+        <ul class="feature-list">
+          <li>✓ Anomaly detection across all categories</li>
+          <li>✓ Opportunity identification (cost savings, revenue gaps)</li>
+          <li>✓ Priority levels: High / Medium / Low</li>
+          <li>✓ Lite tier: 5/month — Standard+: unlimited</li>
+        </ul>
+      </div>
+      <div class="split-visual">
+        <div class="mock-insights">
+          {[
+            { type: 'warning',     icon: '⚠️', title: 'Unusual spend in Advertising',      body: '$3,200 charged — 4× your monthly average.' },
+            { type: 'opportunity', icon: '💡', title: 'Subscription you haven\'t used',    body: 'Design tool last accessed 47 days ago ($189/mo).' },
+            { type: 'info',        icon: 'ℹ️', title: 'Q1 tax payment due in 12 days',    body: 'Estimated $4,800 based on net income.' },
+          ].map(i => (
+            <div class={`mock-insight mock-insight--${i.type}`}>
+              <span>{i.icon}</span>
+              <div>
+                <strong>{i.title}</strong>
+                <p>{i.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FeatureCTA
+    title="Let AI watch your books while you run your business"
+    sub="5 free AI insights per month on the Lite plan. Unlimited on Standard+."
+    primaryLabel="Start for Free"
+    primaryHref="/auth/register"
+    secondaryLabel="Compare Plans"
+    secondaryHref="/pricing"
+  />
+
+</MarketingLayout>
+
+<style>
+  .feature-hero {
+    background: var(--color-sand-50); border-bottom: 1px solid var(--color-border);
+    padding: 5rem 1.5rem 4rem; text-align: center;
+  }
+  .feature-hero--dark {
+    background: var(--color-sand-800);
+    color: #fff;
+  }
+  .feature-hero__inner { max-width: 700px; margin: auto; }
+  .feature-hero__eyebrow {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--color-sand-300); margin-bottom: 0.75rem;
+  }
+  .feature-hero--dark .feature-hero__eyebrow { color: var(--color-sand-300); }
+  .feature-hero h1 {
+    font-size: 2.75rem; font-weight: 900; line-height: 1.15; margin-bottom: 1.25rem;
+  }
+  .feature-hero--dark h1 { color: #fff; }
+  .feature-hero h1 em { font-style: normal; color: var(--color-sand-300); }
+  .feature-hero__sub {
+    font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;
+    color: var(--color-sand-300);
+  }
+  .feature-hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .btn--ghost-light {
+    background: transparent; border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+  }
+  .btn--ghost-light:hover { background: rgba(255,255,255,0.1); }
+
+  .section { padding: 5rem 1.5rem; }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+
+  .section__inner--split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+  .section__inner--reverse { direction: rtl; }
+  .section__inner--reverse > * { direction: ltr; }
+
+  .split-eyebrow {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--color-primary); margin-bottom: 0.5rem;
+  }
+  .split-text h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 1rem; }
+  .split-text p  { font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .split-tier    { font-size: 0.8rem; color: var(--color-text-muted); }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .feature-list li { font-size: 0.875rem; color: var(--color-text-muted); }
+
+  /* ── Mock chat ────────────────────────────────────────────── */
+  .split-visual {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow-elevated);
+  }
+  .mock-chat__header {
+    background: var(--color-sand-800); color: #fff;
+    padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 700;
+  }
+  .mock-chat__messages {
+    padding: 1rem; display: flex; flex-direction: column; gap: 10px;
+  }
+  .chat-msg {
+    padding: 10px 14px; border-radius: var(--radius-md);
+    font-size: 0.85rem; line-height: 1.6; max-width: 90%;
+  }
+  .chat-msg--user {
+    background: var(--color-sand-100); color: var(--color-text);
+    align-self: flex-end; border-radius: var(--radius-md) var(--radius-md) 4px var(--radius-md);
+  }
+  .chat-msg--ai {
+    background: var(--color-sand-50); color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 4px;
+  }
+  .chat-msg--ai strong { color: var(--color-text); }
+  .chat-msg--ai em     { font-style: normal; color: var(--color-primary-dark); font-weight: 500; }
+
+  /* ── Mock insights ────────────────────────────────────────── */
+  .mock-insights { display: flex; flex-direction: column; gap: 8px; padding: 1.25rem; }
+  .mock-insight {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-md);
+    border-left: 3px solid transparent; font-size: 0.8rem;
+    strong { display: block; font-weight: 600; font-size: 0.8rem; }
+    p      { color: var(--color-text-muted); margin-top: 2px; }
+    span   { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  }
+  .mock-insight--warning     { background: #fdf6ec; border-left-color: var(--color-warning); }
+  .mock-insight--opportunity { background: #edfaf3; border-left-color: var(--color-success); }
+  .mock-insight--info        { background: #eef4fb; border-left-color: var(--color-info);    }
+
+  @media (max-width: 768px) {
+    .section__inner--split { grid-template-columns: 1fr; gap: 2rem; }
+    .section__inner--reverse { direction: ltr; }
+    .feature-hero h1 { font-size: 2rem; }
+  }
+</style>

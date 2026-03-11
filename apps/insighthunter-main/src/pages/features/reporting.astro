@@ -1,0 +1,242 @@
+---
+import MarketingLayout           from '@/layouts/MarketingLayout.astro';
+import FeatureGrid               from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader             from '@/components/marketing/SectionHeader.astro';
+import FeatureCTA                from '@/components/marketing/FeatureCTA.astro';
+import { getFeaturesByCategory } from '@/data/features';
+
+const features = getFeaturesByCategory('reporting');
+---
+
+<MarketingLayout
+  title="Reports — InsightHunter"
+  description="GAAP-structured P&L, cash flow statements, and balance sheets — exportable as branded PDFs in seconds."
+>
+
+  <section class="feature-hero">
+    <div class="feature-hero__inner">
+      <p class="feature-hero__eyebrow">📋 Reporting</p>
+      <h1>Boardroom-ready reports <em>in seconds</em></h1>
+      <p class="feature-hero__sub">
+        Generate GAAP-structured Profit & Loss, Cash Flow Statements, and Balance
+        Sheets on demand — then export as branded, client-ready PDFs with one click.
+      </p>
+      <div class="feature-hero__ctas">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Start for Free</a>
+        <a href="/pricing"       class="btn btn--ghost   btn--lg">See Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader
+        eyebrow="What's included"
+        title="Every report your accountant wants"
+      />
+      <FeatureGrid features={features} />
+    </div>
+  </section>
+
+  <!-- Report types grid -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <SectionHeader
+        eyebrow="Report types"
+        title="Three core statements, fully automated"
+        sub="InsightHunter generates all three from your live transaction data — no spreadsheets needed."
+      />
+      <div class="report-types">
+
+        <div class="report-card">
+          <div class="report-card__icon">📈</div>
+          <h3>Profit & Loss</h3>
+          <p>
+            Revenue, COGS, gross profit, operating expenses, and net income —
+            with period comparisons and category-level breakdowns.
+          </p>
+          <ul>
+            <li>✓ MTD / QTD / YTD / custom range</li>
+            <li>✓ Category drill-down</li>
+            <li>✓ Prior period comparison</li>
+          </ul>
+          <a href="/features/reporting#pl" class="btn btn--outline btn--sm">Learn more →</a>
+        </div>
+
+        <div class="report-card">
+          <div class="report-card__icon">💧</div>
+          <h3>Cash Flow Statement</h3>
+          <p>
+            Operating, investing, and financing activities structured to GAAP
+            standards — ready for your CPA or investor deck.
+          </p>
+          <ul>
+            <li>✓ Indirect method</li>
+            <li>✓ Operating / investing / financing split</li>
+            <li>✓ Free cash flow calculation</li>
+          </ul>
+          <a href="/features/reporting#cashflow" class="btn btn--outline btn--sm">Learn more →</a>
+        </div>
+
+        <div class="report-card">
+          <div class="report-card__icon">⚖️</div>
+          <h3>Balance Sheet</h3>
+          <p>
+            Assets, liabilities, and equity snapshot as of any date —
+            automatically balanced from your chart of accounts.
+          </p>
+          <ul>
+            <li>✓ Current vs long-term assets</li>
+            <li>✓ Equity rollforward</li>
+            <li>✓ As-of-date snapshots</li>
+          </ul>
+          <a href="/features/reporting#balance" class="btn btn--outline btn--sm">Learn more →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PDF export highlight -->
+  <section class="section">
+    <div class="section__inner section__inner--split">
+      <div class="split-text">
+        <p class="split-eyebrow">PDF Export</p>
+        <h2>Send to clients in one click</h2>
+        <p>
+          Every report exports as a clean, branded PDF — your firm name, logo,
+          and colors if you're on the Pro or Enterprise white-label plan.
+        </p>
+        <ul class="feature-list">
+          <li>✓ One-click PDF generation</li>
+          <li>✓ White-label branding (Pro+)</li>
+          <li>✓ Shareable secure links</li>
+          <li>✓ Stored 12 months in your account</li>
+        </ul>
+      </div>
+      <div class="split-visual">
+        <div class="mock-report">
+          <div class="mock-report__header">
+            <strong>Profit & Loss Statement</strong>
+            <span>Jan 1 – Mar 31, 2026</span>
+          </div>
+          {[
+            { label: 'Revenue',           amount: '$48,200', bold: true  },
+            { label: 'Cost of Goods Sold',amount: '(12,400)',bold: false },
+            { label: 'Gross Profit',      amount: '$35,800', bold: true  },
+            { label: 'Operating Expenses',amount: '(19,000)',bold: false },
+            { label: 'Net Income',        amount: '$16,800', bold: true  },
+          ].map(row => (
+            <div class="mock-report__row" class:list={[row.bold && 'bold']}>
+              <span>{row.label}</span>
+              <span>{row.amount}</span>
+            </div>
+          ))}
+          <div class="mock-report__footer">
+            <span>⬇ Export PDF</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FeatureCTA
+    title="Stop building reports in spreadsheets"
+    sub="InsightHunter generates them automatically from your live data."
+    primaryLabel="Get Started Free"
+    primaryHref="/auth/register"
+    secondaryLabel="View Pricing"
+    secondaryHref="/pricing"
+  />
+
+</MarketingLayout>
+
+<style>
+  .feature-hero {
+    background: var(--color-sand-50); border-bottom: 1px solid var(--color-border);
+    padding: 5rem 1.5rem 4rem; text-align: center;
+  }
+  .feature-hero__inner { max-width: 700px; margin: auto; }
+  .feature-hero__eyebrow {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--color-primary); margin-bottom: 0.75rem;
+  }
+  .feature-hero h1 {
+    font-size: 2.75rem; font-weight: 900; line-height: 1.15;
+    margin-bottom: 1.25rem; color: var(--color-text);
+  }
+  .feature-hero h1 em { font-style: normal; color: var(--color-primary-dark); }
+  .feature-hero__sub {
+    font-size: 1.05rem; color: var(--color-text-muted);
+    line-height: 1.7; margin-bottom: 2rem;
+  }
+  .feature-hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .section { padding: 5rem 1.5rem; }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+
+  .section__inner--split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+
+  .split-eyebrow {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--color-primary); margin-bottom: 0.5rem;
+  }
+  .split-text h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 1rem; }
+  .split-text p  { font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1rem; }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .feature-list li { font-size: 0.875rem; color: var(--color-text-muted); }
+
+  /* ── Report types ─────────────────────────────────────────── */
+  .report-types {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem; margin-top: 2.5rem;
+  }
+  .report-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.75rem;
+    box-shadow: var(--shadow-card);
+    display: flex; flex-direction: column; gap: 0.875rem;
+  }
+  .report-card__icon { font-size: 2.5rem; }
+  .report-card h3    { font-size: 1.1rem; font-weight: 700; }
+  .report-card p     { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.6; }
+  .report-card ul    { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .report-card li    { font-size: 0.8rem; color: var(--color-text-muted); }
+  .report-card a     { margin-top: auto; align-self: flex-start; }
+
+  /* ── Mock report ──────────────────────────────────────────── */
+  .split-visual {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.5rem;
+    box-shadow: var(--shadow-elevated);
+  }
+  .mock-report__header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 0.875rem; border-bottom: 2px solid var(--color-border);
+    margin-bottom: 0.75rem;
+    strong { font-size: 0.9rem; }
+    span   { font-size: 0.78rem; color: var(--color-text-muted); }
+  }
+  .mock-report__row {
+    display: flex; justify-content: space-between;
+    padding: 8px 4px; font-size: 0.875rem;
+    border-bottom: 1px solid var(--color-sand-100);
+    &.bold { font-weight: 700; background: var(--color-sand-50); }
+  }
+  .mock-report__footer {
+    margin-top: 1rem; padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem; color: var(--color-primary-dark);
+    font-weight: 600; cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .section__inner--split { grid-template-columns: 1fr; gap: 2rem; }
+    .feature-hero h1 { font-size: 2rem; }
+  }
+</style>

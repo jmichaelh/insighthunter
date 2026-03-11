@@ -1,26 +1,27 @@
 {
-  "name": "@insighthunter/main",
+  "name": "insighthunter-main",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "deploy": "wrangler pages deploy dist",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "type-check": "tsc --noEmit",
-    "test": "vitest run",
-    "lint": "eslint src --ext .ts,.astro,.svelte"
+    "dev":       "astro dev",
+    "build":     "astro build",
+    "preview":   "astro preview",
+    "deploy":    "astro build && wrangler pages deploy dist --project-name insighthunter-main",
+    "type-check":"astro check && tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.3.0",
-    "@astrojs/svelte": "^7.0.5",
-    "@astrojs/sitemap": "^3.1.6",
-    "astro": "^5.4.0",
-    "svelte": "^5.22.5"
+    "@astrojs/cloudflare": "^12.6.12",
+    "@astrojs/sitemap":    "^3.2.0",
+    "@astrojs/svelte":     "^5.7.0",
+    "astro":               "^4.16.19",
+    "svelte":              "^5.0.0",
+    "@insighthunter/auth-middleware": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250310.0",
-    "wrangler": "^4.2.0"
+    "@cloudflare/workers-types": "^4.20260101.0",
+    "typescript":               "^5.4.5",
+    "sass":                     "^1.77.0",
+    "wrangler":                 "^3.90.0",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0"
   }
 }

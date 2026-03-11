@@ -1,1 +1,207 @@
-.
+
+---
+import MarketingLayout           from '@/layouts/MarketingLayout.astro';
+import FeatureGrid               from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader             from '@/components/marketing/SectionHeader.astro';
+import FeatureCTA                from '@/components/marketing/FeatureCTA.astro';
+import { getFeaturesByCategory } from '@/data/features';
+
+const features = getFeaturesByCategory('bookkeeping');
+---
+
+<MarketingLayout
+  title="Bookkeeping — InsightHunter"
+  description="Chart of accounts, Plaid bank feeds, bank reconciliation, and manual journal entries — all in one place."
+>
+
+  <section class="feature-hero">
+    <div class="feature-hero__inner">
+      <p class="feature-hero__eyebrow">📒 Bookkeeping</p>
+      <h1>Books that keep <em>themselves</em></h1>
+      <p class="feature-hero__sub">
+        Connect your bank accounts via Plaid, let AI categorize your transactions,
+        and reconcile in minutes — not hours. InsightHunter replaces your basic
+        bookkeeping software without the $50/month price tag.
+      </p>
+      <div class="feature-hero__ctas">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Start for Free</a>
+        <a href="/pricing"       class="btn btn--ghost   btn--lg">See Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader eyebrow="What's included" title="Everything you need to stay in the books" />
+      <FeatureGrid features={features} />
+    </div>
+  </section>
+
+  <!-- Plaid bank feeds section -->
+  <section class="section section--alt">
+    <div class="section__inner section__inner--split">
+      <div class="split-text">
+        <p class="split-eyebrow">Bank Feeds via Plaid</p>
+        <h2>Connect 12,000+ banks in 60 seconds</h2>
+        <p>
+          InsightHunter uses Plaid to pull live transactions from your checking,
+          savings, and credit card accounts — no CSV exports, no manual entry.
+        </p>
+        <ul class="feature-list">
+          <li>✓ 12,000+ US financial institutions</li>
+          <li>✓ Transactions imported within minutes</li>
+          <li>✓ Historical import up to 24 months</li>
+          <li>✓ Bank-grade 256-bit encryption</li>
+        </ul>
+      </div>
+      <div class="split-visual">
+        <div class="mock-accounts">
+          {[
+            { bank: '🏦 Chase Business Checking', balance: '$61,240', status: 'Connected' },
+            { bank: '💳 Amex Business Gold',      balance: '($4,820)', status: 'Connected' },
+            { bank: '🏦 Mercury Savings',         balance: '$32,860', status: 'Connected' },
+          ].map(a => (
+            <div class="mock-account-row">
+              <span class="mock-account-name">{a.bank}</span>
+              <span class="mock-account-balance">{a.balance}</span>
+              <span class="mock-account-status">✅ {a.status}</span>
+            </div>
+          ))}
+          <button class="mock-connect-btn">+ Connect Account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reconciliation section -->
+  <section class="section">
+    <div class="section__inner section__inner--split section__inner--reverse">
+      <div class="split-text">
+        <p class="split-eyebrow">Bank Reconciliation</p>
+        <h2>Reconcile in minutes, not days</h2>
+        <p>
+          Match imported transactions to ledger entries with one click.
+          InsightHunter flags unmatched items and gives you a clear diff between
+          your books and your bank statement.
+        </p>
+        <ul class="feature-list">
+          <li>✓ One-click match for exact amounts</li>
+          <li>✓ Fuzzy match for split transactions</li>
+          <li>✓ Unreconciled items flagged in red</li>
+          <li>✓ Full reconciliation audit trail</li>
+        </ul>
+        <p class="split-tier">Available on <strong>Standard, Pro, Enterprise</strong></p>
+      </div>
+      <div class="split-visual">
+        <div class="mock-reconcile">
+          <div class="mock-reconcile__header">
+            <span>Bank Statement Balance</span>
+            <strong>$61,240.00</strong>
+          </div>
+          <div class="mock-reconcile__header">
+            <span>Book Balance</span>
+            <strong>$61,240.00</strong>
+          </div>
+          <div class="mock-reconcile__diff mock-reconcile__diff--zero">
+            Difference: $0.00 ✅ Reconciled
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FeatureCTA
+    title="Stop doing bookkeeping manually"
+    sub="Connect your bank and let InsightHunter handle the rest."
+    primaryLabel="Get Started Free"
+    primaryHref="/auth/register"
+    secondaryLabel="View Pricing"
+    secondaryHref="/pricing"
+  />
+
+</MarketingLayout>
+
+<style>
+  .feature-hero {
+    background: var(--color-sand-50); border-bottom: 1px solid var(--color-border);
+    padding: 5rem 1.5rem 4rem; text-align: center;
+  }
+  .feature-hero__inner { max-width: 700px; margin: auto; }
+  .feature-hero__eyebrow {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--color-primary); margin-bottom: 0.75rem;
+  }
+  .feature-hero h1 {
+    font-size: 2.75rem; font-weight: 900; line-height: 1.15;
+    margin-bottom: 1.25rem; color: var(--color-text);
+  }
+  .feature-hero h1 em { font-style: normal; color: var(--color-primary-dark); }
+  .feature-hero__sub {
+    font-size: 1.05rem; color: var(--color-text-muted);
+    line-height: 1.7; margin-bottom: 2rem;
+  }
+  .feature-hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .section { padding: 5rem 1.5rem; }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+
+  .section__inner--split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+  .section__inner--reverse { direction: rtl; }
+  .section__inner--reverse > * { direction: ltr; }
+
+  .split-eyebrow {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--color-primary); margin-bottom: 0.5rem;
+  }
+  .split-text h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 1rem; }
+  .split-text p  { font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .split-tier    { font-size: 0.8rem; color: var(--color-text-muted); }
+  .feature-list  { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .feature-list li { font-size: 0.875rem; color: var(--color-text-muted); }
+
+  .split-visual {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.5rem;
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .mock-accounts { display: flex; flex-direction: column; gap: 8px; }
+  .mock-account-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; background: var(--color-sand-50);
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    font-size: 0.8rem; gap: 10px; flex-wrap: wrap;
+  }
+  .mock-account-name    { font-weight: 500; flex: 1; }
+  .mock-account-balance { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .mock-account-status  { font-size: 0.72rem; color: var(--color-success); }
+  .mock-connect-btn {
+    margin-top: 6px; padding: 8px 14px; border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md); background: none; color: var(--color-primary-dark);
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; width: 100%;
+  }
+
+  .mock-reconcile { display: flex; flex-direction: column; gap: 10px; }
+  .mock-reconcile__header {
+    display: flex; justify-content: space-between;
+    padding: 10px 14px; background: var(--color-sand-50);
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    strong { font-weight: 700; }
+  }
+  .mock-reconcile__diff {
+    padding: 12px 14px; border-radius: var(--radius-md);
+    font-size: 0.875rem; font-weight: 700; text-align: center;
+  }
+  .mock-reconcile__diff--zero { background: #edfaf3; color: var(--color-success); }
+
+  @media (max-width: 768px) {
+    .section__inner--split { grid-template-columns: 1fr; gap: 2rem; }
+    .section__inner--reverse { direction: ltr; }
+    .feature-hero h1 { font-size: 2rem; }
+  }
+</style>

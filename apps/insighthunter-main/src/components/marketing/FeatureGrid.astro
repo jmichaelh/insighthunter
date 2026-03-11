@@ -1,72 +1,71 @@
 ---
-import type { AppDefinition } from '@/types/apps';
+import type { Feature } from '@/data/features';
+import Badge            from '@/components/shared/Badge.astro';
 
-interface Props {
-  apps: AppDefinition[];
+export interface Props {
+  features: Feature[];
+  columns?: 2 | 3 | 4;
 }
 
-const { apps } = Astro.props;
+const { features, columns = 3 } = Astro.props;
 ---
-<section class="feature-grid">
-  <div class="grid-container">
-    {apps.map((app) => (
-      <a href={app.featurePage} class="feature-card">
-        <div class="feature-icon">{app.icon}</div>
-        <h3 class="feature-title">{app.name}</h3>
-        <p class="feature-description">{app.description}</p>
-      </a>
-    ))}
-  </div>
-</section>
+
+<div class={`feature-grid feature-grid--cols-${columns}`}>
+  {features.map(f => (
+    <div class:list={['feature-item', f.comingSoon && 'feature-item--soon']}>
+      <div class="feature-item__top">
+        <h4 class="feature-item__label">{f.label}</h4>
+        {f.comingSoon && <Badge variant="tan">Soon</Badge>}
+      </div>
+      <p class="feature-item__desc">{f.description}</p>
+    </div>
+  ))}
+</div>
 
 <style>
   .feature-grid {
-    padding: var(--spacing-xl) 0;
+    display:               grid;
+    gap:                   1rem;
+    margin-top:            2rem;
+  }
+  .feature-grid--cols-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .feature-grid--cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .feature-grid--cols-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+  .feature-item {
+    background:    #fff;
+    border:        1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding:       1.25rem;
+    box-shadow:    var(--shadow-card);
+    display:       flex;
+    flex-direction: column;
+    gap:           0.5rem;
+    transition:    box-shadow 0.15s, transform 0.15s;
+  }
+  .feature-item:hover {
+    box-shadow: var(--shadow-elevated);
+    transform:  translateY(-2px);
+  }
+  .feature-item--soon { opacity: 0.7; }
+
+  .feature-item__top {
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+    flex-wrap:   wrap;
   }
 
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 0 var(--spacing-md);
+  .feature-item__label {
+    font-size:   0.9rem;
+    font-weight: 700;
+    color:       var(--color-text);
+    flex:        1;
   }
 
-  .feature-card {
-    background-color: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-lg);
-    text-decoration: none;
-    color: var(--text-primary);
-    transition: transform 0.2s ease-in-out;
-    box-shadow: var(--shadow-soft-glow);
-  }
-
-  .feature-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary-color);
-  }
-
-  .feature-icon {
-    font-size: 2rem;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .feature-title {
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .feature-description {
-    color: var(--text-secondary);
-  }
-
-  @media (max-width: 768px) {
-    .grid-container {
-      grid-template-columns: 1fr;
-    }
+  .feature-item__desc {
+    font-size:   0.825rem;
+    color:       var(--color-text-muted);
+    line-height: 1.6;
   }
 </style>

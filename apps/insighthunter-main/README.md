@@ -1,45 +1,33 @@
 # insighthunter-main
 
-Insight Hunter Main API — Cloudflare Worker  
-Routes: dashboard · reports · forecasts · insights · transactions · clients · settings
+Marketing site + dashboard PWA for [insighthunter.app](https://insighthunter.app).
+
+Built with Astro + Svelte on Cloudflare Pages.
 
 ## Stack
-- **Runtime**: Cloudflare Workers (Hono router)
-- **DB**: D1 (SQLite)
-- **Cache**: KV
-- **Storage**: R2 (PDF reports)
-- **Queues**: Report generation + notifications
-- **Analytics**: Analytics Engine
-- **Auth**: JWT validated via `insighthunter-auth`
+- **Framework**: Astro 4 (SSR via Cloudflare adapter)
+- **UI**: Svelte 5 (interactive islands), Astro (static shells)
+- **Styling**: SCSS with sand/taupe design system
+- **Deploy**: Cloudflare Pages + Workers
+- **Auth**: `insighthunter-auth` Worker via service binding
 
-## Quick Start
+## Development
 
-```bash
-cp .env.example .dev.vars
+\`\`\`bash
+pnpm install
+pnpm --filter insighthunter-main dev
+\`\`\`
 
-# Create D1 database
-wrangler d1 create insighthunter-main-db
+## Deploy
 
-# Create KV namespaces
-wrangler kv:namespace create CACHE
-wrangler kv:namespace create RATE_LIMIT
+\`\`\`bash
+pnpm --filter insighthunter-main build
+wrangler pages deploy dist --project-name insighthunter-main
+\`\`\`
 
-# Create R2 bucket
-wrangler r2 bucket create insighthunter-reports
+## Architecture
 
-# Create Queues
-wrangler queues create insighthunter-report-queue
-wrangler queues create insighthunter-notification-queue
-
-# Run migrations
-npm run migrate:local
-
-# Set secrets
-wrangler secret put JWT_SECRET
-wrangler secret put SERVICE_API_KEY
-
-# Dev
-npm run dev
-
-# Deploy
-npm run deploy
+All `/api/*` requests are proxied through `functions/api/[[path]].ts`
+to the appropriate Cloudflare Worker via service bindings.
+Session validation happens in `src/middleware/index.ts` — every
+`/dashboard/*` route requires a valid `ih_session` cookie.

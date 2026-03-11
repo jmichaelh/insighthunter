@@ -1,3 +1,4 @@
+/// <reference path="../.astro/types.d.ts" />
 // apps/insighthunter-main/src/env.d.ts
 /// <reference types="astro/client" />
 /// <reference types="@cloudflare/workers-types" />

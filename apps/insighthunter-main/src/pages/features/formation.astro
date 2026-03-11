@@ -1,0 +1,254 @@
+---
+import MarketingLayout           from '@/layouts/MarketingLayout.astro';
+import FeatureGrid               from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader             from '@/components/marketing/SectionHeader.astro';
+import FeatureCTA                from '@/components/marketing/FeatureCTA.astro';
+import { getFeaturesByCategory } from '@/data/features';
+
+const features = getFeaturesByCategory('formation');
+
+const ENTITY_TYPES = [
+  { type: 'LLC',      icon: '🏢', pros: 'Liability protection, flexible taxation, minimal paperwork' },
+  { type: 'S-Corp',   icon: '📊', pros: 'Payroll tax savings, pass-through taxation, investor-friendly' },
+  { type: 'C-Corp',   icon: '🚀', pros: 'VC fundable, stock options, no ownership restrictions' },
+  { type: 'Sole Prop',icon: '👤', pros: 'Zero setup cost, simplest taxes — best for early testing' },
+];
+
+const STEPS = [
+  { n: '01', label: 'Take the AI Quiz',            desc: 'Answer 8 questions about your revenue, structure, and goals.' },
+  { n: '02', label: 'Get Your Recommendation',     desc: 'AI scores each entity type and explains the tradeoffs for your situation.' },
+  { n: '03', label: 'File with Our State Wizard',  desc: 'Step-by-step filing guide with fees, forms, and direct portal links.' },
+  { n: '04', label: 'Apply for Your EIN',          desc: 'Pre-filled SS-4 walkthrough — IRS online EIN in under 10 minutes.' },
+  { n: '05', label: 'Auto-seed Your Books',        desc: 'Formation completes → Chart of Accounts created automatically.' },
+];
+---
+
+<MarketingLayout
+  title="BizForma — Entity Formation — InsightHunter"
+  description="AI-powered entity determination, state filing wizard, EIN guidance, compliance calendar, and automatic bookkeeping handoff."
+>
+
+  <section class="feature-hero">
+    <div class="feature-hero__inner">
+      <p class="feature-hero__eyebrow">🏛️ Formation</p>
+      <h1>From idea to LLC in <em>one afternoon</em></h1>
+      <p class="feature-hero__sub">
+        BizForma walks you through entity selection, state filing, EIN application,
+        and compliance deadlines — then automatically seeds your chart of accounts
+        so your books are ready on day one.
+      </p>
+      <div class="feature-hero__ctas">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Start Formation Free</a>
+        <a href="/pricing"       class="btn btn--ghost   btn--lg">See Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader eyebrow="What's included" title="Everything to form and stay compliant" />
+      <FeatureGrid features={features} />
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <SectionHeader
+        eyebrow="How it works"
+        title="Five steps from zero to open for business"
+      />
+      <div class="steps">
+        {STEPS.map(s => (
+          <div class="step">
+            <div class="step__num">{s.n}</div>
+            <div class="step__body">
+              <strong>{s.label}</strong>
+              <p>{s.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Entity types -->
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader
+        eyebrow="AI Entity Determination"
+        title="Not sure which entity is right? AI will tell you."
+        sub="BizForma's AI questionnaire scores all four entity types based on your specific situation — revenue, co-founders, state, and goals."
+      />
+      <div class="entity-grid">
+        {ENTITY_TYPES.map(e => (
+          <div class="entity-card">
+            <span class="entity-card__icon">{e.icon}</span>
+            <h3>{e.type}</h3>
+            <p>{e.pros}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Bookkeeping handoff highlight -->
+  <section class="section section--alt">
+    <div class="section__inner section__inner--split">
+      <div class="split-text">
+        <p class="split-eyebrow">Auto Bookkeeping Handoff</p>
+        <h2>Formation complete → books open automatically</h2>
+        <p>
+          The moment you finish your formation flow, InsightHunter seeds a
+          full Chart of Accounts matched to your entity type and industry —
+          so you can start recording transactions immediately.
+        </p>
+        <ul class="feature-list">
+          <li>✓ COA seeded for LLC, S-Corp, C-Corp, or Sole Prop</li>
+          <li>✓ Industry-specific account categories</li>
+          <li>✓ Zero manual setup required</li>
+          <li>✓ Compliance calendar auto-populated</li>
+        </ul>
+      </div>
+      <div class="split-visual">
+        <div class="mock-handoff">
+          <div class="mock-handoff__step mock-handoff__step--done">
+            <span class="mock-handoff__check">✓</span>
+            <span>Formation filed (Georgia LLC)</span>
+          </div>
+          <div class="mock-handoff__step mock-handoff__step--done">
+            <span class="mock-handoff__check">✓</span>
+            <span>EIN obtained (XX-XXXXXXX)</span>
+          </div>
+          <div class="mock-handoff__step mock-handoff__step--done">
+            <span class="mock-handoff__check">✓</span>
+            <span>Chart of Accounts created (47 accounts)</span>
+          </div>
+          <div class="mock-handoff__step mock-handoff__step--done">
+            <span class="mock-handoff__check">✓</span>
+            <span>Compliance calendar populated</span>
+          </div>
+          <div class="mock-handoff__cta">
+            🎉 Your books are ready. Connect a bank account →
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FeatureCTA
+    title="Start your business the right way"
+    sub="Entity formation + bookkeeping setup in one afternoon. Free to start."
+    primaryLabel="Start Formation"
+    primaryHref="/auth/register"
+    secondaryLabel="Learn More"
+    secondaryHref="/features/formation"
+  />
+
+</MarketingLayout>
+
+<style>
+  .feature-hero {
+    background: var(--color-sand-50); border-bottom: 1px solid var(--color-border);
+    padding: 5rem 1.5rem 4rem; text-align: center;
+  }
+  .feature-hero__inner { max-width: 700px; margin: auto; }
+  .feature-hero__eyebrow {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--color-primary); margin-bottom: 0.75rem;
+  }
+  .feature-hero h1 {
+    font-size: 2.75rem; font-weight: 900; line-height: 1.15;
+    margin-bottom: 1.25rem; color: var(--color-text);
+  }
+  .feature-hero h1 em { font-style: normal; color: var(--color-primary-dark); }
+  .feature-hero__sub {
+    font-size: 1.05rem; color: var(--color-text-muted);
+    line-height: 1.7; margin-bottom: 2rem;
+  }
+  .feature-hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .section { padding: 5rem 1.5rem; }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+
+  .section__inner--split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+
+  /* ── Steps ────────────────────────────────────────────────── */
+  .steps {
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 2.5rem; max-width: 680px; margin-inline: auto;
+  }
+  .step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding: 1.25rem 0; position: relative;
+  }
+  .step:not(:last-child)::after {
+    content: ''; position: absolute; left: 21px; top: 56px;
+    width: 2px; height: calc(100% - 36px);
+    background: var(--color-border);
+  }
+  .step__num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--color-primary); color: #fff;
+    font-size: 0.875rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; position: relative; z-index: 1;
+  }
+  .step__body { padding-top: 8px; }
+  .step__body strong { display: block; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .step__body p      { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.6; }
+
+  /* ── Entity grid ──────────────────────────────────────────── */
+  .entity-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem; margin-top: 2.5rem;
+  }
+  .entity-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  .entity-card__icon { font-size: 2rem; }
+  .entity-card h3    { font-size: 1.05rem; font-weight: 700; }
+  .entity-card p     { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.6; }
+
+  /* ── Split visual ─────────────────────────────────────────── */
+  .split-eyebrow {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--color-primary); margin-bottom: 0.5rem;
+  }
+  .split-text h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 1rem; }
+  .split-text p  { font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .feature-list  { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .feature-list li { font-size: 0.875rem; color: var(--color-text-muted); }
+
+  .split-visual {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.5rem;
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .mock-handoff { display: flex; flex-direction: column; gap: 8px; }
+  .mock-handoff__step {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-md);
+    font-size: 0.875rem;
+  }
+  .mock-handoff__step--done { background: #edfaf3; color: var(--color-text); }
+  .mock-handoff__check { color: var(--color-success); font-weight: 700; flex-shrink: 0; }
+  .mock-handoff__cta {
+    margin-top: 6px; padding: 12px; background: var(--color-primary);
+    color: #fff; border-radius: var(--radius-md);
+    font-size: 0.875rem; font-weight: 600; text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .section__inner--split { grid-template-columns: 1fr; gap: 2rem; }
+    .feature-hero h1 { font-size: 2rem; }
+  }
+</style>

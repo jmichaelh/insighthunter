@@ -1,0 +1,252 @@
+---
+import MarketingLayout           from '@/layouts/MarketingLayout.astro';
+import FeatureGrid               from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader             from '@/components/marketing/SectionHeader.astro';
+import FeatureCTA                from '@/components/marketing/FeatureCTA.astro';
+import { getFeaturesByCategory } from '@/data/features';
+
+const features = getFeaturesByCategory('analytics');
+---
+
+<MarketingLayout
+  title="Analytics — InsightHunter"
+  description="Real-time KPIs, burn rate tracking, runway calculation, and AI-powered cash flow forecasting for growing businesses."
+>
+
+  <section class="feature-hero">
+    <div class="feature-hero__inner">
+      <p class="feature-hero__eyebrow">📊 Analytics</p>
+      <h1>Know your numbers <em>before</em> they surprise you</h1>
+      <p class="feature-hero__sub">
+        InsightHunter's analytics dashboard gives you a live pulse on revenue,
+        expenses, net income, cash on hand, burn rate, and runway — all updated
+        in real time as transactions flow in.
+      </p>
+      <div class="feature-hero__ctas">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Start for Free</a>
+        <a href="/pricing"       class="btn btn--ghost   btn--lg">See Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Feature grid ────────────────────────────────────────── -->
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader
+        eyebrow="What's included"
+        title="Every metric that matters"
+        sub="No configuration required — your dashboard populates automatically from connected bank accounts or uploaded CSVs."
+      />
+      <FeatureGrid features={features} />
+    </div>
+  </section>
+
+  <!-- ── Deep-dive: KPI Dashboard ────────────────────────────── -->
+  <section class="section section--alt">
+    <div class="section__inner section__inner--split">
+      <div class="split-text">
+        <p class="split-eyebrow">KPI Dashboard</p>
+        <h2>Six critical metrics. One screen.</h2>
+        <p>
+          Your dashboard shows Revenue, Expenses, Net Income, Cash on Hand,
+          Burn Rate, and Runway — each with a period-over-period delta so you
+          always know if you're trending up or down.
+        </p>
+        <ul class="feature-list">
+          <li>✓ Updates in real time via Plaid bank feeds</li>
+          <li>✓ Period comparison: MTD, QTD, YTD, custom</li>
+          <li>✓ Color-coded deltas (green = good direction)</li>
+          <li>✓ Mobile-responsive progressive web app</li>
+        </ul>
+      </div>
+      <div class="split-visual split-visual--kpi">
+        <div class="mock-kpi-grid">
+          {[
+            { label: 'Revenue',      value: '$48,200', delta: '+12%', good: true  },
+            { label: 'Expenses',     value: '$31,400', delta: '-4%',  good: true  },
+            { label: 'Net Income',   value: '$16,800', delta: '+28%', good: true  },
+            { label: 'Cash on Hand', value: '$94,100', delta: '+8%',  good: true  },
+            { label: 'Burn Rate',    value: '$10,467', delta: '-4%',  good: true  },
+            { label: 'Runway',       value: '9 mo',    delta: '+1mo', good: true  },
+          ].map(k => (
+            <div class="mock-kpi">
+              <span class="mock-kpi__label">{k.label}</span>
+              <strong class="mock-kpi__value">{k.value}</strong>
+              <span class="mock-kpi__delta mock-kpi__delta--good">{k.delta}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Deep-dive: Cash Flow Forecasting ────────────────────── -->
+  <section class="section">
+    <div class="section__inner section__inner--split section__inner--reverse">
+      <div class="split-text">
+        <p class="split-eyebrow">Cash Flow Forecasting</p>
+        <h2>See 90 days ahead with AI projections</h2>
+        <p>
+          InsightHunter analyzes your historical cash flow patterns and generates
+          30, 60, and 90-day projections — with confidence intervals so you know
+          how much to trust each forecast.
+        </p>
+        <ul class="feature-list">
+          <li>✓ AI-trained on your trailing 90 days</li>
+          <li>✓ Risk level: Low / Medium / High</li>
+          <li>✓ Projected vs actual overlay chart</li>
+          <li>✓ Automatic cash shortage alerts</li>
+        </ul>
+        <p class="split-tier">Available on <strong>Standard, Pro, Enterprise</strong></p>
+      </div>
+      <div class="split-visual">
+        <div class="mock-forecast">
+          <div class="mock-forecast__header">90-Day Cash Forecast</div>
+          <div class="mock-forecast__bars">
+            {[82, 71, 94, 67, 88, 76].map((h, i) => (
+              <div class="mock-forecast__bar-group">
+                <div class="mock-forecast__bar" style={`height:${h}px; opacity:${0.5 + i * 0.08}`} />
+                <span>{['Jan','Feb','Mar','Apr','May','Jun'][i]}</span>
+              </div>
+            ))}
+          </div>
+          <div class="mock-forecast__footer">
+            <span class="risk-chip risk-chip--low">✅ Low Risk</span>
+            <span>Runway: <strong>9 mo</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FeatureCTA
+    title="Start tracking your KPIs today"
+    sub="Free tier available. No credit card required."
+    primaryLabel="Get Started Free"
+    primaryHref="/auth/register"
+    secondaryLabel="View Pricing"
+    secondaryHref="/pricing"
+  />
+
+</MarketingLayout>
+
+<style>
+  .feature-hero {
+    background:    var(--color-sand-50);
+    border-bottom: 1px solid var(--color-border);
+    padding:       5rem 1.5rem 4rem;
+    text-align:    center;
+  }
+  .feature-hero__inner { max-width: 700px; margin: auto; }
+  .feature-hero__eyebrow {
+    font-size:    0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--color-primary); margin-bottom: 0.75rem;
+  }
+  .feature-hero h1 {
+    font-size: 2.75rem; font-weight: 900; line-height: 1.15;
+    margin-bottom: 1.25rem; color: var(--color-text);
+  }
+  .feature-hero h1 em { font-style: normal; color: var(--color-primary-dark); }
+  .feature-hero__sub {
+    font-size: 1.05rem; color: var(--color-text-muted);
+    line-height: 1.7; margin-bottom: 2rem;
+  }
+  .feature-hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .section { padding: 5rem 1.5rem; }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+
+  .section__inner--split {
+    display:     grid;
+    grid-template-columns: 1fr 1fr;
+    gap:         4rem;
+    align-items: center;
+  }
+  .section__inner--reverse { direction: rtl; }
+  .section__inner--reverse > * { direction: ltr; }
+
+  .split-eyebrow {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--color-primary);
+    margin-bottom: 0.5rem;
+  }
+  .split-text h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 1rem; }
+  .split-text p  { font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .split-tier    { font-size: 0.8rem; color: var(--color-text-muted); }
+
+  .feature-list {
+    list-style: none; display: flex; flex-direction: column;
+    gap: 8px; margin-bottom: 1rem;
+  }
+  .feature-list li { font-size: 0.875rem; color: var(--color-text-muted); }
+
+  /* ── Mock KPI grid ────────────────────────────────────────── */
+  .split-visual {
+    background:    #fff;
+    border:        1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding:       1.5rem;
+    box-shadow:    var(--shadow-elevated);
+  }
+  .mock-kpi-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .mock-kpi {
+    background:    var(--color-sand-50);
+    border:        1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding:       12px;
+    display:       flex;
+    flex-direction: column;
+    gap:           3px;
+  }
+  .mock-kpi__label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); }
+  .mock-kpi__value { font-size: 1.3rem; font-weight: 800; color: var(--color-text); }
+  .mock-kpi__delta--good { font-size: 0.72rem; font-weight: 600; color: var(--color-success); }
+
+  /* ── Mock forecast ────────────────────────────────────────── */
+  .mock-forecast {
+    background:    #fff;
+    border:        1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding:       1.25rem;
+    box-shadow:    var(--shadow-elevated);
+  }
+  .mock-forecast__header {
+    font-size: 0.875rem; font-weight: 700; margin-bottom: 1rem;
+  }
+  .mock-forecast__bars {
+    display:     flex;
+    align-items: flex-end;
+    gap:         8px;
+    height:      110px;
+    padding-bottom: 0;
+  }
+  .mock-forecast__bar-group {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;
+    span { font-size: 0.68rem; color: var(--color-text-muted); }
+  }
+  .mock-forecast__bar {
+    width: 100%; background: var(--color-primary);
+    border-radius: 3px 3px 0 0; min-height: 4px;
+  }
+  .mock-forecast__footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 1rem; padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem; color: var(--color-text-muted);
+    strong { color: var(--color-text); }
+  }
+  .risk-chip {
+    font-size: 0.72rem; font-weight: 700; padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .risk-chip--low { background: #edfaf3; color: var(--color-success); }
+
+  @media (max-width: 768px) {
+    .section__inner--split { grid-template-columns: 1fr; gap: 2rem; }
+    .section__inner--reverse { direction: ltr; }
+    .feature-hero h1 { font-size: 2rem; }
+  }
+</style>

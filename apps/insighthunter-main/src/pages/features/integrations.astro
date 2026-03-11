@@ -1,0 +1,178 @@
+---
+import MarketingLayout           from '@/layouts/MarketingLayout.astro';
+import FeatureGrid               from '@/components/marketing/FeatureGrid.astro';
+import SectionHeader             from '@/components/marketing/SectionHeader.astro';
+import FeatureCTA                from '@/components/marketing/FeatureCTA.astro';
+import Badge                     from '@/components/shared/Badge.astro';
+import { getFeaturesByCategory } from '@/data/features';
+
+const features = getFeaturesByCategory('integrations');
+
+const INTEGRATIONS = [
+  {
+    name:        'Plaid',
+    icon:        '🏦',
+    status:      'live',
+    description: 'Connect 12,000+ bank and credit card accounts for automatic transaction import.',
+    tier:        'Standard+',
+  },
+  {
+    name:        'QuickBooks Online',
+    icon:        '📗',
+    status:      'coming-soon',
+    description: 'Two-way sync — transactions, COA, reports via QuickBooks OAuth.',
+    tier:        'Standard+',
+  },
+  {
+    name:        'Xero',
+    icon:        '💙',
+    status:      'coming-soon',
+    description: 'Full read/write integration with Xero as your ledger source.',
+    tier:        'Pro+',
+  },
+  {
+    name:        'Stripe',
+    icon:        '💜',
+    status:      'coming-soon',
+    description: 'Auto-import Stripe payouts, fees, and refunds as transactions.',
+    tier:        'Standard+',
+  },
+  {
+    name:        'Google Sheets',
+    icon:        '📊',
+    status:      'coming-soon',
+    description: 'Export any report to Google Sheets with live data refresh.',
+    tier:        'Standard+',
+  },
+  {
+    name:        'Zapier',
+    icon:        '⚡',
+    status:      'coming-soon',
+    description: 'Connect InsightHunter to 5,000+ apps via Zapier triggers.',
+    tier:        'Pro+',
+  },
+];
+---
+
+<MarketingLayout
+  title="Integrations — InsightHunter"
+  description="Connect InsightHunter to Plaid, QuickBooks, Xero, Stripe, and more."
+>
+
+  <section class="feature-hero">
+    <div class="feature-hero__inner">
+      <p class="feature-hero__eyebrow">🔗 Integrations</p>
+      <h1>Connect the tools <em>you already use</em></h1>
+      <p class="feature-hero__sub">
+        InsightHunter connects to your banks, accounting software, and payment
+        processors — so your data flows in automatically, not manually.
+      </p>
+      <div class="feature-hero__ctas">
+        <a href="/auth/register" class="btn btn--primary btn--lg">Get Started Free</a>
+        <a href="/pricing"       class="btn btn--ghost   btn--lg">See Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__inner">
+      <SectionHeader eyebrow="All integrations" title="Current & upcoming connections" />
+      <div class="integration-grid">
+        {INTEGRATIONS.map(i => (
+          <div class="integration-card">
+            <div class="integration-card__top">
+              <span class="integration-card__icon">{i.icon}</span>
+              <div>
+                <div class="integration-card__name-row">
+                  <strong>{i.name}</strong>
+                  {i.status === 'live'
+                    ? <Badge variant="success">Live</Badge>
+                    : <Badge variant="tan">Coming Soon</Badge>
+                  }
+                </div>
+                <span class="integration-card__tier">{i.tier}</span>
+              </div>
+            </div>
+            <p class="integration-card__desc">{i.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="section__inner">
+      <SectionHeader eyebrow="What's included" title="Integration features" />
+      <FeatureGrid features={features} />
+    </div>
+  </section>
+
+  <FeatureCTA
+    title="Start with Plaid bank feeds today"
+    sub="Connect your bank account in under 60 seconds. Free on Standard+."
+    primaryLabel="Get Started"
+    primaryHref="/auth/register"
+    secondaryLabel="View Pricing"
+    secondaryHref="/pricing"
+  />
+
+</MarketingLayout>
+
+<style>
+  .feature-hero {
+    background: var(--color-sand-50); border-bottom: 1px solid var(--color-border);
+    padding: 5rem 1.5rem 4rem; text-align: center;
+  }
+  .feature-hero__inner { max-width: 700px; margin: auto; }
+  .feature-hero__eyebrow {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--color-primary); margin-bottom: 0.75rem;
+  }
+  .feature-hero h1 {
+    font-size: 2.75rem; font-weight: 900; line-height: 1.15;
+    margin-bottom: 1.25rem; color: var(--color-text);
+  }
+  .feature-hero h1 em { font-style: normal; color: var(--color-primary-dark); }
+  .feature-hero__sub {
+    font-size: 1.05rem; color: var(--color-text-muted);
+    line-height: 1.7; margin-bottom: 2rem;
+  }
+  .feature-hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .section { padding: 5rem 1.5rem; }
+  .section--alt { background: var(--color-sand-50); }
+  .section__inner { max-width: 1100px; margin: auto; }
+
+  .integration-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem; margin-top: 2.5rem;
+  }
+
+  .integration-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    display: flex; flex-direction: column; gap: 0.875rem;
+  }
+
+  .integration-card__top {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+
+  .integration-card__icon { font-size: 2rem; flex-shrink: 0; }
+
+  .integration-card__name-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    strong { font-size: 0.95rem; font-weight: 700; }
+  }
+
+  .integration-card__tier { font-size: 0.72rem; color: var(--color-text-muted); }
+
+  .integration-card__desc {
+    font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .feature-hero h1 { font-size: 2rem; }
+  }
+</style>

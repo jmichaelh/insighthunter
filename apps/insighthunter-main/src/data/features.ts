@@ -269,7 +269,7 @@ export const FEATURES: Feature[] = [
   {
     key:         'sla',
     label:       'SLA & Uptime Guarantee',
-    description: '99.99% uptime SLA backed by Cloudflare's global network.',
+    description: '99.99% uptime SLA backed by Cloudflares global network.',
     category:    'platform',
     tiers:       ['enterprise'],
   },
@@ -278,9 +278,9 @@ export const FEATURES: Feature[] = [
     label:       'Dedicated Onboarding',
     description: 'White-glove setup call with the InsightHunter team.',
     category:    'platform',
-    tiers:       ['enterprise'],
+    tiers:       ['enterprise']
   },
-];
+]
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 export function getFeaturesByTier(tier: Tier): Feature[] {
