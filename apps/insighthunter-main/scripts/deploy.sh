@@ -39,12 +39,12 @@ export CLOUDFLARE_API_TOKEN="kAY9u88TaeuI9wByQkismZ2oGjBWqf5mVBhDTYNE"
 set -e
 
 # Deploy insighthunter-auth
-echo "Deploying insighthunter-auth..."
-npx wrangler deploy --config apps/insighthunter-auth/wrangler.toml
+#echo "Deploying insighthunter-auth..."
+#npx wrangler deploy --config apps/insighthunter-auth/wrangler.toml
 
 # Deploy insighthunter-main
 echo "Deploying insighthunter-main..."
-npx wrangler deploy --config apps/insighthunter-main/wrangler.toml
+npx wrangler deploy --config ./wrangler.toml
 
 # Deploy insighthunter-bookkeeping
 # echo "Deploying insighthunter-bookkeeping..."
