@@ -44,7 +44,7 @@ set -e
 
 # Deploy insighthunter-main
 echo "Deploying insighthunter-main..."
-npx wrangler pages deploy 
+npx wrangler pages deploy --production
 
 # Deploy insighthunter-bookkeeping
 # echo "Deploying insighthunter-bookkeeping..."
