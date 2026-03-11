@@ -81,7 +81,7 @@ service = "insighthunter-bookkeeping"
 
 [vars]
 ENVIRONMENT  = "development"
-CORS_ORIGINS = "http://localhost:3000,https://insight.hunterturner.com"
+CORS_ORIGINS = "http://localhost:3000,https://insighthunter.app"
 APP_BASE_URL = "http://localhost:3000"
 
 # wrangler secret put JWT_SECRET
@@ -90,8 +90,8 @@ APP_BASE_URL = "http://localhost:3000"
 [env.staging]
 [env.staging.vars]
 ENVIRONMENT  = "staging"
-CORS_ORIGINS = "https://staging.insight.hunterturner.com"
-APP_BASE_URL = "https://staging.insight.hunterturner.com"
+CORS_ORIGINS = "https://staging.insighthunter.app"
+APP_BASE_URL = "https://staging.insighthunter.app"
 
 [[env.staging.d1_databases]]
 binding       = "DB"
@@ -110,8 +110,8 @@ bucket_name = "bizforma-documents-staging"
 [env.production]
 [env.production.vars]
 ENVIRONMENT  = "production"
-CORS_ORIGINS = "https://insight.hunterturner.com"
-APP_BASE_URL = "https://insight.hunterturner.com"
+CORS_ORIGINS = "https://insighthunter.app"
+APP_BASE_URL = "https://insighthunter.app"
 
 [[env.production.d1_databases]]
 binding       = "DB"

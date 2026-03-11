@@ -125,7 +125,7 @@ service = "insighthunter-agents"
 # ── Vars (non-secret) ─────────────────────────────────────────────────────────
 [vars]
 ENVIRONMENT     = "development"
-CORS_ORIGINS    = "http://localhost:3000,https://insight.hunterturner.com"
+CORS_ORIGINS    = "http://localhost:3000,https://insighthunter.app"
 PLAID_CLIENT_ID = "your-plaid-client-id"   # override via secret in prod
 PLAID_SECRET    = "your-plaid-secret"       # override via secret in prod
 
@@ -164,7 +164,7 @@ bucket_name = "insighthunter-imports-dev"
 
 [env.staging.vars]
 ENVIRONMENT  = "staging"
-CORS_ORIGINS = "https://staging.insight.hunterturner.com"
+CORS_ORIGINS = "https://staging.insighthunter.app"
 PLAID_ENV    = "sandbox"
 
 [[env.staging.d1_databases]]
@@ -186,7 +186,7 @@ bucket_name = "insighthunter-imports-staging"
 
 [env.production.vars]
 ENVIRONMENT  = "production"
-CORS_ORIGINS = "https://insight.hunterturner.com"
+CORS_ORIGINS = "https://insighthunter.app"
 PLAID_ENV    = "production"
 
 [[env.production.d1_databases]]
