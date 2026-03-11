@@ -1,0 +1,8 @@
+{
+	"extends": "./../tsconfig.json",
+	"compilerOptions": {
+		"types": ["@cloudflare/vitest-pool-workers"]
+	},
+	"include": ["es2023", "./**/*.ts", "../worker-configuration.d.ts"],
+	"exclude": []
+}

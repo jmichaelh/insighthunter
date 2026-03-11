@@ -1,0 +1,25 @@
+name = "insighthunter"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = [
+  "global_fetch_strictly_public"
+]
+
+[assets]
+directory = "./public"
+
+[observability]
+enabled = true
+
+[[kv_namespaces]]
+binding = "IH_SESSIONS"
+id = "88a8b6dd2b464effa9025e3f0020cc5e"
+
+[[d1_databases]]
+binding = "IH_DB"
+database_name = "insighthunter_db"
+database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
+
+[vars]
+QB_CLIENT_ID = "your_quickbooks_client_id"
+QB_CLIENT_SECRET = "your_quickbooks_client_secret"
