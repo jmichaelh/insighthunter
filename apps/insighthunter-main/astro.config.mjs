@@ -21,8 +21,5 @@ export default defineConfig({
     ssr: {
       noExternal: ['@insighthunter/auth-middleware'],
     },
-    optimizeDeps: {
-      exclude: ['@insighthunter/auth-middleware'],
-    },
   },
 });

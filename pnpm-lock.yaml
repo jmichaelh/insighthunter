@@ -201,9 +201,6 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20260101.0
         version: 4.20260307.1
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^4.0.0-next.6
-        version: 4.0.4(svelte@5.53.7)(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(sass@1.98.0)(yaml@2.8.2))
       sass:
         specifier: ^1.77.0
         version: 1.98.0
@@ -259,6 +256,9 @@ importers:
 
   packages/auth-middleware:
     devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20240405.0
+        version: 4.20260307.1
       typescript:
         specifier: ^5.0.4
         version: 5.9.3
