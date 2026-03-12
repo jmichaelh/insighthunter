@@ -1,6 +1,6 @@
 # /wrangler.toml  (repo root — used for CI/CD deploys from root)
-name = "insighthunter-main"
-main = "apps/insighthunter-main/src/worker.ts"
+name = "insighthunter"
+main = "insighthunter/src/index.ts"
 compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
 
@@ -8,7 +8,7 @@ workers_dev = false
 
 # Custom domain — no wildcard suffix
 routes = [
-  { pattern = "*.insighthunter.app/*", custom_domain = true }
+  { pattern = "*.insighthunter.app/", custom_domain = true }
 ]
 
 # ─── Static Assets ───────────────────────────────────────────────────────────

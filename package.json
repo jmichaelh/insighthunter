@@ -24,18 +24,18 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@types/jest": "^30.0.0",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.6",
     "turbo": "^2.8.16",
     "typescript": "^5.9.3"
   },
-  "dependencies": {},
   "pnpm": {
     "overrides": {
       "@vitest/runner": "2.0.4",
       "@vitest/snapshot": "2.0.4",
-      "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6"
+      "@sveltejs/vite-plugin-svelte": "^3.0.0"
     }
   }
 }
