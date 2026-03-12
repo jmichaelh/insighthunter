@@ -13,7 +13,7 @@
     "dev:lite": "pnpm --filter insighthunter-lite dev",
     "build": "pnpm --filter insighthunter build",
     "build:lite": "pnpm --filter insighthunter-lite build",
-    "deploy": "pnpm build && npx wrangler deploy",
+    "deploy": "pnpm --filter insighthunter build && npx wrangler deploy",
     "deploy:lite": "pnpm --filter insighthunter-lite deploy",
     "typecheck": "pnpm run typecheck",
     "lint": "pnpm run lint",
