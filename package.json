@@ -9,14 +9,11 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "dev": "pnpm run dev --parallel",
-    "dev:main": "pnpm --filter insighthunter-main dev",
+    "dev": "pnpm --filter insighthunter dev",
     "dev:lite": "pnpm --filter insighthunter-lite dev",
-    "build": "pnpm --filter insighthunter-main build",
-    "build:main": "pnpm --filter insighthunter-main build",
+    "build": "pnpm --filter insighthunter build",
     "build:lite": "pnpm --filter insighthunter-lite build",
-    "deploy": "npx wrangler pages deploy dist --project-name insighthunter",
-    "deploy:main": "pnpm --filter insighthunter-main deploy",
+    "deploy": "pnpm build && npx wrangler pages deploy dist --project-name insighthunter",
     "deploy:lite": "pnpm --filter insighthunter-lite deploy",
     "typecheck": "pnpm run typecheck",
     "lint": "pnpm run lint",
