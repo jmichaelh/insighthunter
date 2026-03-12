@@ -15,7 +15,7 @@
     "build": "pnpm --filter insighthunter-main build",
     "build:main": "pnpm --filter insighthunter-main build",
     "build:lite": "pnpm --filter insighthunter-lite build",
-    "deploy": "npm run deploy && wrangler deploy",
+    "deploy": "npx wrangler pages deploy dist --project-name insighthunter",
     "deploy:main": "pnpm --filter insighthunter-main deploy",
     "deploy:lite": "pnpm --filter insighthunter-lite deploy",
     "typecheck": "pnpm run typecheck",
