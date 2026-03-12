@@ -1,25 +1,29 @@
-name = "insighthunter"
-main = "src/index.ts"
-compatibility_date = "2025-01-01"
-compatibility_flags = [
-  "global_fetch_strictly_public"
-]
-
-[assets]
-directory = "./public"
+name = "insighthunter-main"
+compatibility_date = "2025-03-07"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".svelte-kit/cloudflare"
 
 [observability]
 enabled = true
+head_sampling_rate = 1
 
-[[kv_namespaces]]
-binding = "IH_SESSIONS"
-id = "88a8b6dd2b464effa9025e3f0020cc5e"
-
+# ── D1 Database ───────────────────────────────────────────────────────────────
 [[d1_databases]]
-binding = "IH_DB"
+binding = "INSIGHTHUNTER_DB"
 database_name = "insighthunter_db"
-database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"
+database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"   # replace after: wrangler d1 create insighthunter-db
 
+# ── KV Namespace ──────────────────────────────────────────────────────────────
+[[kv_namespaces]]
+binding = "INSIGHTHUNTER_KV"
+id = "e412ddb53db24e10bb59735e62732bf0"
+6
+# ── Environment Variables (non-secret) ────────────────────────────────────────
 [vars]
-QB_CLIENT_ID = "your_quickbooks_client_id"
-QB_CLIENT_SECRET = "your_quickbooks_client_secret"
+APP_URL = "https://insighthunter.app"
+STRIPE_PUBLISHABLE_KEY = "pk_live_REPLACE_ME"
+
+# ── Secrets (never put values here — use wrangler secret put) ─────────────────
+# wrangler secret put STRIPE_SECRET_KEY
+# wrangler secret put STRIPE_WEBHOOK_SECRET
+# wrangler secret put SESSION_SECRET
