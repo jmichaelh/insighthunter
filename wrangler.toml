@@ -13,7 +13,7 @@ routes = [
 
 # ─── Static Assets ───────────────────────────────────────────────────────────
 [assets]
-directory = "apps/insighthunter-main/dist"   # ← KEY FIX: was "./dist" (empty at root)
+directory = "insighthunter/dist"   # ← KEY FIX: was "./dist" (empty at root)
 binding = "ASSETS"
 not_found_handling = "none"                  # Worker handles 404s manually
 html_handling = "none"                       # Worker handles trailing slash
