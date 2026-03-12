@@ -1,29 +1,121 @@
-name = "insighthunter-main"
-compatibility_date = "2025-03-07"
+# /wrangler.toml  (repo root — used for CI/CD deploys from root)
+name = "insighthunter"
+main = "src/index.ts"
+compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".svelte-kit/cloudflare"
 
+workers_dev = false
+
+# Custom domain — no wildcard suffix
+routes = [
+  { pattern = "*.insighthunter.app/", custom_domain = true }
+]
+
+# ─── Static Assets ───────────────────────────────────────────────────────────
+[assets]
+directory = "dist"
+'binding = "ASSETS"
+not_found_handling = "none"                  # Worker handles 404s manually
+html_handling = "none"                       # Worker handles trailing slash
+run_worker_first = ["/api/*"]
+
+# ─── Workers AI ──────────────────────────────────────────────────────────────
+[ai]
+binding = "AI"
+
+# ─── Vectorize (CFO semantic search / embeddings) ────────────────────────────
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "insight-cfo-embeddings"
+
+# ─── CFO Agent (Durable Object) ──────────────────────────────────────────────
+[durable_objects]
+bindings = [
+  { name = "CFO_AGENT", class_name = "CfoAgent" }
+]
+
+# Migrations — append only, NEVER edit or delete existing tags
+[[migrations]]
+tag = "v1"
+new_classes = ["CfoAgent"]
+
+# ─── D1 Database ─────────────────────────────────────────────────────────────
+[[d1_databases]]
+binding = "USERS"
+database_name = "insight-users"
+database_id = "97eb1afb-543e-44d4-b465-a3859742aeba"
+
+# ─── KV Namespace ────────────────────────────────────────────────────────────
+[[kv_namespaces]]
+binding = "CACHE"
+id = "af7391791e95423b82c1cd877c0992e3"
+preview_id = "af7391791e95423b82c1cd877c0992e3"
+
+# ─── Observability ───────────────────────────────────────────────────────────
 [observability]
 enabled = true
 head_sampling_rate = 1
 
-# ── D1 Database ───────────────────────────────────────────────────────────────
-[[d1_databases]]
-binding = "INSIGHTHUNTER_DB"
-database_name = "insighthunter_db"
-database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"   # replace after: wrangler d1 create insighthunter-db
-
-# ── KV Namespace ──────────────────────────────────────────────────────────────
-[[kv_namespaces]]
-binding = "INSIGHTHUNTER_KV"
-id = "e412ddb53db24e10bb59735e62732bf0"
-6
-# ── Environment Variables (non-secret) ────────────────────────────────────────
+# ─── Non-Secret Vars ─────────────────────────────────────────────────────────
+# Secrets set via: npx wrangler secret put <NAME>
+# Never put JWT_SECRET, STRIPE_SECRET, etc. here
 [vars]
-APP_URL = "https://insighthunter.app"
-STRIPE_PUBLISHABLE_KEY = "pk_live_REPLACE_ME"
+ENVIRONMENT = "production"
+AUTH_API_URL = "https://auth.insighthunter.app"
+SITE_URL = "https://insighthunter.app"
 
-# ── Secrets (never put values here — use wrangler secret put) ─────────────────
-# wrangler secret put STRIPE_SECRET_KEY
-# wrangler secret put STRIPE_WEBHOOK_SECRET
-# wrangler secret put SESSION_SECRET
+# ─── Staging ─────────────────────────────────────────────────────────────────
+[env.staging]
+name = "insighthunter-staging"
+compatibility_date = "2025-04-01"
+workers_dev = true
+
+[env.staging.durable_objects]
+bindings = [
+  { name = "CFO_AGENT", class_name = "CfoAgent" }
+]
+
+[[env.staging.vectorize]]
+binding = "VECTORIZE"
+index_name = "insight-cfo-embeddings-staging"
+
+[[env.staging.d1_databases]]
+binding = "USERS"
+database_name = "insight-users-staging"
+database_id = "97eb1afb-543e-44d4-b465-a3859742aeba"
+
+[[env.staging.kv_namespaces]]
+binding = "CACHE"
+id = "af7391791e95423b82c1cd877c0992e3"
+preview_id = "af7391791e95423b82c1cd877c0992e3"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+AUTH_API_URL = "https://auth-staging.insighthunter.app"
+SITE_URL = "https://staging.insighthunter.app"
+
+# ─── Dev ─────────────────────────────────────────────────────────────────────
+[env.dev]
+name = "insighthunter-dev"
+compatibility_date = "2025-04-01"
+workers_dev = true
+
+[env.dev.durable_objects]
+bindings = [
+  { name = "CFO_AGENT", class_name = "CfoAgent" }
+]
+
+[[env.dev.d1_databases]]
+binding = "USERS"
+database_name = "insight-users-staging"
+database_id = "97eb1afb-543e-44d4-b465-a3859742aeba"
+
+[[env.dev.kv_namespaces]]
+binding = "CACHE"
+id = "af7391791e95423b82c1cd877c0992e3"
+preview_id = "af7391791e95423b82c1cd877c0992e3"
+
+[env.dev.vars]
+ENVIRONMENT = "dev"
+AUTH_API_URL = "http://localhost:8787"
+SITE_URL = "http://localhost:8787"

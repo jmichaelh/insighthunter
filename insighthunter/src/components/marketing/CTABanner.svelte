@@ -1,0 +1,55 @@
+<section class="cta-banner">
+  <div class="cta-content">
+    <h2>Ready to Unlock Your Financial Superpowers?</h2>
+    <p>Join InsightHunter today and gain the clarity and control you need to grow your business.</p>
+    <a href="/auth/register" class="btn btn-primary">Sign Up Now</a>
+  </div>
+</section>
+
+<style>
+  .cta-banner {
+    background-color: var(--bg-elevated);
+    padding: var(--spacing-3xl) var(--spacing-md);
+    text-align: center;
+    border-radius: var(--border-radius-lg);
+    margin: var(--spacing-xl) auto;
+    max-width: var(--max-width);
+    box-shadow: var(--shadow-strong-glow);
+  }
+
+  .cta-content h2 {
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .cta-content p {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .btn {
+    display: inline-block;
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md) var(--spacing-xl);
+    text-decoration: none;
+    font-weight: var(--font-weight-bold);
+  }
+
+  .btn-primary {
+    background-color: var(--primary-color);
+    color: var(--bg-dark);
+    box-shadow: var(--shadow-soft-glow);
+  }
+
+  @media (max-width: 768px) {
+    .cta-content h2 {
+      font-size: 1.75rem;
+    }
+    .cta-content p {
+      font-size: 1rem;
+    }
+  }
+</style>

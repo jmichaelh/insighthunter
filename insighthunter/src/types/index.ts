@@ -1,75 +1,49 @@
-// ─── Auth ───────────────────────────────────────────────────────────────────
-export interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-  orgId: string;
-  tier: Tier;
-  avatar?: string;
-  createdAt: string;
-}
-
-export interface Session {
-  token: string;
-  userId: string;
-  expiresAt: number;
-}
-
-export interface OrgContext {
-  id: string;
-  name: string;
-  tier: Tier;
-  seats: number;
-}
-
-// ─── Apps / Tiers ────────────────────────────────────────────────────────────
-export type Tier = 'free' | 'lite' | 'standard' | 'pro' | 'white-label';
 
 export interface AppDefinition {
-  slug: string;
+  id: string;
   name: string;
+  image: string;
   description: string;
-  shortDesc: string;
-  icon: string;
-  tier: Tier;
-  route: string;
-  color: string;
-  badge?: string;
+  href: string;
+  tags: string[];
+  category: "Financial" | "Marketing" | "HR";
 }
 
-export interface FeatureFlag {
-  key: string;
-  label: string;
-  tiers: Tier[];
-}
-
-// ─── Pricing ─────────────────────────────────────────────────────────────────
 export interface PricingPlan {
   id: string;
   name: string;
   slug: string;
-  price: number; // monthly, 0 = free
+  price: number;
   annualPrice?: number;
   oneTime?: boolean;
   description: string;
-  highlight?: boolean;
-  badge?: string;
   stripePriceId: string;
   stripeAnnualPriceId?: string;
+  tier: string;
+  highlight?: boolean;
+  badge?: string;
+  cta: string;
   features: string[];
   notIncluded?: string[];
-  cta: string;
-  tier: Tier;
 }
 
-// ─── Cart ────────────────────────────────────────────────────────────────────
-export interface CartItem {
-  planId: string;
-  planName: string;
+export interface Addon {
+  id: string;
+  name: string;
+  description: string;
   price: number;
-  billing: 'monthly' | 'annual' | 'one-time';
+  interval: "one-time" | "monthly";
   stripePriceId: string;
+}
+
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  interval: string;
+  type: "plan" | "addon";
   quantity: number;
+  stripePriceId: string;
 }
 
 export interface Cart {
@@ -77,26 +51,141 @@ export interface Cart {
   total: number;
 }
 
-// ─── API ─────────────────────────────────────────────────────────────────────
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  tier: "lite" | "standard" | "pro";
+  orgId: string;
+  avatarUrl?: string;
+}
+
+export interface Session {
+  token: string;
+  user: AuthUser;
+}
+
 export interface ApiResponse<T = unknown> {
   ok: boolean;
   data?: T;
   error?: string;
-  message?: string;
+  _debug?: unknown;
 }
 
-// ─── Cloudflare Env ──────────────────────────────────────────────────────────
-export interface Env {
-  DB: D1Database;
-  SESSIONS: KVNamespace;
-  STORAGE: R2Bucket;
-  EMAIL_QUEUE: Queue;
-  ANALYTICS: AnalyticsEngineDataset;
-  AUTH_WORKER_URL: string;
-  STRIPE_SECRET_KEY: string;
-  STRIPE_WEBHOOK_SECRET: string;
-  STRIPE_PUBLISHABLE_KEY: string;
-  JWT_SECRET: string;
-  APP_URL: string;
-  APP_ENV: string;
+export interface KPISnapshot {
+  revenue: number;
+  expenses: number;
+  netIncome: number;
+  cashBalance: number;
+  grossMargin: number;
+  period: string;
+  asOf: string;
+}
+
+export interface DashboardData {
+  kpis: KPISnapshot;
+  recentAlerts: Alert[];
+  trendData: TrendPoint[];
+}
+
+export interface TrendPoint {
+  period: string;
+  revenue: number;
+  expenses: number;
+  net: number;
+}
+
+export interface Alert {
+  id: string;
+  type: "cash_low" | "expense_spike" | "revenue_drop" | "insight";
+  message: string;
+  severity: "info" | "warning" | "critical";
+  createdAt: string;
+}
+
+export interface ProfitLoss {
+  periodStart: string;
+  periodEnd: string;
+  totalRevenue: number;
+  totalExpenses: number;
+  netIncome: number;
+  grossMargin: number;
+  rows: PLRow[];
+}
+
+export interface PLRow {
+  account: string;
+  amount: number;
+  type: "income" | "expense";
+  category: string;
+}
+
+export interface ReportRecord {
+  id: string;
+  orgId: string;
+  type: "pl" | "cashflow" | "balance_sheet" | "forecast";
+  title: string;
+  periodStart: string;
+  periodEnd: string;
+  r2Key: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface ForecastResult {
+  periods: ForecastPeriod[];
+  confidence: number;
+  generatedAt: string;
+  modelVersion: string;
+}
+
+export interface ForecastPeriod {
+  period: string;
+  projectedRev: number;
+  projectedExp: number;
+  projectedNet: number;
+  lower: number;
+  upper: number;
+}
+
+export interface Transaction {
+  id: string;
+  orgId: string;
+  date: string;
+  description: string;
+  amount: number;
+  category: string;
+  account: string;
+  source: "qbo" | "csv" | "manual";
+  createdAt: string;
+}
+
+export interface Client {
+  id: string;
+  orgId: string;
+  name: string;
+  email: string;
+  tier: "lite" | "standard" | "enterprise";
+  status: "active" | "suspended" | "trial";
+  createdAt: string;
+}
+
+export interface Insight {
+  id: string;
+  orgId: string;
+  summary: string;
+  detail: string;
+  actions: string[];
+  model: string;
+  createdAt: string;
+}
+
+export interface TokenPayload {
+  sub: string;
+  email: string;
+  name: string;
+  tier: string;
+  orgId: string;
+  iat: number;
+  exp: number;
 }

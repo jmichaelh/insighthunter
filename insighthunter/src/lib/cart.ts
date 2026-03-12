@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type { CartItem, Cart } from '~/types';
+import type { CartItem, Cart } from '$lib/types';
 
 function createCartStore() {
   const CART_KEY = 'ih_cart';

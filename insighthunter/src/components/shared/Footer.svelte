@@ -1,0 +1,29 @@
+<footer>
+  <div class="footer-logo">Insight Hunter</div>
+  <p>
+    © 2026 Insight Hunter LLC ·
+    <a href="/marketing/legal/privacy">Privacy</a> ·
+    <a href="/marketing/legal/terms">Terms</a> ·
+    <a href="/support">Support</a>
+  </p>
+</footer>
+
+<style>
+  footer {
+    background-color: var(--bg-light);
+    color: var(--text-secondary);
+    padding: var(--spacing-lg) 0;
+    text-align: center;
+  }
+  .footer-logo {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+  }
+  a {
+    color: var(--text-secondary);
+  }
+  a:hover {
+    color: var(--primary-color);
+  }
+</style>

@@ -1,235 +1,233 @@
 <script lang="ts">
-  const pillars = [
-    {
-      title: 'Compliance Hub',
-      icon: '🛡️',
-      items: ['Client-level compliance dashboard', 'Due date visibility', 'Engagement letter generation & e-sign', 'Audit-ready document history'],
-    },
-    {
-      title: 'Ledger & Reconciliation',
-      icon: '📒',
-      items: ['Ledgers with full audit trail', 'Standardized chart-of-accounts templates', 'Industry-specific categorization', 'Ready-to-send financials'],
-    },
-    {
-      title: 'Automation',
-      icon: '⚙️',
-      items: ['Template-driven engagement letters', 'Automated reminders & recurring rules', 'Storage management tools', 'Workflow automation'],
-    },
-    {
-      title: 'Analytics & Forecasting',
-      icon: '📈',
-      items: ['Cash flow trends & KPI dashboards', 'Client-ready PDF Insight Packs', 'Forecast alerts', 'Variance notifications'],
-    },
-  ];
+  import { plans } from '$lib/data/pricing';
+  import { features } from '$lib/data/features';
+  import { cart, cartOpen } from '$lib/stores/cart';
+  import { toasts } from '$lib/stores/toast';
+  import type { LayoutData } from './$types';
 
-  const plans = [
-    {
-      name: 'Lite',
-      price: '$0',
-      period: '/mo',
-      desc: 'Start for free, no credit card required.',
-      cta: 'Get Started Free',
-      href: '/signup',
-      highlight: false,
-      features: ['Manual CSV uploads', 'Basic compliance task tracking', '3 client profiles', 'Standard report templates', 'Email support'],
-    },
-    {
-      name: 'Standard',
-      price: '$49',
-      period: '/mo',
-      desc: 'For growing freelancers and small firms.',
-      cta: 'Start Standard',
-      href: '/signup?plan=standard',
-      highlight: true,
-      features: ['Automatic data ingestion', 'Full compliance hub with smart reminders', 'Up to 20 client profiles', 'Engagement letter generation & tracking', 'Branded client-ready report packs', 'Priority support'],
-    },
-    {
-      name: 'Enterprise / AFP',
-      price: '$149',
-      period: '/mo',
-      desc: 'For multi-entity firms and fractional CFOs.',
-      cta: 'Start Enterprise',
-      href: '/signup?plan=enterprise',
-      highlight: false,
-      features: ['Everything in Standard', 'Unlimited client profiles', 'Multi-entity management', 'White-label reporting', 'Advanced automation workflows', 'Dedicated account manager'],
-    },
-  ];
+  export let data: LayoutData;
 
-  const testimonials = [
-    {
-      quote: 'Before InsightHunter, compliance tasks were scattered across three different tools and a shared spreadsheet. Now everything is in one place and I actually trust nothing is slipping through.',
-      author: 'Solo Accountant, 8 clients',
-    },
-    {
-      quote: 'I manage 14 clients as a fractional CFO. The multi-entity dashboard and white-label reports have made me look like I have a full team. My clients love the professionalism.',
-      author: 'Fractional CFO',
-    },
-    {
-      quote: 'Automated reminders caught a filing deadline that would have slipped through a busy season. That one alert alone paid for the entire year\'s subscription.',
-      author: 'Small Business Owner',
-    },
-  ];
+  const highlights = features.slice(0, 6);
 
-  const steps = [
-    { step: '01', title: 'Create your free account', desc: 'Sign up in seconds. No credit card, no commitment.' },
-    { step: '02', title: 'Connect or upload your data', desc: 'Sync via QuickBooks or upload a CSV to get started immediately.' },
-    { step: '03', title: 'Get instant financial clarity', desc: 'Your dashboard, reports, and compliance tasks are ready from day one.' },
-  ];
+  function addFreePlan() {
+    cart.add({ id: 'free', name: 'Insight Lite', price: 0, interval: 'month', type: 'plan' });
+    toasts.show('Insight Lite added!', 'success');
+    cartOpen.set(true);
+  }
 </script>
 
 <svelte:head>
-  <title>InsightHunter — AI-Powered CFO Workspace</title>
-  <meta name="description" content="CFO-level clarity for solo entrepreneurs, freelancers, and small businesses. Real-time cash flow, automated reporting, and compliance — starting free." />
+  <title>InsightHunter — The Auto-CFO for Small Business</title>
+  <meta name="description" content="AI-powered financial insights, forecasting, and reporting for freelancers and small businesses. Stop flying blind — get your Auto-CFO today." />
 </svelte:head>
 
 <!-- Hero -->
-<section class="relative px-6 pt-24 pb-20 text-center overflow-hidden">
-  <div class="absolute inset-0 bg-gradient-radial from-violet-900/20 via-transparent to-transparent pointer-events-none"></div>
-  <div class="max-w-4xl mx-auto relative z-10">
-    <span class="inline-block bg-violet-600/20 text-violet-300 text-xs font-semibold px-3 py-1 rounded-full mb-6 border border-violet-500/30">
-      AI-Powered CFO Workspace
-    </span>
-    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
-      Stop Flying Blind.<br />
-      <span class="text-violet-400">Run Your Finances with Clarity.</span>
+<section class="bg-gradient-to-br from-sand-900 via-sand-800 to-sand-900 text-white py-24 px-4 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_30%_50%,#D4A853,transparent_60%)]" />
+  <div class="container mx-auto text-center relative z-10">
+    <div class="inline-flex items-center gap-2 bg-accent/20 text-accent px-4 py-2 rounded-full text-sm font-medium mb-6 border border-accent/30">
+      🚀 Now in paid beta · Q1 2026
+    </div>
+    <h1 class="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
+      Stop Flying Blind.<br/>
+      <span class="text-accent">Get Your Auto-CFO.</span>
     </h1>
-    <p class="text-white/60 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-      CFO-level clarity, built for the way you actually work. Real-time cash flow visibility, automated reporting, and financial confidence — starting free.
+    <p class="text-xl text-sand-300 max-w-2xl mx-auto mb-10">
+      InsightHunter delivers enterprise-grade P&L reports, cash flow forecasts, and AI-powered financial advice
+      for freelancers and small businesses — at a fraction of CFO cost.
     </p>
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-      <a href="/signup" class="bg-violet-600 hover:bg-violet-500 text-white font-semibold px-8 py-3 rounded-xl transition text-base w-full sm:w-auto">
-        Get Started Free →
-      </a>
-      <a href="/#features" class="text-white/60 hover:text-white text-sm transition">See how it works</a>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/auth/register" class="btn-primary text-lg px-8 py-4">Start Free → No Card Needed</a>
+      <a href="/pricing" class="btn-secondary border-white/30 text-white hover:bg-white/10 text-lg px-8 py-4">See Pricing</a>
     </div>
-    <p class="mt-4 text-white/30 text-xs">✓ No credit card required · ✓ Free plan available · ✓ Cancel anytime</p>
+    <p class="text-sand-400 text-sm mt-6">
+      Join 1,000+ small business owners · Free forever tier available
+    </p>
   </div>
 </section>
 
-<!-- Problem Section -->
-<section class="px-6 py-20 bg-white/[0.02]">
-  <div class="max-w-5xl mx-auto text-center mb-14">
-    <h2 class="text-3xl md:text-4xl font-bold mb-4">Most Business Owners Are Flying Blind on Finances</h2>
-    <p class="text-white/50 text-lg">Spreadsheets break. Accountants are reactive. By the time you notice a problem, you're already behind.</p>
+<!-- Social Proof Bar -->
+<section class="bg-sand-100 border-y border-sand-200 py-6 px-4">
+  <div class="container mx-auto">
+    <div class="flex flex-wrap justify-center gap-8 text-sm text-sand-600 font-medium">
+      <span>🔒 Bank-level encryption</span>
+      <span>⚡ Built on Cloudflare — 99.9% uptime</span>
+      <span>💳 No credit card to start</span>
+      <span>🤖 AI-powered insights</span>
+      <span>📊 Real-time dashboards</span>
+    </div>
   </div>
-  <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
-    {#each [
-      { icon: '📉', title: 'No Real-Time Picture', desc: "You're checking your bank balance and hoping for the best — that's a gamble, not a strategy." },
-      { icon: '😰', title: 'Cash Flow Surprises', desc: 'Slow months, late invoices, unexpected expenses — without forecasting, you only find out in a crisis.' },
-      { icon: '⏳', title: 'Reports That Never Happen', desc: 'You know you should be tracking KPIs and runway. But between running the business, it never gets done.' },
-    ] as problem}
-      <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-        <div class="text-3xl mb-3">{problem.icon}</div>
-        <h3 class="text-white font-semibold text-lg mb-2">{problem.title}</h3>
-        <p class="text-white/50 text-sm leading-relaxed">{problem.desc}</p>
+</section>
+
+<!-- Problem/Solution -->
+<section class="section bg-white">
+  <div class="container mx-auto">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <h2 class="text-4xl font-display font-bold text-sand-900 mb-6">
+          QuickBooks gives you data.<br/>
+          <span class="text-accent">InsightHunter gives you answers.</span>
+        </h2>
+        <div class="space-y-4">
+          {#each [
+            ['❌', 'Bookkeeping tools show numbers — not what they mean'],
+            ['❌', 'Cash flow crises arrive with zero warning'],
+            ['❌', 'Real CFOs cost $3,000–$10,000/month'],
+            ['❌', 'Financial reports take hours to prepare manually']
+          ] as [icon, text]}
+            <div class="flex items-start gap-3 text-sand-600">
+              <span>{icon}</span><span>{text}</span>
+            </div>
+          {/each}
+        </div>
+        <div class="mt-8 p-6 bg-accent/10 rounded-2xl border border-accent/20">
+          <p class="text-sand-800 font-semibold text-lg">
+            ✅ InsightHunter automates all of this — starting at $0/month.
+          </p>
+        </div>
       </div>
-    {/each}
-  </div>
-</section>
-
-<!-- Four Pillars -->
-<section id="features" class="px-6 py-20">
-  <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Four Pillars. One Unified Workspace.</h2>
-      <p class="text-white/50 text-lg">InsightHunter isn't isolated tools — it's a cohesive suite designed to work together from day one.</p>
-    </div>
-    <div class="grid md:grid-cols-2 gap-6">
-      {#each pillars as pillar}
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-violet-500/40 transition">
-          <div class="text-4xl mb-4">{pillar.icon}</div>
-          <h3 class="text-xl font-bold mb-4 text-white">{pillar.title}</h3>
-          <ul class="space-y-2">
-            {#each pillar.items as item}
-              <li class="flex items-start gap-2 text-white/60 text-sm">
-                <span class="text-violet-400 mt-0.5">✓</span> {item}
-              </li>
-            {/each}
-          </ul>
+      <div class="bg-sand-50 rounded-2xl p-8 border border-sand-200">
+        <h3 class="font-display text-2xl font-bold text-sand-900 mb-6">What You Get</h3>
+        <div class="space-y-4">
+          {#each [
+            ['📊', 'Instant P&L & Cash Flow Reports', 'Upload CSV → reports in seconds'],
+            ['🔮', 'AI Cash Flow Forecasting', 'See 3–12 months ahead with confidence'],
+            ['🤖', 'Auto-CFO Insights', 'Actionable recommendations, not raw numbers'],
+            ['📋', 'Client-Ready PDFs', 'Impress investors, lenders, and partners'],
+            ['🏢', 'Business Formation', 'Entity selection to EIN to compliance']
+          ] as [icon, title, desc]}
+            <div class="flex items-start gap-3">
+              <span class="text-2xl">{icon}</span>
+              <div>
+                <div class="font-semibold text-sand-900">{title}</div>
+                <div class="text-sm text-sand-500">{desc}</div>
+              </div>
+            </div>
+          {/each}
         </div>
-      {/each}
+      </div>
     </div>
   </div>
 </section>
 
-<!-- How It Works -->
-<section class="px-6 py-20 bg-white/[0.02]">
-  <div class="max-w-4xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Up and Running in Three Steps</h2>
-      <p class="text-white/50">No complicated setup. No weeks of onboarding. Real value in your first session.</p>
+<!-- Feature Grid -->
+<section class="section bg-sand-50">
+  <div class="container mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-display font-bold text-sand-900 mb-4">Everything Your Business Needs</h2>
+      <p class="text-sand-600 text-xl max-w-2xl mx-auto">
+        A full suite of financial tools — all in one place, all working together.
+      </p>
     </div>
-    <div class="grid md:grid-cols-3 gap-8">
-      {#each steps as s}
-        <div class="text-center">
-          <div class="text-5xl font-black text-violet-500/30 mb-4">{s.step}</div>
-          <h3 class="text-white font-semibold text-lg mb-2">{s.title}</h3>
-          <p class="text-white/50 text-sm">{s.desc}</p>
-        </div>
-      {/each}
-    </div>
-  </div>
-</section>
-
-<!-- Pricing -->
-<section id="pricing" class="px-6 py-20">
-  <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Plans That Grow With Your Business</h2>
-      <p class="text-white/50">Start free and upgrade as your client roster grows. Core features on every plan.</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      {#each plans as plan}
-        <div class="rounded-2xl p-8 border flex flex-col {plan.highlight ? 'bg-violet-600/10 border-violet-500' : 'bg-white/5 border-white/10'}">
-          {#if plan.highlight}
-            <span class="text-xs font-bold text-violet-300 bg-violet-500/20 px-3 py-1 rounded-full self-start mb-4">Most Popular</span>
-          {/if}
-          <h3 class="text-xl font-bold text-white mb-1">{plan.name}</h3>
-          <div class="text-4xl font-black text-white mb-1">
-            {plan.price}<span class="text-lg font-normal text-white/40">{plan.period}</span>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {#each highlights as feature}
+        <a href="/features/{feature.slug}"
+           class="card hover:border-accent/40 hover:shadow-md transition-all group">
+          <div class="text-4xl mb-4">{feature.icon}</div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-display font-bold text-sand-900 text-lg">{feature.name}</h3>
+            <span class="text-xs bg-sand-100 text-sand-600 px-2 py-1 rounded-full">{feature.tier}</span>
           </div>
-          <p class="text-white/50 text-sm mb-6">{plan.desc}</p>
-          <ul class="space-y-3 mb-8 flex-1">
-            {#each plan.features as feature}
-              <li class="flex items-start gap-2 text-white/70 text-sm">
-                <span class="text-violet-400 mt-0.5">✓</span> {feature}
-              </li>
-            {/each}
-          </ul>
-          <a href={plan.href} class="block text-center py-3 rounded-xl font-semibold text-sm transition {plan.highlight ? 'bg-violet-600 hover:bg-violet-500 text-white' : 'bg-white/10 hover:bg-white/20 text-white'}">
+          <p class="text-sand-600 text-sm mb-3">{feature.tagline}</p>
+          <span class="text-accent text-sm font-medium group-hover:underline">Learn more →</span>
+        </a>
+      {/each}
+    </div>
+    <div class="text-center mt-8">
+      <a href="/features" class="btn-outline">View All Features →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Preview -->
+<section class="section bg-white">
+  <div class="container mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-display font-bold text-sand-900 mb-4">Simple, Transparent Pricing</h2>
+      <p class="text-sand-600 text-xl">Start free. Upgrade when you're ready.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {#each plans as plan}
+        <div class="card relative flex flex-col {plan.highlighted ? 'border-accent ring-2 ring-accent/20' : ''}">
+          {#if plan.badge}
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
+              {plan.badge}
+            </div>
+          {/if}
+          <div class="mb-4">
+            <h3 class="font-display font-bold text-sand-900 text-lg">{plan.name}</h3>
+            <div class="mt-2">
+              {#if plan.interval === 'custom'}
+                <span class="text-2xl font-bold text-sand-900">Custom</span>
+              {:else}
+                <span class="text-3xl font-bold text-sand-900">${plan.price}</span>
+                {#if plan.price > 0}<span class="text-sand-500 text-sm">/mo</span>{/if}
+              {/if}
+            </div>
+          </div>
+          <p class="text-sand-600 text-sm mb-4 flex-1">{plan.description}</p>
+          <a href="/pricing"
+             class="{plan.highlighted ? 'btn-primary' : 'btn-outline'} text-sm text-center">
             {plan.cta}
           </a>
         </div>
       {/each}
     </div>
+    <div class="text-center">
+      <a href="/pricing" class="text-accent font-medium hover:underline">
+        Compare all features in detail →
+      </a>
+    </div>
   </div>
 </section>
 
 <!-- Testimonials -->
-<section id="testimonials" class="px-6 py-20 bg-white/[0.02]">
-  <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Firms That Made the Switch</h2>
-      <p class="text-white/50">Real stories from accounting professionals who replaced spreadsheet chaos with InsightHunter.</p>
-    </div>
+<section class="section bg-sand-900 text-white">
+  <div class="container mx-auto">
+    <h2 class="text-4xl font-display font-bold text-center mb-12">
+      What Our Users Say
+    </h2>
     <div class="grid md:grid-cols-3 gap-6">
-      {#each testimonials as t}
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <p class="text-white/70 text-sm leading-relaxed mb-6 italic">"{t.quote}"</p>
-          <p class="text-violet-400 text-sm font-medium">— {t.author}</p>
+      {#each [
+        {
+          quote: "InsightHunter replaced my $2,500/month fractional CFO. I get better insights and it costs me $199.",
+          name: "Sarah K.", role: "Freelance Marketing Consultant"
+        },
+        {
+          quote: "The cash flow forecast caught a crunch 2 months out. I raised my rates in time. Literally saved my business.",
+          name: "Marcus T.", role: "Agency Owner, 12 employees"
+        },
+        {
+          quote: "BizForma walked me through my LLC setup in 20 minutes. My lawyer quoted $1,500 for the same thing.",
+          name: "Priya L.", role: "Independent Software Consultant"
+        }
+      ] as t}
+        <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
+          <p class="text-sand-200 mb-4 italic">"{t.quote}"</p>
+          <div class="font-semibold text-accent">{t.name}</div>
+          <div class="text-sand-400 text-sm">{t.role}</div>
         </div>
       {/each}
     </div>
   </div>
 </section>
 
-<!-- Final CTA -->
-<section class="px-6 py-24 text-center">
-  <div class="max-w-2xl mx-auto">
-    <h2 class="text-3xl md:text-4xl font-bold mb-4">Your Clients Deserve Better Than a Spreadsheet.</h2>
-    <p class="text-white/50 mb-10">Join hundreds of firms and business owners who've replaced compliance chaos with clarity.</p>
-    <a href="/signup" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-10 py-4 rounded-xl transition text-base">
-      Start Free — No Credit Card Required →
-    </a>
+<!-- CTA -->
+<section class="section bg-accent">
+  <div class="container mx-auto text-center">
+    <h2 class="text-4xl font-display font-bold text-white mb-4">
+      Ready to Meet Your Auto-CFO?
+    </h2>
+    <p class="text-white/80 text-xl mb-8 max-w-xl mx-auto">
+      Join thousands of small businesses that finally have real financial visibility.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/auth/register" class="bg-white text-accent font-bold px-8 py-4 rounded-lg hover:bg-sand-100 transition-colors text-lg">
+        Start Free Today →
+      </a>
+      <a href="/support" class="border-2 border-white/40 text-white font-semibold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">
+        Talk to Sales
+      </a>
+    </div>
   </div>
 </section>

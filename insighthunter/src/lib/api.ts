@@ -1,4 +1,4 @@
-import type { ApiResponse } from '~/types';
+import type { ApiResponse } from '$lib/types';
 import { authHeaders, clearSession } from './auth';
 
 const BASE = '';

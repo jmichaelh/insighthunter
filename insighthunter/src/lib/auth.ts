@@ -1,4 +1,4 @@
-import type { AuthUser, Session } from '~/types';
+import type { AuthUser, Session } from '$lib/types';
 
 const SESSION_KEY = 'ih_session';
 const USER_KEY    = 'ih_user';
