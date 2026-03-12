@@ -1,4 +1,4 @@
-# /wrangler.toml  (repo root — used for CI/CD deploys from root)
+# /wrangler.toml — deploy from repo root via GitHub Actions / CI
 name = "insighthunter"
 main = "insighthunter/src/index.ts"
 compatibility_date = "2025-04-01"
@@ -6,24 +6,25 @@ compatibility_flags = ["nodejs_compat"]
 
 workers_dev = false
 
-# Custom domain — no wildcard suffix
+# Explicit routes — wildcard removed to avoid swallowing auth.insighthunter.app
 routes = [
-  { pattern = "*.insighthunter.app/", custom_domain = true }
+  { pattern = "insighthunter.app", custom_domain = true },
+  { pattern = "www.insighthunter.app", custom_domain = true }
 ]
 
-# ─── Static Assets ───────────────────────────────────────────────────────────
+# ─── Static Assets (inherited by all envs) ───────────────────────────────────
 [assets]
-directory = "insighthunter/dist"   # ← KEY FIX: was "./dist" (empty at root)
+directory = "insighthunter/dist"
 binding = "ASSETS"
-not_found_handling = "none"                  # Worker handles 404s manually
-html_handling = "none"                       # Worker handles trailing slash
+not_found_handling = "none"
+html_handling = "none"
 run_worker_first = ["/api/*"]
 
 # ─── Workers AI ──────────────────────────────────────────────────────────────
 [ai]
 binding = "AI"
 
-# ─── Vectorize (CFO semantic search / embeddings) ────────────────────────────
+# ─── Vectorize ───────────────────────────────────────────────────────────────
 [[vectorize]]
 binding = "VECTORIZE"
 index_name = "insight-cfo-embeddings"
@@ -34,7 +35,6 @@ bindings = [
   { name = "CFO_AGENT", class_name = "CfoAgent" }
 ]
 
-# Migrations — append only, NEVER edit or delete existing tags
 [[migrations]]
 tag = "v1"
 new_classes = ["CfoAgent"]
@@ -56,9 +56,7 @@ preview_id = "af7391791e95423b82c1cd877c0992e3"
 enabled = true
 head_sampling_rate = 1
 
-# ─── Non-Secret Vars ─────────────────────────────────────────────────────────
-# Secrets set via: npx wrangler secret put <NAME>
-# Never put JWT_SECRET, STRIPE_SECRET, etc. here
+# ─── Vars ────────────────────────────────────────────────────────────────────
 [vars]
 ENVIRONMENT = "production"
 AUTH_API_URL = "https://auth.insighthunter.app"
@@ -82,12 +80,12 @@ index_name = "insight-cfo-embeddings-staging"
 [[env.staging.d1_databases]]
 binding = "USERS"
 database_name = "insight-users-staging"
-database_id = "97eb1afb-543e-44d4-b465-a3859742aeba"
+database_id = "<STAGING-D1-UUID>"       # wrangler d1 create insight-users-staging
 
 [[env.staging.kv_namespaces]]
 binding = "CACHE"
-id = "af7391791e95423b82c1cd877c0992e3"
-preview_id = "af7391791e95423b82c1cd877c0992e3"
+id = "<STAGING-KV-ID>"                  # wrangler kv namespace create CACHE --env staging
+preview_id = "<STAGING-KV-ID>"
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
@@ -105,15 +103,19 @@ bindings = [
   { name = "CFO_AGENT", class_name = "CfoAgent" }
 ]
 
+[[env.dev.vectorize]]                   # was missing in original
+binding = "VECTORIZE"
+index_name = "insight-cfo-embeddings-dev"
+
 [[env.dev.d1_databases]]
 binding = "USERS"
-database_name = "insight-users-staging"
-database_id = "97eb1afb-543e-44d4-b465-a3859742aeba"
+database_name = "insight-users-dev"
+database_id = "<DEV-D1-UUID>"           # wrangler d1 create insight-users-dev
 
 [[env.dev.kv_namespaces]]
 binding = "CACHE"
-id = "af7391791e95423b82c1cd877c0992e3"
-preview_id = "af7391791e95423b82c1cd877c0992e3"
+id = "<DEV-KV-ID>"                      # wrangler kv namespace create CACHE --env dev
+preview_id = "<DEV-KV-ID>"
 
 [env.dev.vars]
 ENVIRONMENT = "dev"
