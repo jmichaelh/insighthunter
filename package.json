@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "pnpm --filter insighthunter dev",
     "dev:lite": "pnpm --filter insighthunter-lite dev",
-    "build": "pnpm --filter insighthunter build",
+    "build": "pnpm --filter ./insighthunter build",
     "build:lite": "pnpm --filter insighthunter-lite build",
     "deploy": "pnpm --filter insighthunter build && npx wrangler deploy",
     "deploy:lite": "pnpm --filter insighthunter-lite deploy",
