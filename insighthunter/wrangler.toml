@@ -8,7 +8,7 @@ workers_dev = false
 
 routes = [
   { pattern = "insighthunter.app", custom_domain = true },
-  { pattern = "www.insighthunter.app", custom_domain = true }
+  { pattern = "*.insighthunter.app", custom_domain = true }
 ]
 
 # ─── Static Assets (inherited by all envs) ───────────────────────────────────
