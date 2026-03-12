@@ -1,0 +1,287 @@
+---
+import { MARKETING_NAV } from '~/data/navigation';
+import CartIcon from '~/components/shared/CartIcon.svelte';
+---
+
+<header class="nav-header" id="site-nav">
+  <div class="container-mkt nav-inner">
+    <!-- Logo -->
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">🧠</div>
+      <span class="nav-logo-text">InsightHunter</span>
+      <span class="nav-logo-badge">AI-CFO</span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="nav-links" aria-label="Main navigation">
+      {MARKETING_NAV.map(item => (
+        <div class="nav-item-wrap">
+          {item.children ? (
+            <div class="nav-dropdown-trigger">
+              <button class="nav-link nav-link--dropdown">
+                {item.label}
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4l4 4 4-4"/></svg>
+              </button>
+              <div class="nav-dropdown">
+                {item.children.map(child => (
+                  <a href={child.href} class="nav-dropdown-item">{child.label}</a>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <a href={item.href} class="nav-link">{item.label}</a>
+          )}
+        </div>
+      ))}
+    </nav>
+
+    <!-- Actions -->
+    <div class="nav-actions">
+      <CartIcon client:load compact />
+      <a href="/auth/login"    class="btn-nav-ghost">Sign In</a>
+      <a href="/auth/register" class="btn-nav-primary">Start Free</a>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="nav-mobile" id="nav-mobile">
+    <nav class="nav-mobile-links">
+      {MARKETING_NAV.map(item => (
+        <div>
+          <span class="nav-mobile-section">{item.label}</span>
+          {item.children ? (
+            item.children.map(child => (
+              <a href={child.href} class="nav-mobile-link">{child.label}</a>
+            ))
+          ) : (
+            <a href={item.href} class="nav-mobile-link">{item.label}</a>
+          )}
+        </div>
+      ))}
+      <div style="display:flex;gap:1rem;padding:1rem 1.5rem;">
+        <a href="/auth/login"    class="btn-nav-ghost" style="flex:1;text-align:center;">Sign In</a>
+        <a href="/auth/register" class="btn-nav-primary" style="flex:1;text-align:center;">Start Free</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style lang="scss">
+@use '~/styles/theme' as *;
+
+.nav-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(13,13,26,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.nav-inner {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  flex-shrink: 0;
+
+  &-icon {
+    width: 2rem;
+    height: 2rem;
+    background: linear-gradient(135deg, $color-accent, #16a34a);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  &-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.02em;
+  }
+
+  &-badge {
+    font-size: 0.55rem;
+    font-weight: 700;
+    background: rgba(34,197,94,0.15);
+    color: $color-accent;
+    border: 1px solid rgba(34,197,94,0.3);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+
+  @include responsive($bp-lg) { display: flex; }
+}
+
+.nav-item-wrap { position: relative; }
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(241,245,249,0.8);
+  border-radius: $radius-md;
+  @include transition;
+  background: none;
+  border: none;
+
+  &:hover { color: #f1f5f9; background: rgba(255,255,255,0.06); }
+}
+
+.nav-dropdown-trigger {
+  &:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  min-width: 220px;
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: $radius-lg;
+  padding: 0.5rem;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  @include transition;
+  z-index: 100;
+
+  &-item {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: rgba(241,245,249,0.8);
+    border-radius: $radius-md;
+    @include transition;
+
+    &:hover { background: rgba(255,255,255,0.06); color: #f1f5f9; }
+  }
+}
+
+.nav-actions {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+
+  @include responsive($bp-lg) { display: flex; }
+}
+
+.btn-nav-ghost {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(241,245,249,0.8);
+  border-radius: $radius-md;
+  @include transition;
+
+  &:hover { color: #f1f5f9; background: rgba(255,255,255,0.06); }
+}
+
+.btn-nav-primary {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #000;
+  background: $color-accent;
+  border-radius: $radius-md;
+  @include transition;
+
+  &:hover { background: #16a34a; transform: translateY(-1px); }
+}
+
+.nav-mobile-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  margin-left: auto;
+  cursor: pointer;
+
+  @include responsive($bp-lg) { display: none; }
+
+  span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #f1f5f9;
+    border-radius: 2px;
+    @include transition;
+  }
+}
+
+.nav-mobile {
+  display: none;
+  background: #0d0d1a;
+  border-top: 1px solid rgba(255,255,255,0.07);
+
+  &--open { display: block; }
+
+  @include responsive($bp-lg) { display: none !important; }
+}
+
+.nav-mobile-links {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nav-mobile-section {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #64748b;
+  padding: 0.75rem 1.5rem 0.25rem;
+}
+
+.nav-mobile-link {
+  display: block;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.9375rem;
+  color: rgba(241,245,249,0.8);
+
+  &:hover { color: #f1f5f9; background: rgba(255,255,255,0.04); }
+}
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const mobile = document.getElementById('nav-mobile');
+  toggle?.addEventListener('click', () => {
+    mobile?.classList.toggle('nav-mobile--open');
+  });
+</script>
