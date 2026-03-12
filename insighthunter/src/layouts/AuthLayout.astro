@@ -1,0 +1,51 @@
+---
+import '../styles/globals.scss';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title       = 'Sign In — InsightHunter',
+  description = 'Sign in to your InsightHunter account.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+</head>
+<body style="background:linear-gradient(135deg,#0d0d1a 0%,#1a1a2e 50%,#0f2040 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Inter',sans-serif;color:#f1f5f9;">
+
+  <!-- Background decoration -->
+  <div style="position:fixed;inset:0;overflow:hidden;pointer-events:none;">
+    <div style="position:absolute;top:-20%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 70%);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:-20%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(59,130,246,0.07) 0%,transparent 70%);border-radius:50%;"></div>
+  </div>
+
+  <!-- Logo -->
+  <a href="/" style="margin-bottom:2rem;display:flex;align-items:center;gap:0.625rem;position:relative;z-index:1;">
+    <div style="width:2.5rem;height:2.5rem;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;font-size:1.25rem;">🧠</div>
+    <span style="font-size:1.25rem;font-weight:700;letter-spacing:-0.02em;">InsightHunter</span>
+  </a>
+
+  <!-- Card -->
+  <div style="width:100%;max-width:420px;background:rgba(26,26,46,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:1.5rem;padding:2.5rem;backdrop-filter:blur(16px);position:relative;z-index:1;">
+    <slot />
+  </div>
+
+  <p style="margin-top:1.5rem;font-size:0.8125rem;color:#64748b;text-align:center;">
+    &copy; {new Date().getFullYear()} InsightHunter. All rights reserved.
+    &nbsp;·&nbsp;<a href="/privacy" style="color:#94a3b8;text-decoration:underline;">Privacy</a>
+    &nbsp;·&nbsp;<a href="/terms"   style="color:#94a3b8;text-decoration:underline;">Terms</a>
+  </p>
+</body>
+</html>
