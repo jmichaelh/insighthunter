@@ -10,17 +10,17 @@ head_sampling_rate = 1
 # ── D1 Database ───────────────────────────────────────────────────────────────
 [[d1_databases]]
 binding = "INSIGHTHUNTER_DB"
-database_name = "insighthunter-db"
-database_id = "YOUR_D1_DATABASE_ID"   # replace after: wrangler d1 create insighthunter-db
+database_name = "insighthunter_db"
+database_id = "aa2b9aa2-f1dd-4fdc-b4b0-d9b4bdc2ea57"   # replace after: wrangler d1 create insighthunter-db
 
 # ── KV Namespace ──────────────────────────────────────────────────────────────
 [[kv_namespaces]]
 binding = "INSIGHTHUNTER_KV"
-id = "YOUR_KV_NAMESPACE_ID"           # replace after: wrangler kv namespace create insighthunter-kv
-
+id = "e412ddb53db24e10bb59735e62732bf0"
+6
 # ── Environment Variables (non-secret) ────────────────────────────────────────
 [vars]
-APP_URL = "https://insighthunter.com"
+APP_URL = "https://insighthunter.app"
 STRIPE_PUBLISHABLE_KEY = "pk_live_REPLACE_ME"
 
 # ── Secrets (never put values here — use wrangler secret put) ─────────────────
