@@ -1,4 +1,5 @@
 packages:
+  - 'insighthunter/*'
   - 'apps/*'
   - 'packages/*'
   

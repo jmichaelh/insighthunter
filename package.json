@@ -1,6 +1,6 @@
 {
   "name": "insighthunter",
-  "version": "0.0.0",
+  "version": "3.1.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.32.0",
@@ -9,18 +9,18 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "dev": "turbo run dev --parallel",
+    "dev": "pnpm run dev --parallel",
     "dev:main": "pnpm --filter insighthunter-main dev",
     "dev:lite": "pnpm --filter insighthunter-lite dev",
-    "build": "turbo run build",
+    "build": "pnpm --filter insighthunter-main build",
     "build:main": "pnpm --filter insighthunter-main build",
     "build:lite": "pnpm --filter insighthunter-lite build",
     "deploy": "npm run deploy && wrangler deploy",
     "deploy:main": "pnpm --filter insighthunter-main deploy",
     "deploy:lite": "pnpm --filter insighthunter-lite deploy",
-    "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
-    "clean": "turbo run clean && rm -rf node_modules",
+    "typecheck": "pnpm run typecheck",
+    "lint": "pnpm run lint",
+    "clean": "pnpm run clean && rm -rf node_modules",
     "test": "jest"
   },
   "devDependencies": {
@@ -28,7 +28,6 @@
     "@types/jest": "^30.0.0",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.6",
-    "turbo": "^2.8.16",
     "typescript": "^5.9.3"
   },
   "pnpm": {
