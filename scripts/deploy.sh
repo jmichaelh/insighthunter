@@ -31,7 +31,7 @@ set -e
 #cd  .. && cd ..
 
 # Deploy insighthunter-auth
-echo "Deploying insighthunter-auth..."
+echo "Depsloying insighthunter-auth..."
 npx wrangler deploy --config apps/insighthunter-auth/wrangler.toml
 
 # Deploy insighthhunter-agents
