@@ -1,52 +1,58 @@
-import { Hono }             from 'hono';
-import { authMiddleware }   from './middleware/auth.ts';
-import { loggerMiddleware } from './middleware/logger';
-import { formationRoutes }           from './routes/formation';
-import { entityDeterminationRoutes } from './routes/entityDetermination';
-import { einRoutes }                 from './routes/ein';
-import { stateRegistrationRoutes }   from './routes/stateRegistration';
-import { taxAccountRoutes }          from './routes/taxAccounts';
-import { complianceRoutes }          from './routes/compliance';
-import { documentRoutes }            from './routes/documents';
-import { FormationAgent }            from './agents/FormationAgent';
-import { ComplianceAgent }           from './agents/ComplianceAgent';
-import type { Env }                  from './types';
+// apps/insighthunter-bizforma/src/backend/index.ts
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { logger as honoLogger } from 'hono/logger';
+import { HTTPException } from 'hono/http-exception';
 
-export { FormationAgent, ComplianceAgent };
+import type { Env, FormationCase, ApiError } from './types';
+import { registerFormationRoutes } from './routes/formation';
+import { registerEntityDeterminationRoutes } from './routes/entityDetermination';
+import { registerEinRoutes } from './routes/ein';
+import { registerStateRegistrationRoutes } from './routes/stateRegistration';
+import { registerTaxAccountRoutes } from './routes/taxAccounts';
+import { registerComplianceRoutes } from './routes/compliance';
+import { registerDocumentRoutes } from './routes/documents';
+import { authMiddleware } from './middleware/auth';
+import { requestLogger } from './middleware/logger';
 
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono<{ Bindings: Env; Variables: { userId?: string } }>();
 
-app.use('*', loggerMiddleware);
-app.use('/api/*', authMiddleware);
+// Global middleware
+app.use('*', cors());
+app.use('*', honoLogger());
+app.use('*', requestLogger);
+app.use('*', authMiddleware);
 
-app.route('/api/formations',              formationRoutes);
-app.route('/api/entity-determination',    entityDeterminationRoutes);
-app.route('/api/ein',                     einRoutes);
-app.route('/api/state-registration',      stateRegistrationRoutes);
-app.route('/api/tax-accounts',            taxAccountRoutes);
-app.route('/api/compliance',              complianceRoutes);
-app.route('/api/documents',               documentRoutes);
+// Health
+app.get('/health', (c) => c.json({ ok: true, service: 'bizforma' }));
 
-app.get('/health', c => c.json({ status: 'ok', service: 'insighthunter-bizforma' }));
+// Mount domain routes
+registerFormationRoutes(app);
+registerEntityDeterminationRoutes(app);
+registerEinRoutes(app);
+registerStateRegistrationRoutes(app);
+registerTaxAccountRoutes(app);
+registerComplianceRoutes(app);
+registerDocumentRoutes(app);
 
-export default {
-  fetch: app.fetch,
+// 404
+app.all('*', (c) => c.json<ApiError>({ error: 'Not found' }, 404));
 
-  async queue(batch: MessageBatch<any>, env: Env): Promise<void> {
-    for (const msg of batch.messages) {
-      try {
-        if (batch.queue === 'bizforma-documents') {
-          const { caseId, docId } = msg.body;
-          console.log(`[queue] processing doc ${docId} for case ${caseId}`);
-        }
-        if (batch.queue === 'bizforma-reminders') {
-          const { eventId, orgId } = msg.body;
-          console.log(`[queue] sending reminder for event ${eventId} org ${orgId}`);
-        }
-        msg.ack();
-      } catch (err) {
-        msg.retry();
-      }
-    }
-  },
-};
+// Error handler
+app.onError((err, c) => {
+  console.error('Unhandled error', err);
+
+  if (err instanceof HTTPException) {
+    return c.json<ApiError>(
+      {
+        error: err.message,
+        details: err.cause instanceof Error ? err.cause.message : undefined,
+      },
+      err.status
+    );
+  }
+
+  return c.json<ApiError>({ error: 'Internal server error' }, 500);
+});
+
+export default app;
