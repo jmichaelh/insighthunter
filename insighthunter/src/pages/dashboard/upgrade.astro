@@ -1,0 +1,203 @@
+---
+// src/pages/dashboard/upgrade.astro
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { TIERS } from '../../data/pricing';
+import { FEATURE_META } from '../../data/features';
+import type { FeatureKey } from '../../data/features';
+import type { TierSlug } from '../../data/pricing';
+
+const userTier = (Astro.locals.tier ?? 'lite') as TierSlug;
+const featureParam = Astro.url.searchParams.get('feature') as FeatureKey | null;
+const fromParam = Astro.url.searchParams.get('from') ?? '/dashboard';
+
+const featureMeta = featureParam ? FEATURE_META[featureParam] : null;
+const upgradeTarget = TIERS[userTier === 'lite' ? 'standard' : 'pro'];
+---
+
+<DashboardLayout title="Upgrade – Insight Hunter">
+  <section class="upgrade-page">
+
+    {featureMeta && (
+      <div class="paywall-banner">
+        <span class="lock-badge">🔒 Locked Feature</span>
+        <h2>{featureMeta.label}</h2>
+        <p class="paywall-reason">{featureMeta.upgradeMessage}</p>
+      </div>
+    )}
+
+    <div class="upgrade-hero">
+      <h1>Unlock <span class="highlight">{upgradeTarget.name}</span></h1>
+      <p class="subtext">
+        {upgradeTarget.description}
+      </p>
+    </div>
+
+    <div class="tier-cards">
+      {(['standard', 'pro'] as TierSlug[]).map((slug) => {
+        const tier = TIERS[slug];
+        const isTarget = slug === upgradeTarget.slug;
+        return (
+          <div class={`tier-card ${isTarget ? 'featured' : ''}`}>
+            {isTarget && <span class="recommended-badge">Recommended</span>}
+            <h3>{tier.name}</h3>
+            <div class="price">
+              <span class="amount">${(tier.priceMonthly / 100).toFixed(0)}</span>
+              <span class="per">/mo</span>
+            </div>
+            <p class="tier-desc">{tier.description}</p>
+            <a
+              href={`/api/billing/checkout?tier=${slug}&feature=${featureParam ?? ''}&from=${encodeURIComponent(fromParam)}`}
+              class={`cta-btn ${isTarget ? 'cta-primary' : 'cta-secondary'}`}
+              id={`upgrade-cta-${slug}`}
+              data-tier={slug}
+              data-feature={featureParam ?? ''}
+            >
+              {tier.cta}
+            </a>
+          </div>
+        );
+      })}
+    </div>
+
+    <p class="back-link">
+      <a href={fromParam}>← Back to dashboard</a>
+    </p>
+
+  </section>
+</DashboardLayout>
+
+<script>
+  // Fire Analytics Engine paywall CTA click events
+  document.querySelectorAll<HTMLAnchorElement>('.cta-btn[data-tier]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const tier = btn.dataset.tier ?? '';
+      const feature = btn.dataset.feature ?? '';
+      try {
+        const token = document.cookie.match(/ih_session=([^;]+)/)?.[1];
+        await fetch('/api/lite/paywall-hit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token ?? ''}` },
+          body: JSON.stringify({ feature: `upgrade_cta_clicked_${tier}_${feature}` }),
+        });
+      } catch (_) {
+        // Non-critical
+      }
+    });
+  });
+</script>
+
+<style lang="scss">
+  .upgrade-page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .paywall-banner {
+    background: var(--surface-warning);
+    border: 1px solid var(--border-warning);
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+
+    h2 { margin: 0.5rem 0 0.25rem; }
+    .paywall-reason { margin: 0; color: var(--text-secondary); }
+  }
+
+  .lock-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-warning-text);
+  }
+
+  .upgrade-hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+
+    h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .highlight { color: var(--color-accent); }
+    .subtext { color: var(--text-muted); font-size: 1rem; }
+  }
+
+  .tier-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+
+    @media (max-width: 600px) { grid-template-columns: 1fr; }
+  }
+
+  .tier-card {
+    position: relative;
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    &.featured {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 2px var(--color-accent-muted);
+    }
+
+    h3 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+  }
+
+  .recommended-badge {
+    position: absolute;
+    top: -0.65rem;
+    left: 1.25rem;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+  }
+
+  .price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+
+    .amount { font-size: 2.25rem; font-weight: 800; color: var(--text-primary); }
+    .per    { font-size: 0.875rem; color: var(--text-muted); }
+  }
+
+  .tier-desc { color: var(--text-secondary); font-size: 0.875rem; margin: 0; }
+
+  .cta-btn {
+    display: block;
+    text-align: center;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.88; }
+
+    &.cta-primary {
+      background: var(--color-accent);
+      color: #fff;
+    }
+    &.cta-secondary {
+      background: var(--surface-2);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+  }
+
+  .back-link {
+    text-align: center;
+    font-size: 0.875rem;
+    a { color: var(--text-muted); text-decoration: none; &:hover { text-decoration: underline; } }
+  }
+</style>
