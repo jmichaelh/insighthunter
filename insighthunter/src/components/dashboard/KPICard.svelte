@@ -1,138 +1,167 @@
+<!-- src/components/dashboard/KPICard.svelte -->
 <script lang="ts">
-  import { onMount }     from 'svelte';
-  import { api }         from '@/lib/api';
-  import type { KPISummary } from '@/types/api';
+  import type { TierSlug } from '../../data/pricing';
+  import { canAccess } from '../../data/features';
+  import Badge from '../shared/Badge.astro';
 
-  export let metric: keyof KPISummary;
+  export let kpiKey: string;
+  export let label: string;
+  export let value: string | number;
+  export let unit: string = '';
+  export let trend: 'up' | 'down' | 'flat' = 'flat';
+  export let index: number = 0; // position in KPI list (0-based)
+  export let userTier: TierSlug = 'lite';
 
-  const CONFIG: Record<keyof KPISummary, {
-    label:  string;
-    icon:   string;
-    format: 'currency' | 'months' | 'percent';
-    good?:  'high' | 'low';
-  }> = {
-    revenue:    { label: 'Revenue',      icon: '💰', format: 'currency', good: 'high' },
-    expenses:   { label: 'Expenses',     icon: '📤', format: 'currency', good: 'low'  },
-    netIncome:  { label: 'Net Income',   icon: '📈', format: 'currency', good: 'high' },
-    cashOnHand: { label: 'Cash on Hand', icon: '🏦', format: 'currency', good: 'high' },
-    burnRate:   { label: 'Burn Rate',    icon: '🔥', format: 'currency', good: 'low'  },
-    runway:     { label: 'Runway',       icon: '🛣️', format: 'months',   good: 'high' },
-    period:     { label: 'Period',       icon: '📅', format: 'currency'              },
-  };
+  const LITE_KPI_LIMIT = 3;
 
-  const cfg = CONFIG[metric];
+  // Lite tier: only first 3 KPIs are visible; the rest are blurred + locked
+  $: isLocked =
+    userTier === 'lite' &&
+    !canAccess(userTier, 'kpi_dashboard_full') &&
+    index >= LITE_KPI_LIMIT;
 
-  let value:   number | string = 0;
-  let delta:   number          = 0;      // % change vs prior period
-  let loading                  = true;
+  const trendIcon = { up: '↑', down: '↓', flat: '→' } as const;
+  const trendColor = { up: 'color-green', down: 'color-red', flat: 'color-muted' } as const;
 
-  onMount(async () => {
-    const res = await api.get<KPISummary & { deltas: Partial<Record<keyof KPISummary, number>> }>(
-      '/dashboard/kpi'
-    );
-    if ('data' in res) {
-      value = res.data[metric] as number;
-      delta = res.data.deltas?.[metric] ?? 0;
+  async function firePaywallEvent() {
+    if (!isLocked) return;
+    try {
+      const token = document.cookie.match(/ih_session=([^;]+)/)?.[1];
+      await fetch('/api/lite/paywall-hit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ feature: 'kpi_dashboard_full' }),
+      });
+    } catch (_) {
+      // Non-critical — fire and forget
     }
-    loading = false;
-  });
-
-  function formatValue(v: number | string): string {
-    if (typeof v !== 'number') return String(v);
-    if (cfg.format === 'months')  return `${v} mo`;
-    if (cfg.format === 'percent') return `${v.toFixed(1)}%`;
-    return new Intl.NumberFormat('en-US', {
-      style:                 'currency',
-      currency:              'USD',
-      maximumFractionDigits: 0,
-    }).format(v);
   }
-
-  $: deltaPositive = delta >= 0;
-  $: deltaColor = (() => {
-    if (delta === 0) return 'var(--color-text-muted)';
-    if (!cfg.good)   return 'var(--color-text-muted)';
-    const good = (cfg.good === 'high' && deltaPositive) || (cfg.good === 'low' && !deltaPositive);
-    return good ? 'var(--color-success)' : 'var(--color-danger)';
-  })();
 </script>
 
-<div class="kpi-card">
-  <div class="kpi-card__top">
-    <span class="kpi-card__icon" aria-hidden="true">{cfg.icon}</span>
-    <span class="kpi-card__label">{cfg.label}</span>
-  </div>
-
-  {#if loading}
-    <div class="kpi-card__skeleton" aria-label="Loading {cfg.label}" />
-  {:else}
-    <p class="kpi-card__value">{formatValue(value as number)}</p>
-
-    {#if delta !== 0}
-      <div class="kpi-card__delta" style="color:{deltaColor}">
-        <span aria-hidden="true">{deltaPositive ? '▲' : '▼'}</span>
-        {Math.abs(delta).toFixed(1)}% vs last period
-      </div>
-    {/if}
+<div
+  class="kpi-card"
+  class:locked={isLocked}
+  on:click={isLocked ? firePaywallEvent : undefined}
+  role={isLocked ? 'button' : 'article'}
+  aria-label={isLocked ? `${label} — upgrade to unlock` : label}
+  tabindex={isLocked ? 0 : -1}
+>
+  {#if isLocked}
+    <div class="lock-overlay">
+      <span class="lock-icon" aria-hidden="true">🔒</span>
+      <p class="lock-message">Upgrade to Standard</p>
+      <a href="/dashboard/upgrade?feature=kpi_dashboard_full" class="upgrade-link">
+        Unlock All KPIs →
+      </a>
+    </div>
   {/if}
+
+  <div class="kpi-inner" class:blurred={isLocked} aria-hidden={isLocked}>
+    <span class="kpi-label">{label}</span>
+    <span class="kpi-value">
+      {typeof value === 'number' ? value.toLocaleString() : value}
+      {#if unit}<span class="kpi-unit">{unit}</span>{/if}
+    </span>
+    <span class="kpi-trend {trendColor[trend]}">
+      {trendIcon[trend]}
+    </span>
+  </div>
 </div>
 
-<style>
+<style lang="scss">
   .kpi-card {
-    background:    #fff;
-    border:        1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding:       1.25rem;
-    box-shadow:    var(--shadow-card);
-    display:       flex;
+    position: relative;
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    min-width: 160px;
+    transition: box-shadow 0.15s ease;
+
+    &:not(.locked):hover {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &.locked {
+      cursor: pointer;
+      border-color: var(--border-muted);
+    }
+  }
+
+  .kpi-inner {
+    display: flex;
     flex-direction: column;
-    gap:           6px;
-    transition:    box-shadow 0.15s;
-  }
-  .kpi-card:hover { box-shadow: var(--shadow-elevated); }
-
-  .kpi-card__top {
-    display:     flex;
-    align-items: center;
-    gap:         6px;
+    gap: 0.35rem;
   }
 
-  .kpi-card__icon { font-size: 1rem; }
-
-  .kpi-card__label {
-    font-size:      0.75rem;
-    color:          var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight:    600;
+  .blurred {
+    filter: blur(6px);
+    user-select: none;
+    pointer-events: none;
   }
 
-  .kpi-card__value {
-    font-size:   1.9rem;
-    font-weight: 800;
-    color:       var(--color-text);
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .kpi-card__delta {
-    font-size:   0.78rem;
+  .kpi-label {
+    font-size: 0.75rem;
     font-weight: 600;
-    display:     flex;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  .kpi-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .kpi-unit {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-left: 0.2em;
+  }
+
+  .kpi-trend {
+    font-size: 0.875rem;
+    font-weight: 600;
+    &.color-green { color: var(--color-success); }
+    &.color-red   { color: var(--color-danger); }
+    &.color-muted { color: var(--text-muted); }
+  }
+
+  .lock-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap:         3px;
+    justify-content: center;
+    gap: 0.4rem;
+    z-index: 2;
+    border-radius: 0.75rem;
+    background: rgba(var(--surface-1-rgb), 0.7);
+    backdrop-filter: blur(1px);
+    text-align: center;
+    padding: 1rem;
   }
 
-  .kpi-card__skeleton {
-    height:        2.2rem;
-    border-radius: var(--radius-sm);
-    background:    var(--color-sand-100);
-    animation:     pulse 1.4s ease-in-out infinite;
-    margin-top:    4px;
+  .lock-icon {
+    font-size: 1.4rem;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.4; }
+  .lock-message {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .upgrade-link {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
   }
 </style>
