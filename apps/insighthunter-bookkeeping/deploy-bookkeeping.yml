@@ -1,0 +1,97 @@
+# .github/workflows/deploy-bookkeeping.yml
+# Builds and deploys both the bookkeeping tenant worker and the platform worker.
+#
+# On push to main:
+#  1. Build the bookkeeping worker (tenant template)
+#  2. Upload compiled bundle + schema to R2 (makes it available for new tenant provisioning)
+#  3. Deploy the platform worker (dispatch + provisioning API)
+#  4. Optionally: rolling re-deploy of all active tenant workers (see note below)
+
+name: Deploy InsightHunter Bookkeeping
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/insighthunter-bookkeeping/**'
+      - 'apps/insighthunter-platform/**'
+      - '.github/workflows/deploy-bookkeeping.yml'
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # ── Build bookkeeping worker (tenant template) ──────────────────────────
+      - name: Install bookkeeping dependencies
+        working-directory: apps/insighthunter-bookkeeping
+        run: npm ci
+
+      - name: Build bookkeeping frontend
+        working-directory: apps/insighthunter-bookkeeping
+        run: npm run frontend:build
+
+      - name: Build bookkeeping worker bundle
+        working-directory: apps/insighthunter-bookkeeping
+        run: npx wrangler deploy --dry-run --outdir dist
+        # --dry-run produces the compiled bundle without deploying
+
+      # ── Publish artifacts to platform R2 ────────────────────────────────────
+      # New tenants provisioned after this point will get the new bundle.
+      - name: Upload worker bundle to platform R2
+        working-directory: apps/insighthunter-platform
+        run: npm run publish:bundle
+
+      - name: Upload schema to platform R2
+        working-directory: apps/insighthunter-platform
+        run: npm run publish:schema
+
+      # ── Deploy platform worker ───────────────────────────────────────────────
+      - name: Install platform dependencies
+        working-directory: apps/insighthunter-platform
+        run: npm ci
+
+      - name: Deploy platform worker
+        working-directory: apps/insighthunter-platform
+        run: npx wrangler deploy
+
+      # ── NOTE: Rolling tenant worker updates ─────────────────────────────────
+      # Existing tenant workers are NOT automatically re-deployed when you push
+      # a new bundle. They keep running their previously uploaded script.
+      #
+      # Options for rolling updates to existing tenants:
+      #
+      # Option A (Recommended): Version-tagged bundles + lazy upgrade
+      #   - Upload bundle as worker-bundle-v{git_sha}.js
+      #   - Store current version in platform KV
+      #   - On each request, dispatch worker checks version and re-uploads if stale
+      #   - Zero-downtime, gradual rollout
+      #
+      # Option B: Batch re-upload via a cron job
+      #   - Add a /platform/admin/redeploy-all endpoint
+      #   - CI triggers it after deploy with a pagination loop
+      #   - ~1.5s per tenant — for 1000 tenants = ~25 min (parallelize in batches)
+      #
+      # Option C: Shared worker script reference (simplest but less isolated)
+      #   - All tenants point to same script, only bindings differ
+      #   - Single deploy updates all tenants instantly
+      #   - Trade-off: one buggy deploy affects all tenants simultaneously
+      #
+      # This project uses Option A. See src/services/provisioner.ts for version logic.
+
+      - name: Deploy complete
+        run: |
+          echo "✓ bookkeeping worker bundle published to R2"
+          echo "✓ platform worker deployed"
+          echo "New tenants will provision with the latest bundle."
+          echo "Existing tenant rolling update will proceed lazily."

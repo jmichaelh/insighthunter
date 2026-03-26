@@ -1,0 +1,91 @@
+{
+  // ─── InsightHunter Platform Worker ────────────────────────────────────────
+  // Handles tenant dispatch + provisioning API.
+  // Monorepo: apps/insighthunter-platform
+  "name": "insighthunter-platform",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-07",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+
+  // ─── Workers for Platforms dispatch namespace ──────────────────────────────
+  // All per-tenant bookkeeping workers live inside this namespace.
+  // Create via: wrangler dispatch-namespace create insighthunter-bookkeeping-tenants
+  "dispatch_namespaces": [
+    {
+      "binding": "BOOKKEEPING_DISPATCH",
+      "namespace": "insighthunter-bookkeeping-tenants",
+      // Outbound worker (optional): wrap all tenant worker calls for
+      // shared logging, rate limiting, or abuse detection
+      "outbound": {
+        "service": "insighthunter-platform-outbound"
+      }
+    }
+  ],
+
+  // ─── Platform D1 — tenant registry ────────────────────────────────────────
+  "d1_databases": [
+    {
+      "binding": "PLATFORM_DB",
+      "database_name": "insighthunter-platform",
+      "database_id": "<YOUR_PLATFORM_D1_DATABASE_ID>",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // ─── Platform KV — locks, tenant cache, staged secrets ────────────────────
+  "kv_namespaces": [
+    {
+      "binding": "PLATFORM_KV",
+      "id": "<YOUR_PLATFORM_KV_NAMESPACE_ID>",
+      "preview_id": "<YOUR_PLATFORM_KV_PREVIEW_ID>"
+    }
+  ],
+
+  // ─── Platform R2 — stores compiled worker bundle + schema.sql ─────────────
+  // Deploy pipeline uploads: worker-bundle.js and schema.sql here
+  "r2_buckets": [
+    {
+      "binding": "PLATFORM_ASSETS",
+      "bucket_name": "insighthunter-platform-assets",
+      "preview_bucket_name": "insighthunter-platform-assets-dev"
+    }
+  ],
+
+  // ─── Analytics Engine ──────────────────────────────────────────────────────
+  "analytics_engine_datasets": [
+    {
+      "binding": "ANALYTICS",
+      "dataset": "insighthunter_platform_events"
+    }
+  ],
+
+  // ─── Config vars ───────────────────────────────────────────────────────────
+  // Secrets set via: npx wrangler secret put <KEY>
+  "vars": {
+    "BASE_DOMAIN": "insighthunter.app",
+    "DISPATCH_NAMESPACE_NAME": "insighthunter-bookkeeping-tenants",
+    "CF_ACCOUNT_ID": "<YOUR_CF_ACCOUNT_ID>"
+    // CF_API_TOKEN     → wrangler secret put CF_API_TOKEN
+    // CF_ZONE_ID       → wrangler secret put CF_ZONE_ID
+    // PLATFORM_SECRET  → wrangler secret put PLATFORM_SECRET
+  },
+
+  // ─── Routes ────────────────────────────────────────────────────────────────
+  // Catch ALL subdomains of bookkeeping.insighthunter.app
+  // The wildcard route captures tenant subdomains for dispatch.
+  "routes": [
+    {
+      "pattern": "bookkeeping.insighthunter.app/*",
+      "zone_name": "insighthunter.app"
+    },
+    {
+      "pattern": "*.bookkeeping.insighthunter.app/*",
+      "zone_name": "insighthunter.app"
+    }
+  ]
+}
