@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="430" viewBox="0 0 980 430">
+  <style>
+    .box { fill:#f8fafc; stroke:#0f172a; stroke-width:2; rx:12; ry:12; }
+    .title { font: 700 18px Arial, sans-serif; fill:#0f172a; }
+    .txt { font: 14px Arial, sans-serif; fill:#0f172a; }
+    .small { font: 12px Arial, sans-serif; fill:#334155; }
+    .wire { stroke:#2563eb; stroke-width:4; fill:none; }
+    .ac { stroke:#dc2626; stroke-width:4; fill:none; }
+    .fuse { fill:#fef3c7; stroke:#92400e; stroke-width:2; }
+  </style>
+  <rect x="40" y="80" width="140" height="70" class="box"/>
+  <text x="71" y="110" class="title">Roof Panels</text>
+  <text x="63" y="132" class="small">Series or parallel per design</text>
+
+  <rect x="230" y="92" width="90" height="46" class="fuse"/>
+  <text x="245" y="120" class="txt">PV fuse /</text>
+  <text x="250" y="136" class="txt">breaker</text>
+
+  <rect x="380" y="70" width="160" height="90" class="box"/>
+  <text x="403" y="108" class="title">MPPT Controller</text>
+  <text x="420" y="130" class="small">Battery first</text>
+  <text x="424" y="146" class="small">Panels last</text>
+
+  <rect x="590" y="92" width="90" height="46" class="fuse"/>
+  <text x="600" y="120" class="txt">Battery-side</text>
+  <text x="612" y="136" class="txt">fuse</text>
+
+  <rect x="730" y="70" width="150" height="90" class="box"/>
+  <text x="764" y="108" class="title">Battery Bank</text>
+  <text x="748" y="130" class="small">12V or 24V deep-cycle</text>
+
+  <rect x="730" y="250" width="90" height="46" class="fuse"/>
+  <text x="742" y="278" class="txt">Inverter</text>
+  <text x="752" y="294" class="txt">fuse</text>
+
+  <rect x="850" y="228" width="110" height="90" class="box"/>
+  <text x="873" y="266" class="title">Inverter</text>
+  <text x="862" y="288" class="small">DC to 120V AC</text>
+
+  <rect x="560" y="250" width="130" height="90" class="box"/>
+  <text x="580" y="288" class="title">Transfer Switch</text>
+  <text x="576" y="308" class="small">Prevents backfeed</text>
+
+  <rect x="380" y="250" width="120" height="90" class="box"/>
+  <text x="405" y="288" class="title">Shore Power</text>
+  <text x="406" y="308" class="small">AC source</text>
+
+  <rect x="180" y="250" width="130" height="90" class="box"/>
+  <text x="214" y="288" class="title">RV AC Panel</text>
+  <text x="191" y="308" class="small">Selected branch circuits</text>
+
+  <path d="M180 115 L230 115" class="wire"/>
+  <path d="M320 115 L380 115" class="wire"/>
+  <path d="M540 115 L590 115" class="wire"/>
+  <path d="M680 115 L730 115" class="wire"/>
+  <path d="M805 160 L805 250" class="wire"/>
+  <path d="M820 273 L850 273" class="wire"/>
+
+  <path d="M850 273 L690 273" class="ac"/>
+  <path d="M500 295 L560 295" class="ac"/>
+  <path d="M560 318 L310 318" class="ac"/>
+
+  <text x="86" y="68" class="small">PV side</text>
+  <text x="744" y="58" class="small">DC bus</text>
+  <text x="185" y="238" class="small">AC distribution</text>
+</svg>
